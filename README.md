@@ -1,16 +1,14 @@
-# React + Vite
+# RankTop AI - Autonomous SEO, AEO & GEO Engine
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+RankTop AI is an **Autonomous Multi-Agent Search Engine Optimization Engine** built with Google Cloud **Vertex AI**, **Gemini 2.5 Pro / Flash**, and **Google Agent Development Kit (ADK)** multi-agent design patterns.
 
-Currently, two official plugins are available:
+## 🚀 Live Deployment
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Vercel Live App:** [https://useranktop.vercel.app/](https://useranktop.vercel.app/)
+- **GitHub Repository:** [https://github.com/SNDP-Design/RankTop](https://github.com/SNDP-Design/RankTop)
 
-## React Compiler
+## 🛠️ Key Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+- **SEO Engine**: Keyword strategy, low-KD topic clusters, 2,000+ word AI writer, CMS auto-publishing.
+- **AEO Engine**: Google AI Overview inspector, BLUF 40-word summaries, Speakable JSON-LD schema.
+- **GEO Engine**: LLM search visibility hub for ChatGPT Search, Claude AI, Perplexity AI, and Gemini.
