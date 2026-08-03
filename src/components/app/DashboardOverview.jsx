@@ -88,7 +88,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
   return (
     <div className="w-full space-y-6 font-sans">
       
-      {/* Top Header Banner with Breathable Padding */}
+      {/* Top Header Banner */}
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5 bg-[#171717] p-7 rounded-2xl border border-[#262626]">
         <div>
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-semibold mb-2 border border-[#3ECF8E]/20">
@@ -119,12 +119,12 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
         </div>
       </div>
 
-      {/* 3 Core Trifecta Scorecards with Breathable gap-6 */}
+      {/* 3 Core Trifecta Scorecards with Aligned Header Heights */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         
         {/* 1. SEO Scorecard */}
-        <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden">
-          <div className="flex items-center justify-between">
+        <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden flex flex-col justify-between">
+          <div className="flex items-center justify-between h-7 border-b border-[#262626] pb-3">
             <span className="text-xs font-bold text-[#3ECF8E] flex items-center gap-1.5 uppercase tracking-wider">
               <Search className="w-4 h-4" /> 🔍 SEO Performance
             </span>
@@ -133,7 +133,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-3.5 pt-1">
+          <div className="grid grid-cols-2 gap-3.5 pt-2">
             <div className="p-3.5 bg-[#121212] rounded-xl border border-[#262626]">
               <span className="text-xs text-zinc-400 block font-medium">Organic Clicks</span>
               <span className="text-2xl font-extrabold text-white block mt-0.5">{metrics.clicks}</span>
@@ -148,8 +148,8 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
         </div>
 
         {/* 2. AEO Scorecard */}
-        <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden">
-          <div className="flex items-center justify-between">
+        <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden flex flex-col justify-between">
+          <div className="flex items-center justify-between h-7 border-b border-[#262626] pb-3">
             <span className="text-xs font-bold text-[#3ECF8E] flex items-center gap-1.5 uppercase tracking-wider">
               <Cpu className="w-4 h-4" /> 🤖 AEO Performance
             </span>
@@ -158,7 +158,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-3.5 pt-1">
+          <div className="grid grid-cols-2 gap-3.5 pt-2">
             <div className="p-3.5 bg-[#121212] rounded-xl border border-[#262626]">
               <span className="text-xs text-zinc-400 block font-medium">AI Overview Rate</span>
               <span className="text-2xl font-extrabold text-white block mt-0.5">{metrics.aeoCitationScore}</span>
@@ -173,8 +173,8 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
         </div>
 
         {/* 3. GEO Scorecard */}
-        <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden">
-          <div className="flex items-center justify-between">
+        <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden flex flex-col justify-between">
+          <div className="flex items-center justify-between h-7 border-b border-[#262626] pb-3">
             <span className="text-xs font-bold text-[#3ECF8E] flex items-center gap-1.5 uppercase tracking-wider">
               <ShieldCheck className="w-4 h-4" /> 🛡️ GEO Performance
             </span>
@@ -183,7 +183,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-3.5 pt-1">
+          <div className="grid grid-cols-2 gap-3.5 pt-2">
             <div className="p-3.5 bg-[#121212] rounded-xl border border-[#262626]">
               <span className="text-xs text-zinc-400 block font-medium">ChatGPT Visibility</span>
               <span className="text-2xl font-extrabold text-white block mt-0.5">{metrics.chatGptScore}</span>
@@ -199,17 +199,17 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
 
       </div>
 
-      {/* Visual Charts Section with Breathable gap-6 */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* Visual Charts Section with Pixel-Matched Header Heights & Subtitles */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         
         {/* Graph 1: SEO Traffic Growth Curve */}
-        <div className="lg:col-span-8 bg-[#171717] p-6.5 rounded-2xl border border-[#262626] space-y-5">
-          <div className="flex items-center justify-between border-b border-[#262626] pb-3">
+        <div className="lg:col-span-8 bg-[#171717] p-6.5 rounded-2xl border border-[#262626] space-y-5 flex flex-col justify-between">
+          <div className="flex items-center justify-between border-b border-[#262626] pb-3.5 min-h-[48px]">
             <div>
               <h3 className="text-base font-bold text-white font-sans">Google Search Organic Clicks Curve</h3>
               <p className="text-xs text-zinc-400 mt-0.5">Monthly organic traffic telemetry for {domain}</p>
             </div>
-            <span className="text-xs font-bold text-[#3ECF8E] bg-[#3ECF8E]/10 px-3 py-1 rounded-md border border-[#3ECF8E]/20">
+            <span className="text-xs font-bold text-[#3ECF8E] bg-[#3ECF8E]/10 px-3 py-1.5 rounded-md border border-[#3ECF8E]/20 shrink-0">
               +142% Traffic Growth
             </span>
           </div>
@@ -228,10 +228,15 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
         </div>
 
         {/* Pie Chart Representation: Keyword Distribution */}
-        <div className="lg:col-span-4 bg-[#171717] p-6.5 rounded-2xl border border-[#262626] space-y-5">
-          <div className="flex items-center justify-between border-b border-[#262626] pb-3">
-            <h3 className="text-base font-bold text-white font-sans">Keyword Ranking Breakdown</h3>
-            <span className="text-xs text-zinc-400">142 Keywords</span>
+        <div className="lg:col-span-4 bg-[#171717] p-6.5 rounded-2xl border border-[#262626] space-y-5 flex flex-col justify-between">
+          <div className="flex items-center justify-between border-b border-[#262626] pb-3.5 min-h-[48px]">
+            <div>
+              <h3 className="text-base font-bold text-white font-sans">Keyword Ranking Breakdown</h3>
+              <p className="text-xs text-zinc-400 mt-0.5">Search ranking distribution across positions</p>
+            </div>
+            <span className="text-xs text-zinc-400 bg-[#121212] px-2.5 py-1 rounded border border-[#262626] font-medium shrink-0">
+              142 Keywords
+            </span>
           </div>
 
           <div className="space-y-3.5 pt-1">
@@ -263,14 +268,14 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
 
       </div>
 
-      {/* Bar Chart: LLM Chatbot Citation Scores with gap-6 */}
+      {/* Bar Chart: LLM Chatbot Citation Scores */}
       <div className="bg-[#171717] p-6.5 rounded-2xl border border-[#262626] space-y-5">
-        <div className="flex items-center justify-between border-b border-[#262626] pb-3">
+        <div className="flex items-center justify-between border-b border-[#262626] pb-3.5 min-h-[48px]">
           <div>
             <h3 className="text-base font-bold text-white font-sans">GEO LLM Answer Engine Citation Rates</h3>
             <p className="text-xs text-zinc-400 mt-0.5">Percentage of brand inclusion in AI answers for {domain}</p>
           </div>
-          <span className="text-xs text-[#3ECF8E] font-bold">Updated Live</span>
+          <span className="text-xs text-[#3ECF8E] font-bold shrink-0">Updated Live</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4.5">
@@ -316,14 +321,17 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
         </div>
       </div>
 
-      {/* Recommendations & Top Articles Table with gap-6 */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      {/* Recommendations & Top Articles Table with Aligned Header Heights */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         
         {/* Simple Actionable Checklist */}
-        <div className="lg:col-span-6 bg-[#171717] p-6.5 rounded-2xl border border-[#262626] space-y-4 font-sans">
-          <div className="flex items-center justify-between border-b border-[#262626] pb-3">
-            <h3 className="text-base font-bold text-white font-sans">Suggested Actions to Rank Higher</h3>
-            <span className="text-xs text-[#3ECF8E] font-bold">1-Click Fixes</span>
+        <div className="lg:col-span-6 bg-[#171717] p-6.5 rounded-2xl border border-[#262626] space-y-4 font-sans flex flex-col justify-between">
+          <div className="flex items-center justify-between border-b border-[#262626] pb-3.5 min-h-[48px]">
+            <div>
+              <h3 className="text-base font-bold text-white font-sans">Suggested Actions to Rank Higher</h3>
+              <p className="text-xs text-zinc-400 mt-0.5">Automated AI recommendations to boost rankings</p>
+            </div>
+            <span className="text-xs text-[#3ECF8E] font-bold shrink-0">1-Click Fixes</span>
           </div>
 
           <div className="space-y-3.5">
@@ -347,10 +355,13 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
         </div>
 
         {/* Published Articles Matrix */}
-        <div className="lg:col-span-6 bg-[#171717] p-6.5 rounded-2xl border border-[#262626] space-y-4 font-sans">
-          <div className="flex items-center justify-between border-b border-[#262626] pb-3">
-            <h3 className="text-base font-bold text-white font-sans">Top Ranking Articles</h3>
-            <button onClick={() => handleNavigate('studio')} className="text-xs text-[#3ECF8E] hover:underline font-bold flex items-center gap-1">
+        <div className="lg:col-span-6 bg-[#171717] p-6.5 rounded-2xl border border-[#262626] space-y-4 font-sans flex flex-col justify-between">
+          <div className="flex items-center justify-between border-b border-[#262626] pb-3.5 min-h-[48px]">
+            <div>
+              <h3 className="text-base font-bold text-white font-sans">Top Ranking Articles</h3>
+              <p className="text-xs text-zinc-400 mt-0.5">Live organic content performance matrix</p>
+            </div>
+            <button onClick={() => handleNavigate('studio')} className="text-xs text-[#3ECF8E] hover:underline font-bold flex items-center gap-1 shrink-0">
               <Plus className="w-3.5 h-3.5" /> Write Article
             </button>
           </div>
