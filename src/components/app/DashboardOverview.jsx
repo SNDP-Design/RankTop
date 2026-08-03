@@ -86,10 +86,10 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
   };
 
   return (
-    <div className="w-full space-y-6 font-sans">
+    <div className="w-full space-y-5 font-sans">
       
       {/* Top Header Banner */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5 bg-[#171717] p-7 rounded-2xl border border-[#262626]">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5 bg-[#171717] p-6 rounded-2xl border border-[#262626]">
         <div>
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-semibold mb-2 border border-[#3ECF8E]/20">
             <PieChart className="w-4 h-4" />
@@ -119,12 +119,12 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
         </div>
       </div>
 
-      {/* 3 Core Trifecta Scorecards with Aligned Header Heights */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* 3 Core Trifecta Scorecards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         
         {/* 1. SEO Scorecard */}
-        <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden flex flex-col justify-between">
-          <div className="flex items-center justify-between h-7 border-b border-[#262626] pb-3">
+        <div className="bg-[#171717] p-5.5 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden flex flex-col justify-between">
+          <div className="flex items-center justify-between border-b border-[#262626] pb-3">
             <span className="text-xs font-bold text-[#3ECF8E] flex items-center gap-1.5 uppercase tracking-wider">
               <Search className="w-4 h-4" /> 🔍 SEO Performance
             </span>
@@ -133,7 +133,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-3.5 pt-2">
+          <div className="grid grid-cols-2 gap-3 pt-1">
             <div className="p-3.5 bg-[#121212] rounded-xl border border-[#262626]">
               <span className="text-xs text-zinc-400 block font-medium">Organic Clicks</span>
               <span className="text-2xl font-extrabold text-white block mt-0.5">{metrics.clicks}</span>
@@ -148,8 +148,8 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
         </div>
 
         {/* 2. AEO Scorecard */}
-        <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden flex flex-col justify-between">
-          <div className="flex items-center justify-between h-7 border-b border-[#262626] pb-3">
+        <div className="bg-[#171717] p-5.5 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden flex flex-col justify-between">
+          <div className="flex items-center justify-between border-b border-[#262626] pb-3">
             <span className="text-xs font-bold text-[#3ECF8E] flex items-center gap-1.5 uppercase tracking-wider">
               <Cpu className="w-4 h-4" /> 🤖 AEO Performance
             </span>
@@ -158,7 +158,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-3.5 pt-2">
+          <div className="grid grid-cols-2 gap-3 pt-1">
             <div className="p-3.5 bg-[#121212] rounded-xl border border-[#262626]">
               <span className="text-xs text-zinc-400 block font-medium">AI Overview Rate</span>
               <span className="text-2xl font-extrabold text-white block mt-0.5">{metrics.aeoCitationScore}</span>
@@ -173,8 +173,8 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
         </div>
 
         {/* 3. GEO Scorecard */}
-        <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden flex flex-col justify-between">
-          <div className="flex items-center justify-between h-7 border-b border-[#262626] pb-3">
+        <div className="bg-[#171717] p-5.5 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden flex flex-col justify-between">
+          <div className="flex items-center justify-between border-b border-[#262626] pb-3">
             <span className="text-xs font-bold text-[#3ECF8E] flex items-center gap-1.5 uppercase tracking-wider">
               <ShieldCheck className="w-4 h-4" /> 🛡️ GEO Performance
             </span>
@@ -183,7 +183,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-3.5 pt-2">
+          <div className="grid grid-cols-2 gap-3 pt-1">
             <div className="p-3.5 bg-[#121212] rounded-xl border border-[#262626]">
               <span className="text-xs text-zinc-400 block font-medium">ChatGPT Visibility</span>
               <span className="text-2xl font-extrabold text-white block mt-0.5">{metrics.chatGptScore}</span>
@@ -199,12 +199,12 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
 
       </div>
 
-      {/* Visual Charts Section with Pixel-Matched Header Heights & Subtitles */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+      {/* Visual Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
         
         {/* Graph 1: SEO Traffic Growth Curve */}
-        <div className="lg:col-span-8 bg-[#171717] p-6.5 rounded-2xl border border-[#262626] space-y-5 flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[#262626] pb-3.5 min-h-[48px]">
+        <div className="lg:col-span-8 bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 flex flex-col justify-between">
+          <div className="flex items-center justify-between border-b border-[#262626] pb-3 min-h-[48px]">
             <div>
               <h3 className="text-base font-bold text-white font-sans">Google Search Organic Clicks Curve</h3>
               <p className="text-xs text-zinc-400 mt-0.5">Monthly organic traffic telemetry for {domain}</p>
@@ -214,7 +214,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
             </span>
           </div>
 
-          <div className="h-56 w-full bg-[#121212] rounded-xl p-4.5 border border-[#262626] flex items-end justify-between gap-2.5">
+          <div className="h-56 w-full bg-[#121212] rounded-xl p-4 border border-[#262626] flex items-end justify-between gap-2.5">
             {monthlyTraffic.map((item, idx) => (
               <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end group">
                 <div 
@@ -228,8 +228,8 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
         </div>
 
         {/* Pie Chart Representation: Keyword Distribution */}
-        <div className="lg:col-span-4 bg-[#171717] p-6.5 rounded-2xl border border-[#262626] space-y-5 flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[#262626] pb-3.5 min-h-[48px]">
+        <div className="lg:col-span-4 bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 flex flex-col justify-between">
+          <div className="flex items-center justify-between border-b border-[#262626] pb-3 min-h-[48px]">
             <div>
               <h3 className="text-base font-bold text-white font-sans">Keyword Ranking Breakdown</h3>
               <p className="text-xs text-zinc-400 mt-0.5">Search ranking distribution across positions</p>
@@ -239,7 +239,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
             </span>
           </div>
 
-          <div className="space-y-3.5 pt-1">
+          <div className="space-y-3 pt-1">
             <div className="p-3.5 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <span className="w-3 h-3 rounded-full bg-[#3ECF8E]" />
@@ -269,8 +269,8 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
       </div>
 
       {/* Bar Chart: LLM Chatbot Citation Scores */}
-      <div className="bg-[#171717] p-6.5 rounded-2xl border border-[#262626] space-y-5">
-        <div className="flex items-center justify-between border-b border-[#262626] pb-3.5 min-h-[48px]">
+      <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4">
+        <div className="flex items-center justify-between border-b border-[#262626] pb-3 min-h-[48px]">
           <div>
             <h3 className="text-base font-bold text-white font-sans">GEO LLM Answer Engine Citation Rates</h3>
             <p className="text-xs text-zinc-400 mt-0.5">Percentage of brand inclusion in AI answers for {domain}</p>
@@ -278,8 +278,8 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
           <span className="text-xs text-[#3ECF8E] font-bold shrink-0">Updated Live</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4.5">
-          <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-2.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-2">
             <div className="flex items-center justify-between text-xs text-zinc-400">
               <span className="font-semibold">ChatGPT (GPT-4o)</span>
               <span className="text-[#3ECF8E] font-bold">{metrics.chatGptScore}</span>
@@ -289,7 +289,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
             </div>
           </div>
 
-          <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-2.5">
+          <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-2">
             <div className="flex items-center justify-between text-xs text-zinc-400">
               <span className="font-semibold">Perplexity AI</span>
               <span className="text-[#3ECF8E] font-bold">{metrics.perplexityScore}</span>
@@ -299,7 +299,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
             </div>
           </div>
 
-          <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-2.5">
+          <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-2">
             <div className="flex items-center justify-between text-xs text-zinc-400">
               <span className="font-semibold">Claude 3.5 Sonnet</span>
               <span className="text-[#3ECF8E] font-bold">{metrics.claudeScore}</span>
@@ -309,7 +309,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
             </div>
           </div>
 
-          <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-2.5">
+          <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-2">
             <div className="flex items-center justify-between text-xs text-zinc-400">
               <span className="font-semibold">Google Gemini 2.5</span>
               <span className="text-[#3ECF8E] font-bold">{metrics.geminiScore}</span>
@@ -321,12 +321,12 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
         </div>
       </div>
 
-      {/* Recommendations & Top Articles Table with Aligned Header Heights */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+      {/* Recommendations & Top Articles Table */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
         
         {/* Simple Actionable Checklist */}
-        <div className="lg:col-span-6 bg-[#171717] p-6.5 rounded-2xl border border-[#262626] space-y-4 font-sans flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[#262626] pb-3.5 min-h-[48px]">
+        <div className="lg:col-span-6 bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 font-sans flex flex-col justify-between">
+          <div className="flex items-center justify-between border-b border-[#262626] pb-3 min-h-[48px]">
             <div>
               <h3 className="text-base font-bold text-white font-sans">Suggested Actions to Rank Higher</h3>
               <p className="text-xs text-zinc-400 mt-0.5">Automated AI recommendations to boost rankings</p>
@@ -334,12 +334,12 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
             <span className="text-xs text-[#3ECF8E] font-bold shrink-0">1-Click Fixes</span>
           </div>
 
-          <div className="space-y-3.5">
+          <div className="space-y-3">
             {actionItems.map((item) => (
               <div 
                 key={item.id}
                 onClick={() => handleNavigate(item.action)}
-                className="p-4 bg-[#121212] rounded-xl border border-[#262626] hover:border-[#3ECF8E] transition-all cursor-pointer flex items-center justify-between gap-3.5"
+                className="p-3.5 bg-[#121212] rounded-xl border border-[#262626] hover:border-[#3ECF8E] transition-all cursor-pointer flex items-center justify-between gap-3"
               >
                 <div>
                   <div className="flex items-center gap-2">
@@ -355,8 +355,8 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
         </div>
 
         {/* Published Articles Matrix */}
-        <div className="lg:col-span-6 bg-[#171717] p-6.5 rounded-2xl border border-[#262626] space-y-4 font-sans flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[#262626] pb-3.5 min-h-[48px]">
+        <div className="lg:col-span-6 bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 font-sans flex flex-col justify-between">
+          <div className="flex items-center justify-between border-b border-[#262626] pb-3 min-h-[48px]">
             <div>
               <h3 className="text-base font-bold text-white font-sans">Top Ranking Articles</h3>
               <p className="text-xs text-zinc-400 mt-0.5">Live organic content performance matrix</p>
@@ -368,7 +368,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
 
           <div className="space-y-3">
             {articles.map((art, idx) => (
-              <div key={idx} className="p-3.5 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between gap-3.5">
+              <div key={idx} className="p-3.5 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between gap-3">
                 <div>
                   <span className="text-xs font-bold text-white block truncate max-w-xs">{art.title}</span>
                   <span className="text-xs text-zinc-400 mt-0.5 block">{art.clicks} clicks • Rank {art.rank} on Google</span>
