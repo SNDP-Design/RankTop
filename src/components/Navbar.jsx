@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Sparkles, Globe, Play, Check } from 'lucide-react';
+import { Sparkles, Globe, Search, Check } from 'lucide-react';
 
 export default function Navbar({ activeWebsiteUrl, setActiveWebsiteUrl, activeAppTab, setActiveAppTab }) {
-  const [inputUrl, setInputUrl] = useState(activeWebsiteUrl || 'https://mywebsite.com');
+  const [inputUrl, setInputUrl] = useState(activeWebsiteUrl || '');
   const [isSaved, setIsSaved] = useState(false);
 
   const handleUpdateWebsite = (e) => {
@@ -40,7 +40,7 @@ export default function Navbar({ activeWebsiteUrl, setActiveWebsiteUrl, activeAp
           </div>
         </button>
 
-        {/* Right: Compact Website Input Field (No HTTP prefix, reduced length, Icon-only CTA button) */}
+        {/* Right: Compact Website Input Field (Placeholder: "Enter your website", Icon CTA: Search Magnifying Glass) */}
         <form onSubmit={handleUpdateWebsite} className="flex items-center gap-2">
           <div className="flex items-center gap-2 bg-[#171717] border border-[#262626] rounded-xl px-3 py-1.5 text-sm w-72 sm:w-80 focus-within:border-[#3ECF8E] transition-all shadow-inner">
             <Globe className="w-4 h-4 text-[#3ECF8E] shrink-0" aria-hidden="true" />
@@ -48,7 +48,7 @@ export default function Navbar({ activeWebsiteUrl, setActiveWebsiteUrl, activeAp
               type="text"
               value={inputUrl}
               onChange={(e) => setInputUrl(e.target.value)}
-              placeholder="https://yourwebsite.com"
+              placeholder="Enter your website"
               aria-label="Full Website URL Input"
               className="bg-transparent text-white placeholder-zinc-500 text-sm focus:outline-none w-full font-sans"
             />
@@ -58,13 +58,13 @@ export default function Navbar({ activeWebsiteUrl, setActiveWebsiteUrl, activeAp
               </span>
             )}
             
-            {/* Search/Run CTA - Icon Only */}
+            {/* Search CTA Icon (Magnifying Glass) */}
             <button
               type="submit"
-              aria-label="Run AI Automation"
+              aria-label="Search and Run AI Automation"
               className="p-2 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold rounded-lg shadow-sm shrink-0 transition-all focus-visible:ring-2 focus-visible:ring-[#3ECF8E] focus-visible:outline-none"
             >
-              <Play className="w-3.5 h-3.5 fill-black" aria-hidden="true" />
+              <Search className="w-3.5 h-3.5 text-black stroke-[3]" aria-hidden="true" />
             </button>
           </div>
         </form>
