@@ -7,14 +7,14 @@ export default function Navbar({ activeAppTab, setActiveAppTab }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
-          {/* Logo - RankTop in Supabase Theme */}
+          {/* Logo - RankTop in Supabase Theme with Inter Font */}
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => setActiveAppTab('swarm')}>
             <div className="w-9 h-9 rounded-xl bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 flex items-center justify-center shadow-lg shadow-[#3ECF8E]/20">
               <Sparkles className="w-5 h-5 text-[#3ECF8E]" />
             </div>
             <div>
-              <span className="font-extrabold text-xl tracking-tight text-white flex items-center gap-1 font-outfit">
-                RankTop<span className="text-[#3ECF8E] font-mono text-sm font-semibold bg-[#3ECF8E]/10 px-2 py-0.5 rounded border border-[#3ECF8E]/20">.ai</span>
+              <span className="font-extrabold text-xl tracking-tight text-white flex items-center gap-1 font-sans">
+                RankTop<span className="text-[#3ECF8E] text-sm font-semibold bg-[#3ECF8E]/10 px-2 py-0.5 rounded border border-[#3ECF8E]/20">.ai</span>
               </span>
             </div>
           </div>

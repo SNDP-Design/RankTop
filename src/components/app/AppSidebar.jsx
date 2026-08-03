@@ -40,7 +40,7 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
             </div>
             <div className="truncate">
               <span className="text-sm font-bold text-white block truncate">mywebsite.com</span>
-              <span className="text-sm text-[#3ECF8E] flex items-center gap-1.5 font-mono">
+              <span className="text-sm text-[#3ECF8E] flex items-center gap-1.5 font-medium">
                 <span className="w-2 h-2 rounded-full bg-[#3ECF8E] animate-pulse" /> RankTop Active
               </span>
             </div>
@@ -52,7 +52,7 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
 
         {/* Navigation Menu */}
         <nav className="space-y-1">
-          <span className="px-3 text-sm font-mono uppercase tracking-wider text-zinc-500 font-bold block mb-2">
+          <span className="px-3 text-sm uppercase tracking-wider text-zinc-500 font-bold block mb-2">
             RankTop Swarm Modules
           </span>
 
@@ -74,7 +74,7 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
                   <span>{item.label}</span>
                 </div>
                 {item.badge && (
-                  <span className={`text-sm px-2.5 py-0.5 rounded-full font-mono font-medium ${
+                  <span className={`text-sm px-2.5 py-0.5 rounded-full font-medium ${
                     isActive
                       ? 'bg-black/20 text-black font-bold'
                       : 'bg-[#262626] text-zinc-400 border border-[#333]'
@@ -96,7 +96,7 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
             <span className="font-bold text-white flex items-center gap-1.5">
               <Sparkles className="w-4 h-4 text-[#3ECF8E]" /> RankTop Swarm
             </span>
-            <span className="text-sm font-mono text-[#3ECF8E] bg-[#3ECF8E]/10 px-2 py-0.5 rounded border border-[#3ECF8E]/20">6 Agents</span>
+            <span className="text-sm text-[#3ECF8E] bg-[#3ECF8E]/10 px-2 py-0.5 rounded border border-[#3ECF8E]/20">6 Agents</span>
           </div>
           <p className="text-sm text-zinc-300 leading-normal">
             Autonomous Multi-Agent AI Swarm monitoring search rankings.

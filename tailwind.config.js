@@ -6,17 +6,22 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        // Only use Inter font family
+        sans: ['Inter', 'sans-serif'],
+        mono: ['Inter', 'sans-serif'],
+      },
       fontSize: {
-        // Enforced Minimum Font Size: 14px across whole web app
-        xs: ['0.875rem', { lineHeight: '1.25rem' }], // 14px minimum
-        sm: ['0.875rem', { lineHeight: '1.25rem' }], // 14px
-        base: ['1rem', { lineHeight: '1.5rem' }],    // 16px
-        lg: ['1.125rem', { lineHeight: '1.75rem' }], // 18px
-        xl: ['1.25rem', { lineHeight: '1.75rem' }],  // 20px
-        '2xl': ['1.5rem', { lineHeight: '2rem' }],   // 24px
-        '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
-        '4xl': ['2.25rem', { lineHeight: '2.5rem' }],
-        '5xl': ['3rem', { lineHeight: '1' }],
+        // Strict Enforcement: Only 14px, 16px, 18px, 20px font sizes allowed
+        xs: ['14px', { lineHeight: '20px' }],
+        sm: ['14px', { lineHeight: '20px' }],
+        base: ['16px', { lineHeight: '24px' }],
+        lg: ['18px', { lineHeight: '26px' }],
+        xl: ['20px', { lineHeight: '28px' }],
+        '2xl': ['20px', { lineHeight: '28px' }],
+        '3xl': ['20px', { lineHeight: '28px' }],
+        '4xl': ['20px', { lineHeight: '28px' }],
+        '5xl': ['20px', { lineHeight: '28px' }],
       },
       colors: {
         // Supabase Emerald Green Theme
@@ -40,10 +45,6 @@ export default {
           border: '#2A2A2A',  // Supabase Border
           muted: '#A1A1AA',
         }
-      },
-      fontFamily: {
-        sans: ['Inter', 'Outfit', 'sans-serif'],
-        mono: ['DM Mono', 'monospace'],
       },
       animation: {
         'marquee': 'marquee 25s linear infinite',

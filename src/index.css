@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,14 +6,14 @@
 
 @layer base {
   html, body {
-    @apply bg-[#121212] text-slate-100 font-sans antialiased selection:bg-[#3ECF8E] selection:text-black;
+    @apply bg-[#121212] text-slate-100 antialiased selection:bg-[#3ECF8E] selection:text-black;
+    font-family: 'Inter', sans-serif !important;
     font-size: 14px !important;
-    min-font-size: 14px !important;
   }
 
-  /* Strict Minimum Font Size Rule Across Whole App */
+  /* Enforce Inter font family and strict typography limits across whole web app */
   *, ::before, ::after {
-    min-font-size: 14px !important;
+    font-family: 'Inter', sans-serif !important;
   }
 }
 
