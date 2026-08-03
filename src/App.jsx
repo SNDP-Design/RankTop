@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Navbar from './components/Navbar';
-import WebsiteInputScreen from './components/WebsiteInputScreen';
 
 // RankTop Web App Workspace Components
 import AppSidebar from './components/app/AppSidebar';
@@ -15,18 +14,9 @@ import CmsIntegrations from './components/app/CmsIntegrations';
 import FreeToolsApp from './components/app/FreeToolsApp';
 
 export default function App() {
-  const [activeWebsiteUrl, setActiveWebsiteUrl] = useState(''); // e.g. 'mywebsite.com'
+  const [activeWebsiteUrl, setActiveWebsiteUrl] = useState('mywebsite.com'); // Website URL managed directly in left sidebar input
   const [activeAppTab, setActiveAppTab] = useState('swarm'); // 'swarm' | 'dashboard' | 'strategy' | 'studio' | 'aeo' | 'geo' | 'competitors' | 'cms' | 'freetools'
   const [studioKeyword, setStudioKeyword] = useState('');
-
-  const handleStartSwarm = (url) => {
-    setActiveWebsiteUrl(url);
-    setActiveAppTab('swarm');
-  };
-
-  const handleResetWebsiteUrl = () => {
-    setActiveWebsiteUrl('');
-  };
 
   const openAppWithTab = (tab, keyword = '') => {
     if (keyword) {
@@ -36,12 +26,6 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // ENTRY STEP: If no website URL is provided yet, show WebsiteInputScreen
-  if (!activeWebsiteUrl) {
-    return <WebsiteInputScreen onStartSwarm={handleStartSwarm} />;
-  }
-
-  // WORKSPACE VIEW: Website URL provided -> Run Swarm Engine Workspace
   return (
     <div className="min-h-screen flex flex-col bg-[#121212] text-slate-100 font-sans selection:bg-[#3ECF8E] selection:text-black">
       
@@ -56,7 +40,6 @@ export default function App() {
       {/* Global Top Navbar */}
       <Navbar 
         activeWebsiteUrl={activeWebsiteUrl}
-        onResetWebsiteUrl={handleResetWebsiteUrl}
         activeAppTab={activeAppTab}
         setActiveAppTab={setActiveAppTab}
       />
@@ -65,7 +48,7 @@ export default function App() {
       <div className="flex-1 flex overflow-hidden">
         <AppSidebar 
           activeWebsiteUrl={activeWebsiteUrl}
-          onResetWebsiteUrl={handleResetWebsiteUrl}
+          setActiveWebsiteUrl={setActiveWebsiteUrl}
           activeTab={activeAppTab} 
           setActiveTab={setActiveAppTab} 
         />
