@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 
 // App Workspace Components
 import AppSidebar from './components/app/AppSidebar';
+import SwarmOrchestratorView from './components/app/SwarmOrchestratorView';
 import DashboardOverview from './components/app/DashboardOverview';
 import KeywordStrategy from './components/app/KeywordStrategy';
 import AiBlogStudio from './components/app/AiBlogStudio';
@@ -22,7 +23,7 @@ import FreeToolsApp from './components/app/FreeToolsApp';
 
 export default function App() {
   const [currentView, setCurrentView] = useState('landing'); // 'landing' | 'app'
-  const [activeAppTab, setActiveAppTab] = useState('dashboard'); // 'dashboard' | 'strategy' | 'studio' | 'aeo' | 'geo' | 'competitors' | 'cms' | 'freetools'
+  const [activeAppTab, setActiveAppTab] = useState('swarm'); // 'swarm' | 'dashboard' | 'strategy' | 'studio' | 'aeo' | 'geo' | 'competitors' | 'cms' | 'freetools'
   const [studioKeyword, setStudioKeyword] = useState('');
 
   const openAppWithTab = (tab, keyword = '') => {
@@ -68,6 +69,10 @@ export default function App() {
           />
 
           <main className="flex-1 overflow-y-auto bg-[#0D121D] min-h-[calc(100vh-80px)] pb-16">
+            {activeAppTab === 'swarm' && (
+              <SwarmOrchestratorView />
+            )}
+
             {activeAppTab === 'dashboard' && (
               <DashboardOverview setActiveTab={setActiveAppTab} />
             )}

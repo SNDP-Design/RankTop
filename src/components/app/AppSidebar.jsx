@@ -10,11 +10,13 @@ import {
   Globe, 
   Plus, 
   Sparkles,
-  ShieldCheck
+  ShieldCheck,
+  Bot
 } from 'lucide-react';
 
 export default function AppSidebar({ activeTab, setActiveTab }) {
   const menuItems = [
+    { id: 'swarm', label: 'AI Swarm Center', icon: Bot, badge: 'ADK Swarm' },
     { id: 'dashboard', label: 'Performance Analytics', icon: LayoutDashboard, badge: 'Live GSC' },
     { id: 'strategy', label: 'Keyword Strategy', icon: Target, badge: '12 New' },
     { id: 'studio', label: 'AI Blog Studio', icon: FileText, badge: 'Studio' },
@@ -51,7 +53,7 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
         {/* Navigation Menu */}
         <nav className="space-y-1">
           <span className="px-3 text-[10px] font-mono uppercase tracking-wider text-slate-500 font-bold block mb-2">
-            SEO & AI Engine Modules
+            Autonomous Swarm Engine
           </span>
 
           {menuItems.map((item) => {
@@ -92,12 +94,12 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
         <div className="p-3 bg-gradient-to-b from-brand-950/60 to-slate-950 rounded-xl border border-brand-500/20 text-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="font-bold text-white flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-brand-400" /> SEO Engine Active
+              <Sparkles className="w-3.5 h-3.5 text-brand-400" /> ADK Swarm Active
             </span>
-            <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">99.8% Score</span>
+            <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">6 Agents</span>
           </div>
           <p className="text-[11px] text-slate-300 leading-normal">
-            Next automated article generation scheduled for <strong className="text-white">Tomorrow, 09:00 AM</strong>.
+            Autonomous multi-agent pipeline monitoring Google AI Overviews.
           </p>
         </div>
       </div>
