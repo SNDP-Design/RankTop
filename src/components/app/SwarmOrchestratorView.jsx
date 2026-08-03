@@ -18,7 +18,7 @@ import {
 import { SwarmOrchestrator } from '../../agents/SwarmOrchestrator';
 import { geminiService } from '../../services/geminiService';
 
-export default function SwarmOrchestratorView() {
+export default function SwarmOrchestratorView({ activeWebsiteUrl = 'mywebsite.com' }) {
   const [swarmState, setSwarmState] = useState({
     status: 'IDLE',
     agents: {},
@@ -34,11 +34,16 @@ export default function SwarmOrchestratorView() {
       setSwarmState(updated);
     });
     orchestratorRef.current.notify();
-  }, []);
+
+    // Automatically launch autonomous swarm for the user's provided website URL
+    if (activeWebsiteUrl) {
+      orchestratorRef.current.runFullAutopilotSwarm(activeWebsiteUrl);
+    }
+  }, [activeWebsiteUrl]);
 
   const handleRunSwarm = () => {
     if (orchestratorRef.current) {
-      orchestratorRef.current.runFullAutopilotSwarm('mywebsite.com');
+      orchestratorRef.current.runFullAutopilotSwarm(activeWebsiteUrl);
     }
   };
 
@@ -64,10 +69,10 @@ export default function SwarmOrchestratorView() {
         <div>
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm font-semibold mb-2 border border-[#3ECF8E]/20">
             <Cpu className="w-4 h-4" />
-            <span>Google ADK & Vertex AI Architecture</span>
+            <span>Target Site: {activeWebsiteUrl}</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white font-outfit">Autonomous Multi-Agent AI Swarm Center</h1>
-          <p className="text-sm text-zinc-400 mt-1">Coordinated multi-agent DAG pipeline powered by Gemini 2.5 Pro & Gemini 2.5 Flash</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white font-outfit">Autonomous Multi-Agent Swarm Center</h1>
+          <p className="text-sm text-zinc-400 mt-1">Coordinated multi-agent DAG pipeline running for <strong className="text-white">{activeWebsiteUrl}</strong></p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -170,7 +175,7 @@ export default function SwarmOrchestratorView() {
         <div className="bg-[#121212] p-4 rounded-xl border border-[#262626] max-h-72 overflow-y-auto space-y-2.5 font-mono text-sm">
           {swarmState.logs.length === 0 ? (
             <div className="text-center py-8 text-zinc-500">
-              Swarm is standing by. Click "Run Autopilot Swarm" above to launch agent delegation.
+              Swarm is standing by for {activeWebsiteUrl}.
             </div>
           ) : (
             swarmState.logs.map((log) => (

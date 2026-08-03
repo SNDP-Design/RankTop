@@ -14,7 +14,7 @@ import {
   Bot
 } from 'lucide-react';
 
-export default function AppSidebar({ activeTab, setActiveTab }) {
+export default function AppSidebar({ activeWebsiteUrl, onResetWebsiteUrl, activeTab, setActiveTab }) {
   const menuItems = [
     { id: 'swarm', label: 'AI Swarm Center', icon: Bot, badge: 'ADK Swarm' },
     { id: 'dashboard', label: 'Performance Analytics', icon: LayoutDashboard, badge: 'Live GSC' },
@@ -34,28 +34,29 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
     >
       <div className="p-3 space-y-3 flex-1 flex flex-col overflow-hidden">
         
-        {/* Workspace Switcher */}
+        {/* Workspace Switcher displaying Active Website */}
         <div className="p-2.5 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between">
           <div className="flex items-center gap-2 overflow-hidden">
             <div className="w-7 h-7 rounded-lg bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 flex items-center justify-center text-[#3ECF8E] shrink-0">
               <Globe className="w-4 h-4" />
             </div>
             <div className="truncate">
-              <span className="text-sm font-bold text-white block truncate">mywebsite.com</span>
+              <span className="text-sm font-bold text-white block truncate">{activeWebsiteUrl || 'mywebsite.com'}</span>
               <span className="text-sm text-[#3ECF8E] flex items-center gap-1 font-medium">
-                <span className="w-2 h-2 rounded-full bg-[#3ECF8E] animate-pulse" aria-hidden="true" /> RankTop Active
+                <span className="w-2 h-2 rounded-full bg-[#3ECF8E] animate-pulse" aria-hidden="true" /> Swarm Active
               </span>
             </div>
           </div>
           <button 
-            aria-label="Add new workspace"
+            onClick={onResetWebsiteUrl}
+            aria-label="Change active website URL"
             className="text-zinc-400 hover:text-white p-1 rounded hover:bg-[#262626] focus-visible:ring-2 focus-visible:ring-[#3ECF8E] focus-visible:outline-none"
           >
             <Plus className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Navigation Menu - Fixed non-scrollable */}
+        {/* Navigation Menu */}
         <nav aria-label="Main Modules" className="space-y-1 flex-1 flex flex-col justify-around">
           <span className="px-3 text-sm uppercase tracking-wider text-zinc-500 font-bold block mb-1">
             RankTop Swarm Modules
@@ -95,7 +96,7 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
 
       </div>
 
-      {/* Autopilot Status Box - Compact */}
+      {/* Autopilot Status Box */}
       <div className="p-3 border-t border-[#262626]">
         <div className="p-3 bg-gradient-to-b from-[#1F1F1F] to-[#121212] rounded-xl border border-[#3ECF8E]/30 text-sm">
           <div className="flex items-center justify-between mb-1">
@@ -105,7 +106,7 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
             <span className="text-sm text-[#3ECF8E] bg-[#3ECF8E]/10 px-2 py-0.5 rounded border border-[#3ECF8E]/20 font-medium">6 Agents</span>
           </div>
           <p className="text-sm text-zinc-300 leading-normal">
-            Autonomous Multi-Agent AI Swarm monitoring search rankings.
+            Autonomous Swarm running for <strong className="text-white">{activeWebsiteUrl}</strong>.
           </p>
         </div>
       </div>
