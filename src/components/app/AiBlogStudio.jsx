@@ -17,9 +17,9 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
-export default function AiBlogStudio({ initialKeyword = '' }) {
+export default function AiBlogStudio({ activeWebsiteUrl = 'mywebsite.com', initialKeyword = '' }) {
   const [step, setStep] = useState(1);
-  const [targetKeyword, setTargetKeyword] = useState(initialKeyword || 'best ai overview simulator tool for seo');
+  const [targetKeyword, setTargetKeyword] = useState(initialKeyword || '');
   const [targetAudience, setTargetAudience] = useState('B2B Founders & Growth Marketers');
   const [articleTone, setArticleTone] = useState('Authoritative & Tactical');
   const [articleLength, setArticleLength] = useState('Comprehensive (2,200 words)');
@@ -48,7 +48,7 @@ export default function AiBlogStudio({ initialKeyword = '' }) {
     setTimeout(() => {
       setOutline({
         title: `The Ultimate Guide to ${targetKeyword.replace(/\b\w/g, c => c.toUpperCase())} in 2026`,
-        metaDescription: `Discover how to use ${targetKeyword} to boost organic traffic, capture Google AI Overviews, and outperform competitors automatically.`,
+        metaDescription: `Discover how to use ${targetKeyword} to boost organic traffic, capture Google AI Overviews, and outperform competitors on ${activeWebsiteUrl}.`,
         sections: [
           { heading: '1. Introduction: The Era of Answer Engine Optimization (AEO)', type: 'H2' },
           { heading: '1.1 Why Traditional Keyword Ranking Is No Longer Enough', type: 'H3' },
@@ -79,7 +79,7 @@ export default function AiBlogStudio({ initialKeyword = '' }) {
 
 Search engine optimization is undergoing its most profound shift in two decades. With the rapid expansion of **Google AI Overviews**, ChatGPT Search, and Perplexity AI, traditional keyword rank tracking is no longer the sole metric of organic success. 
 
-Modern brands must master **Answer Engine Optimization (AEO)**—the art of structuring content so that artificial intelligence models extract, cite, and credit your brand as the authoritative source.
+Modern brands using **${activeWebsiteUrl}** must master **Answer Engine Optimization (AEO)**—the art of structuring content so that artificial intelligence models extract, cite, and credit your brand as the authoritative source.
 
 ### 1.1 Why Traditional Keyword Ranking Is No Longer Enough
 
@@ -93,7 +93,7 @@ In legacy search, securing position #1 meant guaranteed click-throughs. Today, A
 
 ## 2. How ${targetKeyword} Works Under the Hood
 
-When using **${targetKeyword}**, artificial intelligence models evaluate your text based on clarity, semantic density, and structural cues. 
+When optimizing **${targetKeyword}**, artificial intelligence models evaluate your text based on clarity, semantic density, and structural cues. 
 
 \`\`\`json
 {
@@ -103,7 +103,7 @@ When using **${targetKeyword}**, artificial intelligence models evaluate your te
   "description": "${outline.metaDescription}",
   "author": {
     "@type": "Organization",
-    "name": "RankTop Engine"
+    "name": "${activeWebsiteUrl}"
   }
 }
 \`\`\`
@@ -124,7 +124,7 @@ By embedding clear bullet points and quantitative metrics, your content achieves
 
 ## 4. Conclusion & Action Checklist
 
-By deploying an autonomous AI SEO pipeline, your team eliminates manual keyword research while scaling publish-ready, schema-validated articles every single week.`;
+By deploying an autonomous AI SEO pipeline for **${activeWebsiteUrl}**, your team eliminates manual keyword research while scaling publish-ready, schema-validated articles every single week.`;
 
     let i = 0;
     setGeneratedArticle('');
@@ -161,23 +161,23 @@ By deploying an autonomous AI SEO pipeline, your team eliminates manual keyword 
             <Sparkles className="w-3.5 h-3.5" />
             <span>AI Blog Studio & Publisher</span>
           </div>
-          <h1 className="text-2xl font-bold text-white font-sans">Create SEO-Optimized AI Blog Post</h1>
+          <h1 className="text-2xl font-bold text-white font-sans">Create SEO Article for {activeWebsiteUrl}</h1>
         </div>
 
         {/* Step Progress Pills */}
         <div className="flex items-center gap-2 text-sm font-semibold">
-          <span className={`px-3 py-1.5 rounded-lg font-sans ${step === 1 ? 'bg-[#3ECF8E] text-black font-bold' : 'bg-[#262626] text-zinc-400'}`}>1. Strategy</span>
+          <span className={`px-3 py-1.5 rounded-lg font-sans ${step === 1 ? 'bg-[#3ECF8E] text-black font-bold' : 'bg-[#262626] text-zinc-400'}`}>1. Topic</span>
           <span className="text-zinc-600">→</span>
           <span className={`px-3 py-1.5 rounded-lg font-sans ${step === 2 ? 'bg-[#3ECF8E] text-black font-bold' : 'bg-[#262626] text-zinc-400'}`}>2. Outline</span>
           <span className="text-zinc-600">→</span>
-          <span className={`px-3 py-1.5 rounded-lg font-sans ${step === 3 ? 'bg-[#3ECF8E] text-black font-bold' : 'bg-[#262626] text-zinc-400'}`}>3. AI Draft & Publish</span>
+          <span className={`px-3 py-1.5 rounded-lg font-sans ${step === 3 ? 'bg-[#3ECF8E] text-black font-bold' : 'bg-[#262626] text-zinc-400'}`}>3. AI Draft</span>
         </div>
       </div>
 
       {/* STEP 1: Topic Input */}
       {step === 1 && (
         <div className="bg-[#171717] rounded-2xl border border-[#262626] p-6 sm:p-8 space-y-6 max-w-3xl mx-auto">
-          <h2 className="text-lg font-bold text-white font-sans">Configure Article Generation Parameters</h2>
+          <h2 className="text-lg font-bold text-white font-sans">Enter Topic or Target Keyword</h2>
 
           <form onSubmit={handleGenerateOutline} className="space-y-4">
             <div>
@@ -189,7 +189,7 @@ By deploying an autonomous AI SEO pipeline, your team eliminates manual keyword 
                 value={targetKeyword}
                 onChange={(e) => setTargetKeyword(e.target.value)}
                 className="w-full bg-[#121212] border border-[#262626] rounded-xl px-4 py-3 text-sm text-white font-sans focus:outline-none focus:border-[#3ECF8E]"
-                placeholder="e.g. best ai overview simulator tool"
+                placeholder="e.g. how to optimize website speed for SaaS"
                 required
               />
             </div>
@@ -288,7 +288,7 @@ By deploying an autonomous AI SEO pipeline, your team eliminates manual keyword 
             <div className="flex items-center justify-between border-b border-[#262626] pb-4">
               <div className="flex items-center gap-2">
                 <FileText className="w-5 h-5 text-[#3ECF8E]" />
-                <span className="text-sm font-bold text-white font-sans">WYSIWYG Article Studio</span>
+                <span className="text-sm font-bold text-white font-sans">Article Editor</span>
               </div>
               
               <div className="flex items-center gap-2">
@@ -312,7 +312,7 @@ By deploying an autonomous AI SEO pipeline, your team eliminates manual keyword 
             {cmsPublished && (
               <div className="p-3 bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 rounded-xl text-[#3ECF8E] text-sm flex items-center justify-between animate-in fade-in">
                 <span className="flex items-center gap-2 font-semibold">
-                  <CheckCircle2 className="w-4 h-4" /> Published successfully to WordPress (Draft Mode)!
+                  <CheckCircle2 className="w-4 h-4" /> Published successfully to {activeWebsiteUrl} CMS!
                 </span>
                 <span className="font-sans text-sm">ID: #POST-9402</span>
               </div>
