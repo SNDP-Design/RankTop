@@ -14,7 +14,7 @@ import CmsIntegrations from './components/app/CmsIntegrations';
 import FreeToolsApp from './components/app/FreeToolsApp';
 
 export default function App() {
-  const [activeWebsiteUrl, setActiveWebsiteUrl] = useState('mywebsite.com'); // Website URL managed directly in left sidebar input
+  const [activeWebsiteUrl, setActiveWebsiteUrl] = useState('mywebsite.com'); // Website URL managed in Top Navbar Input
   const [activeAppTab, setActiveAppTab] = useState('swarm'); // 'swarm' | 'dashboard' | 'strategy' | 'studio' | 'aeo' | 'geo' | 'competitors' | 'cms' | 'freetools'
   const [studioKeyword, setStudioKeyword] = useState('');
 
@@ -37,9 +37,10 @@ export default function App() {
         Skip to main content
       </a>
 
-      {/* Global Top Navbar */}
+      {/* Global Top Navbar with Target Website Input & Start AI Automation Button */}
       <Navbar 
         activeWebsiteUrl={activeWebsiteUrl}
+        setActiveWebsiteUrl={setActiveWebsiteUrl}
         activeAppTab={activeAppTab}
         setActiveAppTab={setActiveAppTab}
       />
@@ -48,7 +49,6 @@ export default function App() {
       <div className="flex-1 flex overflow-hidden">
         <AppSidebar 
           activeWebsiteUrl={activeWebsiteUrl}
-          setActiveWebsiteUrl={setActiveWebsiteUrl}
           activeTab={activeAppTab} 
           setActiveTab={setActiveAppTab} 
         />
