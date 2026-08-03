@@ -62,9 +62,9 @@ export default function SwarmOrchestratorView({ activeWebsiteUrl = 'mywebsite.co
   const agentsList = Object.values(swarmState.agents || {});
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto font-sans">
+    <div className="w-full space-y-6 font-sans">
       
-      {/* Super Simple Top Header */}
+      {/* Header */}
       <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm font-semibold mb-2 border border-[#3ECF8E]/20">
@@ -104,7 +104,7 @@ export default function SwarmOrchestratorView({ activeWebsiteUrl = 'mywebsite.co
         </div>
       </div>
 
-      {/* Simple 3-Step Explanation Card */}
+      {/* 3-Step Card */}
       <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-zinc-300">
         <div className="flex items-center gap-2 font-bold text-white">
           <HelpCircle className="w-5 h-5 text-[#3ECF8E] shrink-0" />
@@ -119,7 +119,7 @@ export default function SwarmOrchestratorView({ activeWebsiteUrl = 'mywebsite.co
         </div>
       </div>
 
-      {/* Agent DAG Network Visualizer */}
+      {/* Agent DAG Visualizer */}
       <div className="bg-[#171717] rounded-2xl border border-[#262626] p-6 space-y-6">
         <div className="flex items-center justify-between border-b border-[#262626] pb-4">
           <div className="flex items-center gap-2">
