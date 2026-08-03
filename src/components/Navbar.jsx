@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Globe, Bot, Play, Check } from 'lucide-react';
+import { Sparkles, Globe, Play, Check } from 'lucide-react';
 
 export default function Navbar({ activeWebsiteUrl, setActiveWebsiteUrl, activeAppTab, setActiveAppTab }) {
   const [inputUrl, setInputUrl] = useState(activeWebsiteUrl || 'mywebsite.com');
@@ -21,7 +21,7 @@ export default function Navbar({ activeWebsiteUrl, setActiveWebsiteUrl, activeAp
     <header role="banner" className="sticky top-0 z-50 bg-[#121212]/95 backdrop-blur-xl border-b border-[#262626] w-full">
       <div className="w-full px-6 flex items-center justify-between h-16 gap-6">
         
-        {/* Left: Brand Logo (Aligned cleanly on left) */}
+        {/* Left: Brand Logo */}
         <button
           onClick={() => setActiveAppTab('swarm')}
           aria-label="RankTop AI Home Workspace"
@@ -40,48 +40,38 @@ export default function Navbar({ activeWebsiteUrl, setActiveWebsiteUrl, activeAp
           </div>
         </button>
 
-        {/* Center: Target Website URL Input & Start AI Automation Button */}
-        <form onSubmit={handleUpdateWebsite} className="flex items-center gap-2 flex-1 max-w-2xl justify-center">
-          <div className="flex items-center gap-2.5 bg-[#171717] border border-[#262626] rounded-xl px-3.5 py-1.5 text-sm w-full max-w-md focus-within:border-[#3ECF8E] transition-all shadow-inner">
-            <Globe className="w-4 h-4 text-[#3ECF8E] shrink-0" aria-hidden="true" />
-            <span className="text-zinc-500 font-medium hidden md:inline">https://</span>
+        {/* Center/Right: Prominent Expanded Website Input Field + Small Compact Start AI Automation Button */}
+        <form onSubmit={handleUpdateWebsite} className="flex items-center gap-3 flex-1 max-w-3xl justify-end">
+          {/* Expanded Input Field */}
+          <div className="flex items-center gap-3 bg-[#171717] border border-[#262626] rounded-xl px-4 py-2 text-base w-full max-w-xl focus-within:border-[#3ECF8E] transition-all shadow-inner">
+            <Globe className="w-5 h-5 text-[#3ECF8E] shrink-0" aria-hidden="true" />
+            <span className="text-zinc-500 font-medium text-sm hidden md:inline">https://</span>
             <input
               type="text"
               value={inputUrl}
               onChange={(e) => setInputUrl(e.target.value)}
               placeholder="yourwebsite.com"
               aria-label="Target Website URL Input"
-              className="bg-transparent text-white placeholder-zinc-500 text-sm focus:outline-none w-full font-sans"
+              className="bg-transparent text-white placeholder-zinc-500 text-base focus:outline-none w-full font-sans"
             />
             {isSaved && (
               <span className="text-xs text-[#3ECF8E] flex items-center gap-0.5 font-bold shrink-0">
-                <Check className="w-3.5 h-3.5" />
+                <Check className="w-4 h-4" />
               </span>
             )}
           </div>
 
+          {/* Small Compact Button */}
           <button
             type="submit"
             aria-label="Start AI Automation"
-            className="px-4 py-2 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-xl shadow-md shadow-[#3ECF8E]/20 flex items-center gap-1.5 shrink-0 transition-all focus-visible:ring-2 focus-visible:ring-[#3ECF8E] focus-visible:outline-none"
+            className="px-3.5 py-2 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 shrink-0 transition-all focus-visible:ring-2 focus-visible:ring-[#3ECF8E] focus-visible:outline-none"
           >
-            <Play className="w-3.5 h-3.5 fill-black" aria-hidden="true" />
+            <Play className="w-3 h-3 fill-black" aria-hidden="true" />
             <span className="hidden sm:inline">Start AI Automation</span>
             <span className="sm:hidden">Start</span>
           </button>
         </form>
-
-        {/* Right: Quick Action Pill (Aligned cleanly on right) */}
-        <div className="flex items-center gap-2 shrink-0">
-          <button
-            onClick={() => setActiveAppTab('swarm')}
-            aria-label="Open AI Swarm Center"
-            className="px-3.5 py-1.5 bg-[#171717] hover:bg-[#262626] text-zinc-200 border border-[#262626] font-semibold text-sm rounded-xl flex items-center gap-2 transition-all focus-visible:ring-2 focus-visible:ring-[#3ECF8E] focus-visible:outline-none"
-          >
-            <Bot className="w-4 h-4 text-[#3ECF8E]" aria-hidden="true" />
-            <span className="hidden md:inline">AI Swarm Center</span>
-          </button>
-        </div>
 
       </div>
     </header>
