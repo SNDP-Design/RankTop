@@ -47,13 +47,11 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
   return (
     <aside 
       aria-label="Sidebar Navigation"
-      className="w-[296px] bg-[#171717] border-r border-[#262626] flex flex-col justify-between shrink-0 h-[calc(100vh-64px)] sticky top-16 overflow-hidden select-none"
+      className="w-[296px] bg-[#171717] border-r border-[#262626] flex flex-col justify-between shrink-0 h-[calc(100vh-64px)] overflow-y-auto select-none"
     >
-      {/* Top Section with Spacious Layout */}
-      <div className="p-5 space-y-6 flex-1 flex flex-col overflow-hidden">
-        
-        {/* Categorized Navigation Links with Bigger Clickable Targets & Brief Labels */}
-        <nav aria-label="SEO AEO GEO Modules" className="space-y-6 flex-1 overflow-y-auto pr-1">
+      {/* Top Section with Consistent Padding & Spacing */}
+      <div className="p-5 space-y-6 flex-1 flex flex-col">
+        <nav aria-label="SEO AEO GEO Modules" className="space-y-6 flex-1">
           {menuCategories.map((group, gIdx) => (
             <div key={gIdx} className="space-y-2">
               <span className="px-3 text-xs uppercase tracking-wider text-[#3ECF8E] font-bold block mb-2">
@@ -84,7 +82,6 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
             </div>
           ))}
         </nav>
-
       </div>
     </aside>
   );

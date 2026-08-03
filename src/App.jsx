@@ -15,7 +15,7 @@ import CmsIntegrations from './components/app/CmsIntegrations';
 import FreeToolsApp from './components/app/FreeToolsApp';
 
 export default function App() {
-  const [activeWebsiteUrl, setActiveWebsiteUrl] = useState('mywebsite.com'); // Website URL managed in Top Navbar Input
+  const [activeWebsiteUrl, setActiveWebsiteUrl] = useState('https://mywebsite.com'); // Website URL managed in Top Navbar Input
   const [activeAppTab, setActiveAppTab] = useState('dashboard'); // Default to Master Dashboard overview
   const [studioKeyword, setStudioKeyword] = useState('');
 
@@ -63,7 +63,7 @@ export default function App() {
           Skip to main content
         </a>
 
-        {/* Global Top Navbar with Target Website Input & Start AI Automation Button */}
+        {/* Global Top Navbar */}
         <Navbar 
           activeWebsiteUrl={activeWebsiteUrl}
           setActiveWebsiteUrl={setActiveWebsiteUrl}
@@ -72,7 +72,7 @@ export default function App() {
         />
 
         {/* RANKTOP WEB APP WORKSPACE */}
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex overflow-hidden h-[calc(100vh-64px)]">
           <AppSidebar 
             activeWebsiteUrl={activeWebsiteUrl}
             activeTab={activeAppTab} 
@@ -83,9 +83,11 @@ export default function App() {
             id="main-content"
             role="main"
             aria-label="Workspace Module View"
-            className="flex-1 overflow-y-auto bg-[#0F0F0F] min-h-[calc(100vh-64px)] pb-16 focus-visible:outline-none"
+            className="flex-1 overflow-y-auto bg-[#0F0F0F] h-full p-6 pb-20 focus-visible:outline-none"
           >
-            {renderActiveModule()}
+            <div className="max-w-7xl mx-auto space-y-6">
+              {renderActiveModule()}
+            </div>
           </main>
         </div>
 
