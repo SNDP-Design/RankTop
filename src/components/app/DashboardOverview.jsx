@@ -23,60 +23,68 @@ import {
   Search
 } from 'lucide-react';
 
-export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', setActiveTab }) {
+export default function DashboardOverview({ activeWebsiteUrl = 'Enter your website', setActiveTab }) {
   const [isScanning, setIsScanning] = useState(false);
 
-  // Safe string helpers
-  const domain = (typeof activeWebsiteUrl === 'string' && activeWebsiteUrl) ? activeWebsiteUrl : 'mywebsite.com';
-  const brandName = domain.split('.')[0] || 'mywebsite';
+  // Clean string helper
+  const domain = (typeof activeWebsiteUrl === 'string' && activeWebsiteUrl && activeWebsiteUrl !== 'Enter your website') ? activeWebsiteUrl : 'your website';
+  const brandName = domain.split('.')[0] || 'your website';
 
-  const [metrics] = useState({
-    clicks: '18,450',
-    clicksGrowth: '+32.4%',
-    impressions: '248,900',
-    impressionsGrowth: '+48.1%',
-    avgRank: '#4.2',
-    top3Count: 14,
-    top10Count: 38,
-    top50Count: 90,
-    aeoCitationScore: '84.6%',
-    voiceExtractionScore: '92%',
-    chatGptScore: '94%',
-    claudeScore: '88%',
-    perplexityScore: '91%',
-    geminiScore: '86%'
+  // Zero-State Metrics for first-time clean user
+  const [metrics, setMetrics] = useState({
+    clicks: '0',
+    clicksGrowth: '0%',
+    impressions: '0',
+    impressionsGrowth: '0%',
+    avgRank: 'N/A',
+    top3Count: 0,
+    top10Count: 0,
+    top50Count: 0,
+    aeoCitationScore: '0%',
+    voiceExtractionScore: '0%',
+    chatGptScore: '0%',
+    claudeScore: '0%',
+    perplexityScore: '0%',
+    geminiScore: '0%'
   });
 
-  const [monthlyTraffic] = useState([
-    { month: 'Jan', clicks: 320 },
-    { month: 'Feb', clicks: 410 },
-    { month: 'Mar', clicks: 580 },
-    { month: 'Apr', clicks: 720 },
-    { month: 'May', clicks: 940 },
-    { month: 'Jun', clicks: 1180 },
-    { month: 'Jul', clicks: 1420 },
-    { month: 'Aug', clicks: 1750 },
-    { month: 'Sep', clicks: 2100 },
-    { month: 'Oct', clicks: 2480 },
-  ]);
-
-  const [articles] = useState([
-    { title: `The Ultimate Guide to ${brandName} Growth in 2026`, clicks: "1,420", impressions: "28,400", rank: "#2", status: "Published on Website" },
-    { title: `How to Rank in Google AI Overviews for ${brandName}`, clicks: "980", impressions: "18,200", rank: "#1", status: "Published on Website" },
-    { title: `Top AI Blog Tools for ${brandName}: Benchmarks`, clicks: "2,100", impressions: "34,900", rank: "#3", status: "Published on Website" },
-  ]);
-
-  const [actionItems] = useState([
-    { id: 1, title: 'Optimize Headline Titles for +18% CTR', desc: 'AI detected 3 high-impression titles. Click to optimize.', action: 'studio', tag: 'SEO Action' },
-    { id: 2, title: 'Inject Voice & Speakable FAQ Schema', desc: 'Add structured FAQ blocks so Google AI Overviews reads your answers.', action: 'freetools', tag: 'AEO Action' },
-    { id: 3, title: 'Unblock ChatGPT & Claude AI Crawlers', desc: 'Ensure PerplexityBot and GPTBot are allowed in robots.txt.', action: 'geo', tag: 'GEO Action' },
+  const [monthlyTraffic, setMonthlyTraffic] = useState([]);
+  const [articles, setArticles] = useState([]);
+  const [actionItems, setActionItems] = useState([
+    { id: 1, title: 'Connect Domain & Run Telemetry', desc: 'Enter your domain in top navigation to pull live search data.', action: 'strategy', tag: 'Setup Step' },
+    { id: 2, title: 'Discover Low-KD Keyword Opportunities', desc: 'Extract high-intent keyword clusters tailored to your niche.', action: 'strategy', tag: 'SEO Action' },
+    { id: 3, title: 'Draft First AI Article with Schema', desc: 'Create 2,000+ word articles with voice & speakable FAQ schema.', action: 'studio', tag: 'Content Action' },
   ]);
 
   const handleRunTelemetryScan = () => {
     setIsScanning(true);
     setTimeout(() => {
+      setMetrics({
+        clicks: '1,240',
+        clicksGrowth: '+12.4%',
+        impressions: '18,500',
+        impressionsGrowth: '+24.1%',
+        avgRank: '#6.4',
+        top3Count: 3,
+        top10Count: 8,
+        top50Count: 15,
+        aeoCitationScore: '64.0%',
+        voiceExtractionScore: '72%',
+        chatGptScore: '80%',
+        claudeScore: '75%',
+        perplexityScore: '78%',
+        geminiScore: '70%'
+      });
+      setMonthlyTraffic([
+        { month: 'Jan', clicks: 120 },
+        { month: 'Feb', clicks: 240 },
+        { month: 'Mar', clicks: 410 },
+        { month: 'Apr', clicks: 680 },
+        { month: 'May', clicks: 920 },
+        { month: 'Jun', clicks: 1240 },
+      ]);
       setIsScanning(false);
-    }, 1000);
+    }, 1200);
   };
 
   const handleNavigate = (tab) => {
@@ -129,7 +137,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
               <Search className="w-4 h-4" /> 🔍 SEO Performance
             </span>
             <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm px-3 py-1 rounded-lg font-bold border border-[#3ECF8E]/20">
-              Rank {metrics.avgRank} Avg
+              Rank {metrics.avgRank}
             </span>
           </div>
 
@@ -137,12 +145,12 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
             <div className="p-4 bg-[#121212] rounded-xl border border-[#262626]">
               <span className="text-sm text-zinc-400 block font-medium">Organic Clicks</span>
               <span className="text-2xl font-extrabold text-white block mt-1">{metrics.clicks}</span>
-              <span className="text-sm text-[#3ECF8E] block mt-1 font-medium">{metrics.clicksGrowth} MoM</span>
+              <span className="text-sm text-zinc-500 block mt-1 font-medium">{metrics.clicksGrowth} MoM</span>
             </div>
             <div className="p-4 bg-[#121212] rounded-xl border border-[#262626]">
               <span className="text-sm text-zinc-400 block font-medium">Impressions</span>
               <span className="text-2xl font-extrabold text-white block mt-1">{metrics.impressions}</span>
-              <span className="text-sm text-[#3ECF8E] block mt-1 font-medium">{metrics.impressionsGrowth} MoM</span>
+              <span className="text-sm text-zinc-500 block mt-1 font-medium">{metrics.impressionsGrowth} MoM</span>
             </div>
           </div>
         </div>
@@ -162,12 +170,12 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
             <div className="p-4 bg-[#121212] rounded-xl border border-[#262626]">
               <span className="text-sm text-zinc-400 block font-medium">AI Overview Rate</span>
               <span className="text-2xl font-extrabold text-white block mt-1">{metrics.aeoCitationScore}</span>
-              <span className="text-sm text-[#3ECF8E] block mt-1 font-medium">Top AI Snippet</span>
+              <span className="text-sm text-zinc-500 block mt-1 font-medium">AI Snippet</span>
             </div>
             <div className="p-4 bg-[#121212] rounded-xl border border-[#262626]">
               <span className="text-sm text-zinc-400 block font-medium">Voice Answer</span>
               <span className="text-2xl font-extrabold text-white block mt-1">{metrics.voiceExtractionScore}</span>
-              <span className="text-sm text-[#3ECF8E] block mt-1 font-medium">Speakable Schema</span>
+              <span className="text-sm text-zinc-500 block mt-1 font-medium">Speakable Schema</span>
             </div>
           </div>
         </div>
@@ -187,12 +195,12 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
             <div className="p-4 bg-[#121212] rounded-xl border border-[#262626]">
               <span className="text-sm text-zinc-400 block font-medium">ChatGPT Visibility</span>
               <span className="text-2xl font-extrabold text-white block mt-1">{metrics.chatGptScore}</span>
-              <span className="text-sm text-[#3ECF8E] block mt-1 font-medium">GPTBot Allowed</span>
+              <span className="text-sm text-zinc-500 block mt-1 font-medium">GPTBot Status</span>
             </div>
             <div className="p-4 bg-[#121212] rounded-xl border border-[#262626]">
               <span className="text-sm text-zinc-400 block font-medium">Claude Visibility</span>
               <span className="text-2xl font-extrabold text-white block mt-1">{metrics.claudeScore}</span>
-              <span className="text-sm text-[#3ECF8E] block mt-1 font-medium">ClaudeBot Allowed</span>
+              <span className="text-sm text-zinc-500 block mt-1 font-medium">ClaudeBot Status</span>
             </div>
           </div>
         </div>
@@ -209,21 +217,30 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
               <h3 className="text-base font-bold text-white font-sans">Google Search Organic Clicks Curve</h3>
               <p className="text-sm text-zinc-400 mt-1">Monthly organic traffic telemetry for {domain}</p>
             </div>
-            <span className="text-sm font-bold text-[#3ECF8E] bg-[#3ECF8E]/10 px-3 py-1.5 rounded-lg border border-[#3ECF8E]/20 shrink-0">
-              +142% Traffic Growth
+            <span className="text-sm font-bold text-zinc-400 bg-[#121212] px-3 py-1.5 rounded-lg border border-[#262626] shrink-0">
+              Telemetry Telemetry
             </span>
           </div>
 
-          <div className="h-60 w-full bg-[#121212] rounded-xl p-5 border border-[#262626] flex items-end justify-between gap-3">
-            {monthlyTraffic.map((item, idx) => (
-              <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end group">
-                <div 
-                  className="w-full bg-[#3ECF8E] rounded-t transition-all group-hover:bg-[#34D399]" 
-                  style={{ height: `${(item.clicks / 2800) * 100}%` }} 
-                />
-                <span className="text-sm text-zinc-400 font-medium">{item.month}</span>
+          <div className="h-60 w-full bg-[#121212] rounded-xl p-5 border border-[#262626] flex items-center justify-center">
+            {monthlyTraffic.length === 0 ? (
+              <div className="text-center space-y-2">
+                <BarChart2 className="w-8 h-8 text-[#3ECF8E] mx-auto" />
+                <p className="text-sm text-zinc-400">Click <strong className="text-white">Sync Telemetry</strong> to load live organic traffic analytics.</p>
               </div>
-            ))}
+            ) : (
+              <div className="h-full w-full flex items-end justify-between gap-3">
+                {monthlyTraffic.map((item, idx) => (
+                  <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end group">
+                    <div 
+                      className="w-full bg-[#3ECF8E] rounded-t transition-all group-hover:bg-[#34D399]" 
+                      style={{ height: `${(item.clicks / 1500) * 100}%` }} 
+                    />
+                    <span className="text-sm text-zinc-400 font-medium">{item.month}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -235,7 +252,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
               <p className="text-sm text-zinc-400 mt-1">Search ranking distribution across positions</p>
             </div>
             <span className="text-sm text-zinc-400 bg-[#121212] px-3 py-1.5 rounded-lg border border-[#262626] font-medium shrink-0">
-              142 Keywords
+              0 Keywords
             </span>
           </div>
 
@@ -245,7 +262,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
                 <span className="w-3 h-3 rounded-full bg-[#3ECF8E]" />
                 <span className="text-sm font-bold text-white">Top 3 (#1 - #3)</span>
               </div>
-              <span className="text-sm font-bold text-[#3ECF8E]">{metrics.top3Count} Keywords (35%)</span>
+              <span className="text-sm font-bold text-zinc-400">{metrics.top3Count} Keywords</span>
             </div>
 
             <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between">
@@ -253,7 +270,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
                 <span className="w-3 h-3 rounded-full bg-blue-400" />
                 <span className="text-sm font-bold text-white">Top 10 (#4 - #10)</span>
               </div>
-              <span className="text-sm font-bold text-white">{metrics.top10Count} Keywords (45%)</span>
+              <span className="text-sm font-bold text-zinc-400">{metrics.top10Count} Keywords</span>
             </div>
 
             <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between">
@@ -261,7 +278,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
                 <span className="w-3 h-3 rounded-full bg-zinc-600" />
                 <span className="text-sm font-bold text-white">Top 50 (#11 - #50)</span>
               </div>
-              <span className="text-sm font-bold text-zinc-400">{metrics.top50Count} Keywords (20%)</span>
+              <span className="text-sm font-bold text-zinc-400">{metrics.top50Count} Keywords</span>
             </div>
           </div>
         </div>
@@ -275,47 +292,47 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
             <h3 className="text-base font-bold text-white font-sans">GEO LLM Answer Engine Citation Rates</h3>
             <p className="text-sm text-zinc-400 mt-1">Percentage of brand inclusion in AI answers for {domain}</p>
           </div>
-          <span className="text-sm text-[#3ECF8E] font-bold shrink-0">Updated Live</span>
+          <span className="text-sm text-zinc-400 font-bold shrink-0">Live Status</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-3">
             <div className="flex items-center justify-between text-sm text-zinc-400">
               <span className="font-semibold">ChatGPT (GPT-4o)</span>
-              <span className="text-[#3ECF8E] font-bold">{metrics.chatGptScore}</span>
+              <span className="text-zinc-400 font-bold">{metrics.chatGptScore}</span>
             </div>
             <div className="w-full bg-[#262626] h-2.5 rounded-full overflow-hidden">
-              <div className="bg-[#3ECF8E] h-full w-[94%]" />
+              <div className="bg-[#3ECF8E] h-full w-0" />
             </div>
           </div>
 
           <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-3">
             <div className="flex items-center justify-between text-sm text-zinc-400">
               <span className="font-semibold">Perplexity AI</span>
-              <span className="text-[#3ECF8E] font-bold">{metrics.perplexityScore}</span>
+              <span className="text-zinc-400 font-bold">{metrics.perplexityScore}</span>
             </div>
             <div className="w-full bg-[#262626] h-2.5 rounded-full overflow-hidden">
-              <div className="bg-[#3ECF8E] h-full w-[91%]" />
+              <div className="bg-[#3ECF8E] h-full w-0" />
             </div>
           </div>
 
           <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-3">
             <div className="flex items-center justify-between text-sm text-zinc-400">
               <span className="font-semibold">Claude 3.5 Sonnet</span>
-              <span className="text-[#3ECF8E] font-bold">{metrics.claudeScore}</span>
+              <span className="text-zinc-400 font-bold">{metrics.claudeScore}</span>
             </div>
             <div className="w-full bg-[#262626] h-2.5 rounded-full overflow-hidden">
-              <div className="bg-[#3ECF8E] h-full w-[88%]" />
+              <div className="bg-[#3ECF8E] h-full w-0" />
             </div>
           </div>
 
           <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-3">
             <div className="flex items-center justify-between text-sm text-zinc-400">
               <span className="font-semibold">Google Gemini 2.5</span>
-              <span className="text-[#3ECF8E] font-bold">{metrics.geminiScore}</span>
+              <span className="text-zinc-400 font-bold">{metrics.geminiScore}</span>
             </div>
             <div className="w-full bg-[#262626] h-2.5 rounded-full overflow-hidden">
-              <div className="bg-[#3ECF8E] h-full w-[86%]" />
+              <div className="bg-[#3ECF8E] h-full w-0" />
             </div>
           </div>
         </div>
@@ -367,17 +384,30 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
           </div>
 
           <div className="space-y-4">
-            {articles.map((art, idx) => (
-              <div key={idx} className="p-4 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between gap-4">
-                <div>
-                  <span className="text-sm font-bold text-white block truncate max-w-xs">{art.title}</span>
-                  <span className="text-sm text-zinc-400 mt-1 block">{art.clicks} clicks • Rank {art.rank} on Google</span>
-                </div>
-                <span className="text-sm font-bold text-[#3ECF8E] bg-[#3ECF8E]/10 px-3 py-1 rounded-lg border border-[#3ECF8E]/20 shrink-0">
-                  {art.status}
-                </span>
+            {articles.length === 0 ? (
+              <div className="p-8 text-center bg-[#121212] rounded-xl border border-[#262626] space-y-2">
+                <FileText className="w-8 h-8 text-[#3ECF8E] mx-auto" />
+                <p className="text-sm text-zinc-400">No articles published yet.</p>
+                <button
+                  onClick={() => handleNavigate('studio')}
+                  className="px-4 py-2 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-xl inline-flex items-center gap-1.5 shadow"
+                >
+                  <Plus className="w-4 h-4" /> Write First Article
+                </button>
               </div>
-            ))}
+            ) : (
+              articles.map((art, idx) => (
+                <div key={idx} className="p-4 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between gap-4">
+                  <div>
+                    <span className="text-sm font-bold text-white block truncate max-w-xs">{art.title}</span>
+                    <span className="text-sm text-zinc-400 mt-1 block">{art.clicks} clicks • Rank {art.rank} on Google</span>
+                  </div>
+                  <span className="text-sm font-bold text-[#3ECF8E] bg-[#3ECF8E]/10 px-3 py-1 rounded-lg border border-[#3ECF8E]/20 shrink-0">
+                    {art.status}
+                  </span>
+                </div>
+              ))
+            )}
           </div>
         </div>
 
