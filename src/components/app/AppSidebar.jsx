@@ -51,7 +51,7 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
       style={{ overflow: 'hidden', touchAction: 'none', userSelect: 'none' }}
       className="w-[296px] bg-[#171717] border-r border-[#262626] flex flex-col justify-between shrink-0 h-[calc(100vh-64px)] select-none overflow-hidden"
     >
-      {/* Spacious Breathable Sidebar Navigation */}
+      {/* Spacious Breathable Sidebar Navigation with Sleek Smaller Icons */}
       <div className="p-6 space-y-6 flex-1 flex flex-col overflow-hidden">
         <nav aria-label="SEO AEO GEO Modules" className="space-y-6 flex-1 overflow-hidden">
           {menuCategories.map((group, gIdx) => (
@@ -76,8 +76,8 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
                         : 'text-zinc-300 hover:text-white hover:bg-[#262626]'
                     }`}
                   >
-                    <div className="flex items-center gap-3.5 truncate">
-                      <Icon className={`w-4.5 h-4.5 shrink-0 ${isActive ? 'text-black' : 'text-zinc-400'}`} aria-hidden="true" />
+                    <div className="flex items-center gap-3 truncate">
+                      <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-black' : 'text-zinc-400'}`} aria-hidden="true" />
                       <span className="truncate">{item.label}</span>
                     </div>
                   </button>
