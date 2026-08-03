@@ -24,7 +24,12 @@ export default function App() {
       setStudioKeyword(keyword);
     }
     setActiveAppTab(tab || 'dashboard');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Smooth reset scroll position inside main content container
+    const mainEl = document.getElementById('main-content');
+    if (mainEl) {
+      mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const renderActiveModule = () => {
@@ -71,7 +76,7 @@ export default function App() {
           setActiveAppTab={openAppWithTab}
         />
 
-        {/* RANKTOP WEB APP WORKSPACE (Unified Consistent Spacing System with p-6 and space-y-6) */}
+        {/* RANKTOP WEB APP WORKSPACE (Zero Layout Shift Architecture across all modules) */}
         <div className="flex-1 flex overflow-hidden h-[calc(100vh-64px)]">
           <AppSidebar 
             activeWebsiteUrl={activeWebsiteUrl}
