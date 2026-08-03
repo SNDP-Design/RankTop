@@ -11,122 +11,219 @@ import {
   Bot
 } from 'lucide-react';
 
+// ─── Universal Sidebar Navigation ────────────────────────────────────────────
+// Mounted ONCE in App.jsx and shared across ALL 9 workspace modules.
+// CSS Strategy:
+//   - position: fixed → sidebar is fully detached from document flow.
+//     Scrolling the right content pane CANNOT drag the sidebar.
+//   - overflow: hidden → zero internal scroll bars, ever.
+//   - DOM-level wheel + touchmove preventDefault → belt & braces.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const NAV_GROUPS = [
+  {
+    label: 'WORKSPACE',
+    items: [
+      { id: 'dashboard', text: 'Master Dashboard', Icon: LayoutDashboard },
+    ],
+  },
+  {
+    label: 'SEO ENGINE',
+    items: [
+      { id: 'strategy',    text: 'Keywords',    Icon: Target   },
+      { id: 'studio',      text: 'AI Writer',   Icon: FileText  },
+      { id: 'competitors', text: 'Competitors', Icon: Search    },
+      { id: 'cms',         text: 'CMS Publish', Icon: Share2    },
+    ],
+  },
+  {
+    label: 'AEO ENGINE',
+    items: [
+      { id: 'aeo',       text: 'AI Overviews', Icon: Cpu    },
+      { id: 'freetools', text: 'Voice & FAQ',  Icon: Wrench },
+    ],
+  },
+  {
+    label: 'GEO ENGINE',
+    items: [
+      { id: 'geo',   text: 'LLM Visibility', Icon: ShieldCheck },
+      { id: 'swarm', text: 'AI Swarm',        Icon: Bot         },
+    ],
+  },
+];
+
 export default function AppSidebar({ activeTab, setActiveTab }) {
-  const sidebarRef = useRef(null);
+  const ref = useRef(null);
 
-  const menuCategories = [
-    {
-      category: 'MAIN WORKSPACE',
-      items: [
-        { id: 'dashboard', label: 'Master Dashboard', icon: LayoutDashboard },
-      ]
-    },
-    {
-      category: 'SEO ENGINE',
-      items: [
-        { id: 'strategy', label: 'Keywords', icon: Target },
-        { id: 'studio', label: 'AI Writer', icon: FileText },
-        { id: 'competitors', label: 'Competitors', icon: Search },
-        { id: 'cms', label: 'CMS Publish', icon: Share2 },
-      ]
-    },
-    {
-      category: 'AEO ENGINE',
-      items: [
-        { id: 'aeo', label: 'AI Overviews', icon: Cpu },
-        { id: 'freetools', label: 'Voice & FAQ', icon: Wrench },
-      ]
-    },
-    {
-      category: 'GEO ENGINE',
-      items: [
-        { id: 'geo', label: 'LLM Visibility', icon: ShieldCheck },
-        { id: 'swarm', label: 'AI Swarm', icon: Bot },
-      ]
-    }
-  ];
-
-  // DOM level scroll traps to guarantee zero sidebar scrolling
+  /* ── Wheel / touch scroll hard-prevention at DOM level ── */
   useEffect(() => {
-    const sidebar = sidebarRef.current;
-    if (!sidebar) return;
-
-    const preventScroll = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    };
-
-    sidebar.addEventListener('wheel', preventScroll, { passive: false });
-    sidebar.addEventListener('touchmove', preventScroll, { passive: false });
-
+    const el = ref.current;
+    if (!el) return;
+    const block = (e) => { e.preventDefault(); e.stopPropagation(); };
+    el.addEventListener('wheel',     block, { passive: false });
+    el.addEventListener('touchmove', block, { passive: false });
     return () => {
-      sidebar.removeEventListener('wheel', preventScroll);
-      sidebar.removeEventListener('touchmove', preventScroll);
+      el.removeEventListener('wheel',     block);
+      el.removeEventListener('touchmove', block);
     };
   }, []);
 
   return (
-    <aside 
-      ref={sidebarRef}
-      aria-label="Universal Sidebar Navigation"
-      style={{ overflow: 'hidden', touchAction: 'none', userSelect: 'none' }}
-      className="w-[260px] bg-[#141414] border-r border-[#262626] flex flex-col justify-between shrink-0 h-[calc(100vh-64px)] sticky top-16 left-0 select-none overflow-hidden"
-    >
-      {/* Universal Single Side Panel Design */}
-      <div className="p-4 space-y-4 flex-1 flex flex-col justify-between overflow-hidden">
-        
-        <nav aria-label="SEO AEO GEO Modules" className="space-y-4 flex-1 overflow-hidden">
-          {menuCategories.map((group, gIdx) => (
-            <div key={gIdx} className="space-y-1">
-              {group.category && (
-                <div className="px-3 pt-1 pb-1 text-[11px] font-bold text-zinc-500 uppercase tracking-wider font-sans">
-                  {group.category}
-                </div>
-              )}
+    <>
+      {/* ── Sidebar: fixed position, detached from document scroll ── */}
+      <aside
+        ref={ref}
+        aria-label="Sidebar Navigation"
+        style={{
+          position:     'fixed',
+          top:          '64px',           /* height of Navbar */
+          left:         0,
+          width:        '256px',
+          height:       'calc(100vh - 64px)',
+          overflow:     'hidden',
+          overflowY:    'hidden',
+          touchAction:  'none',
+          userSelect:   'none',
+          zIndex:       40,
+          display:      'flex',
+          flexDirection:'column',
+          background:   '#141414',
+          borderRight:  '1px solid #262626',
+        }}
+      >
+        {/* ── Inner scroll guard ── */}
+        <div
+          style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+          className="py-4 px-3"
+        >
+          <nav style={{ flex: 1, overflow: 'hidden' }}>
+            {NAV_GROUPS.map((group) => (
+              <div key={group.label} className="mb-3">
+                {/* Category label */}
+                <p
+                  style={{
+                    fontSize:      '10px',
+                    fontWeight:    700,
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase',
+                    color:         '#52525b',
+                    padding:       '4px 12px 6px',
+                  }}
+                >
+                  {group.label}
+                </p>
 
-              {group.items.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeTab === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveTab(item.id)}
-                    aria-current={isActive ? 'page' : undefined}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-150 focus-visible:ring-2 focus-visible:ring-[#3ECF8E] focus-visible:outline-none ${
-                      isActive
-                        ? 'bg-[#222222] text-[#3ECF8E] font-bold border border-[#333333] shadow'
-                        : 'text-zinc-400 hover:text-white hover:bg-[#1A1A1A]'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5 truncate">
-                      {/* Active Left Indicator Bar */}
-                      <span className={`w-1 h-3.5 rounded-full transition-all ${
-                        isActive ? 'bg-[#3ECF8E]' : 'bg-transparent'
-                      }`} />
-
-                      <Icon className={`w-4 h-4 shrink-0 transition-colors ${
-                        isActive ? 'text-[#3ECF8E]' : 'text-zinc-500'
-                      }`} aria-hidden="true" />
-                      
-                      <span className="truncate">{item.label}</span>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          ))}
-        </nav>
-
-        {/* Universal Footer Badge */}
-        <div className="pt-3 border-t border-[#222222] px-3 flex items-center justify-between text-xs text-zinc-500">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#3ECF8E] animate-pulse" />
-            <span className="font-semibold text-zinc-300">RankTop Engine</span>
-          </div>
-          <span className="text-[#3ECF8E] font-bold text-[11px] bg-[#3ECF8E]/10 px-2 py-0.5 rounded border border-[#3ECF8E]/20">v2.5</span>
+                {/* Nav buttons */}
+                {group.items.map(({ id, text, Icon }) => {
+                  const active = activeTab === id;
+                  return (
+                    <button
+                      key={id}
+                      onClick={() => setActiveTab(id)}
+                      aria-current={active ? 'page' : undefined}
+                      style={{
+                        display:        'flex',
+                        alignItems:     'center',
+                        gap:            '10px',
+                        width:          '100%',
+                        padding:        '8px 12px',
+                        borderRadius:   '10px',
+                        marginBottom:   '2px',
+                        fontSize:       '14px',
+                        fontWeight:     active ? 600 : 500,
+                        color:          active ? '#3ECF8E' : '#a1a1aa',
+                        background:     active ? '#1f1f1f' : 'transparent',
+                        border:         active ? '1px solid #2d2d2d' : '1px solid transparent',
+                        cursor:         'pointer',
+                        transition:     'all 0.15s ease',
+                        textAlign:      'left',
+                        outline:        'none',
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!active) {
+                          e.currentTarget.style.background = '#1a1a1a';
+                          e.currentTarget.style.color      = '#e4e4e7';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!active) {
+                          e.currentTarget.style.background = 'transparent';
+                          e.currentTarget.style.color      = '#a1a1aa';
+                        }
+                      }}
+                    >
+                      {/* Active pill */}
+                      <span
+                        style={{
+                          width:        '3px',
+                          height:       '14px',
+                          borderRadius: '99px',
+                          background:   active ? '#3ECF8E' : 'transparent',
+                          flexShrink:   0,
+                          transition:   'background 0.15s',
+                        }}
+                      />
+                      <Icon
+                        size={15}
+                        style={{
+                          flexShrink: 0,
+                          color:      active ? '#3ECF8E' : '#71717a',
+                        }}
+                      />
+                      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {text}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
+          </nav>
         </div>
 
-      </div>
-    </aside>
+        {/* ── Footer ── */}
+        <div
+          style={{
+            padding:    '12px 16px',
+            borderTop:  '1px solid #222',
+            display:    'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span
+              style={{
+                width:        '8px',
+                height:       '8px',
+                borderRadius: '50%',
+                background:   '#3ECF8E',
+                animation:    'pulse 2s infinite',
+                flexShrink:   0,
+              }}
+            />
+            <span style={{ fontSize: '13px', fontWeight: 600, color: '#d4d4d8' }}>
+              RankTop Engine
+            </span>
+          </div>
+          <span
+            style={{
+              fontSize:     '11px',
+              fontWeight:   700,
+              color:        '#3ECF8E',
+              background:   'rgba(62,207,142,0.08)',
+              padding:      '2px 8px',
+              borderRadius: '6px',
+              border:       '1px solid rgba(62,207,142,0.2)',
+            }}
+          >
+            v2.5
+          </span>
+        </div>
+      </aside>
+
+      {/* ── Spacer: pushes <main> content to the right of the fixed sidebar ── */}
+      <div style={{ width: '256px', flexShrink: 0 }} aria-hidden="true" />
+    </>
   );
 }
