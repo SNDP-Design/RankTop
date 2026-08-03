@@ -7,12 +7,11 @@ import {
   Search, 
   Share2, 
   Wrench, 
-  Globe, 
   ShieldCheck,
   Bot
 } from 'lucide-react';
 
-export default function AppSidebar({ activeWebsiteUrl, activeTab, setActiveTab }) {
+export default function AppSidebar({ activeTab, setActiveTab }) {
   const menuCategories = [
     {
       category: '🔍 SEO ENGINE',
@@ -47,18 +46,6 @@ export default function AppSidebar({ activeWebsiteUrl, activeTab, setActiveTab }
     >
       {/* Top Section with Categories */}
       <div className="p-3.5 space-y-4 flex-1 flex flex-col overflow-hidden">
-        
-        {/* Active Domain Info Pill */}
-        <div className="p-3 bg-[#121212] rounded-xl border border-[#262626] flex items-center gap-2.5 overflow-hidden shrink-0">
-          <div className="w-7 h-7 rounded-lg bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 flex items-center justify-center text-[#3ECF8E] shrink-0">
-            <Globe className="w-4 h-4" />
-          </div>
-          <div className="truncate">
-            <span className="text-xs uppercase tracking-wider text-zinc-500 font-bold block">Target Website</span>
-            <span className="text-sm font-bold text-white truncate block">{activeWebsiteUrl || 'mywebsite.com'}</span>
-          </div>
-        </div>
-
         {/* Categorized Navigation Links divided into SEO, AEO, and GEO */}
         <nav aria-label="SEO AEO GEO Modules" className="space-y-4 flex-1 overflow-y-auto pr-1">
           {menuCategories.map((group, gIdx) => (

@@ -22,7 +22,7 @@ export default function Navbar({ activeWebsiteUrl, setActiveWebsiteUrl, activeAp
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-4">
           
-          {/* Left: Brand Logo */}
+          {/* Left: RankTop Logo */}
           <button
             onClick={() => setActiveAppTab('swarm')}
             aria-label="RankTop AI Home Workspace"
@@ -31,16 +31,19 @@ export default function Navbar({ activeWebsiteUrl, setActiveWebsiteUrl, activeAp
             <div className="w-9 h-9 rounded-xl bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 flex items-center justify-center shadow-lg shadow-[#3ECF8E]/20">
               <Sparkles className="w-5 h-5 text-[#3ECF8E]" aria-hidden="true" />
             </div>
-            <div>
-              <span className="font-extrabold text-xl tracking-tight text-white flex items-center gap-1 font-sans">
-                RankTop<span className="text-[#3ECF8E] text-sm font-semibold bg-[#3ECF8E]/10 px-2 py-0.5 rounded border border-[#3ECF8E]/20">.ai</span>
+            <div className="flex items-center gap-1">
+              <span className="font-extrabold text-xl tracking-tight text-white font-sans">
+                RankTop
+              </span>
+              <span className="text-[#3ECF8E] text-xs font-bold bg-[#3ECF8E]/10 px-2 py-0.5 rounded border border-[#3ECF8E]/20">
+                .ai
               </span>
             </div>
           </button>
 
           {/* Center: Target Website URL Input & Start AI Automation Button */}
           <form onSubmit={handleUpdateWebsite} className="flex items-center gap-2 flex-1 max-w-xl justify-center">
-            <div className="flex items-center gap-2.5 bg-[#171717] border border-[#262626] rounded-xl px-3.5 py-1.5 text-sm w-full max-w-md focus-within:border-[#3ECF8E] transition-all">
+            <div className="flex items-center gap-2 bg-[#171717] border border-[#262626] rounded-xl px-3.5 py-1.5 text-sm w-full max-w-md focus-within:border-[#3ECF8E] transition-all">
               <Globe className="w-4 h-4 text-[#3ECF8E] shrink-0" aria-hidden="true" />
               <span className="text-zinc-500 font-medium hidden md:inline">https://</span>
               <input
