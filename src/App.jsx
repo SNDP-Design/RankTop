@@ -26,22 +26,35 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0B0F17] text-slate-100 font-sans selection:bg-brand-500 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-[#121212] text-slate-100 font-sans selection:bg-[#3ECF8E] selection:text-black">
       
+      {/* Global Accessibility Skip Link */}
+      <a 
+        href="#main-content" 
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-[#3ECF8E] focus:text-black focus:font-bold focus:rounded-lg"
+      >
+        Skip to main content
+      </a>
+
       {/* Global Top Navbar */}
       <Navbar 
         activeAppTab={activeAppTab}
         setActiveAppTab={setActiveAppTab}
       />
 
-      {/* RANKTOP WEB APP WORKSPACE DIRECT ACCESS */}
+      {/* RANKTOP WEB APP WORKSPACE (Non-scrollable sidebar layout) */}
       <div className="flex-1 flex overflow-hidden">
         <AppSidebar 
           activeTab={activeAppTab} 
           setActiveTab={setActiveAppTab} 
         />
 
-        <main className="flex-1 overflow-y-auto bg-[#0D121D] min-h-[calc(100vh-64px)] pb-16">
+        <main 
+          id="main-content"
+          role="main"
+          aria-label="Workspace Module View"
+          className="flex-1 overflow-y-auto bg-[#0F0F0F] h-[calc(100vh-64px)] pb-16 focus-visible:outline-none"
+        >
           {activeAppTab === 'swarm' && (
             <SwarmOrchestratorView />
           )}
