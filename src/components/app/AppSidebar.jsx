@@ -14,32 +14,32 @@ import {
 export default function AppSidebar({ activeTab, setActiveTab }) {
   const menuCategories = [
     {
-      category: '📊 OVERVIEW DASHBOARD',
+      category: '📊 OVERVIEW',
       items: [
-        { id: 'dashboard', label: 'Master SEO, AEO & GEO Dashboard', icon: LayoutDashboard },
+        { id: 'dashboard', label: 'Master Dashboard', icon: LayoutDashboard },
       ]
     },
     {
       category: '🔍 SEO ENGINE',
       items: [
-        { id: 'strategy', label: 'Keywords & Topics', icon: Target },
-        { id: 'studio', label: 'AI Article Generator', icon: FileText },
-        { id: 'competitors', label: 'Competitor Ranking Gaps', icon: Search },
-        { id: 'cms', label: 'Auto-Publish to Website', icon: Share2 },
+        { id: 'strategy', label: 'Keywords', icon: Target },
+        { id: 'studio', label: 'AI Writer', icon: FileText },
+        { id: 'competitors', label: 'Competitors', icon: Search },
+        { id: 'cms', label: 'CMS Publish', icon: Share2 },
       ]
     },
     {
       category: '🤖 AEO ENGINE',
       items: [
-        { id: 'aeo', label: 'Google AI Overview Inspector', icon: Cpu },
-        { id: 'freetools', label: 'Voice & Speakable Schema', icon: Wrench },
+        { id: 'aeo', label: 'AI Overviews', icon: Cpu },
+        { id: 'freetools', label: 'Voice & FAQ', icon: Wrench },
       ]
     },
     {
       category: '🛡️ GEO ENGINE',
       items: [
-        { id: 'geo', label: 'ChatGPT & Claude Visibility', icon: ShieldCheck },
-        { id: 'swarm', label: 'Autonomous AI Swarm', icon: Bot },
+        { id: 'geo', label: 'LLM Visibility', icon: ShieldCheck },
+        { id: 'swarm', label: 'AI Swarm', icon: Bot },
       ]
     }
   ];
@@ -49,13 +49,14 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
       aria-label="Sidebar Navigation"
       className="w-[296px] bg-[#171717] border-r border-[#262626] flex flex-col justify-between shrink-0 h-[calc(100vh-64px)] sticky top-16 overflow-hidden select-none"
     >
-      {/* Top Section with Categories */}
-      <div className="p-3.5 space-y-4 flex-1 flex flex-col overflow-hidden">
-        {/* Categorized Navigation Links divided into OVERVIEW, SEO, AEO, and GEO */}
-        <nav aria-label="SEO AEO GEO Modules" className="space-y-4 flex-1 overflow-y-auto pr-1">
+      {/* Top Section with Spacious Layout */}
+      <div className="p-5 space-y-6 flex-1 flex flex-col overflow-hidden">
+        
+        {/* Categorized Navigation Links with Bigger Clickable Targets & Brief Labels */}
+        <nav aria-label="SEO AEO GEO Modules" className="space-y-6 flex-1 overflow-y-auto pr-1">
           {menuCategories.map((group, gIdx) => (
-            <div key={gIdx} className="space-y-1">
-              <span className="px-3 text-xs uppercase tracking-wider text-[#3ECF8E] font-bold block mb-1">
+            <div key={gIdx} className="space-y-2">
+              <span className="px-3 text-xs uppercase tracking-wider text-[#3ECF8E] font-bold block mb-2">
                 {group.category}
               </span>
 
@@ -67,14 +68,14 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
                     key={item.id}
                     onClick={() => setActiveTab(item.id)}
                     aria-current={isActive ? 'page' : undefined}
-                    className={`w-full flex items-center justify-start px-3 py-2 rounded-xl text-sm font-semibold transition-all focus-visible:ring-2 focus-visible:ring-[#3ECF8E] focus-visible:outline-none ${
+                    className={`w-full flex items-center justify-start px-4 py-3 rounded-xl text-base font-semibold transition-all focus-visible:ring-2 focus-visible:ring-[#3ECF8E] focus-visible:outline-none ${
                       isActive
-                        ? 'bg-[#3ECF8E] text-black font-bold shadow-md shadow-[#3ECF8E]/20'
+                        ? 'bg-[#3ECF8E] text-black font-bold shadow-lg shadow-[#3ECF8E]/20'
                         : 'text-zinc-300 hover:text-white hover:bg-[#262626]'
                     }`}
                   >
-                    <div className="flex items-center gap-2.5 truncate">
-                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-black' : 'text-zinc-400'}`} aria-hidden="true" />
+                    <div className="flex items-center gap-3 truncate">
+                      <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-black' : 'text-zinc-400'}`} aria-hidden="true" />
                       <span className="truncate">{item.label}</span>
                     </div>
                   </button>
