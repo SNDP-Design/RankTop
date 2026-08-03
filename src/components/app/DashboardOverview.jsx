@@ -19,7 +19,8 @@ import {
   PieChart,
   ShieldCheck,
   Activity,
-  Plus
+  Plus,
+  Search
 } from 'lucide-react';
 
 export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', setActiveTab }) {
@@ -29,7 +30,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
   const domain = (typeof activeWebsiteUrl === 'string' && activeWebsiteUrl) ? activeWebsiteUrl : 'mywebsite.com';
   const brandName = domain.split('.')[0] || 'mywebsite';
 
-  const [metrics, setMetrics] = useState({
+  const [metrics] = useState({
     clicks: '18,450',
     clicksGrowth: '+32.4%',
     impressions: '248,900',
