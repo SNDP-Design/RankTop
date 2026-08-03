@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       fontSize: {
-        // Strict Enforcement: Minimum font size 14px across whole web app
+        // Enforced Minimum Font Size: 14px across whole web app
         xs: ['0.875rem', { lineHeight: '1.25rem' }], // 14px minimum
         sm: ['0.875rem', { lineHeight: '1.25rem' }], // 14px
         base: ['1rem', { lineHeight: '1.5rem' }],    // 16px
@@ -19,23 +19,26 @@ export default {
         '5xl': ['3rem', { lineHeight: '1' }],
       },
       colors: {
+        // Supabase Emerald Green Theme
         brand: {
-          50: '#fff5f0',
-          100: '#ffe8dc',
-          200: '#ffd0b8',
-          300: '#ffa885',
-          400: '#ff7448',
-          500: '#FF4F00', // Core RankTop Brand Orange
-          600: '#e63d00',
-          700: '#bf2c00',
-          800: '#992403',
-          900: '#7c2109',
+          50: '#f0fdf4',
+          100: '#dcfce7',
+          200: '#bbf7d0',
+          300: '#86efac',
+          400: '#34d399',
+          500: '#3ECF8E', // Official Supabase Green
+          600: '#24B47E',
+          700: '#059669',
+          800: '#065f46',
+          900: '#064e3b',
+          950: '#022c22',
         },
         dark: {
-          bg: '#0B0F17',
-          card: '#131924',
-          border: '#232D3F',
-          muted: '#8A99AD',
+          bg: '#121212',      // Supabase Deep Charcoal
+          card: '#171717',    // Supabase Dark Card
+          surface: '#1F1F1F', // Supabase Surface
+          border: '#2A2A2A',  // Supabase Border
+          muted: '#A1A1AA',
         }
       },
       fontFamily: {

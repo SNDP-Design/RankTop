@@ -6,7 +6,7 @@
 
 @layer base {
   html, body {
-    @apply bg-[#0B0F17] text-slate-100 font-sans antialiased selection:bg-brand-500 selection:text-white;
+    @apply bg-[#121212] text-slate-100 font-sans antialiased selection:bg-[#3ECF8E] selection:text-black;
     font-size: 14px !important;
     min-font-size: 14px !important;
   }
@@ -17,49 +17,42 @@
   }
 }
 
-/* Custom Scrollbars */
+/* Supabase Custom Scrollbars */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0d121d;
+  background: #171717;
 }
 ::-webkit-scrollbar-thumb {
-  background: #242e42;
+  background: #2E2E2E;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #FF4F00;
+  background: #3ECF8E;
 }
 
-/* Glassmorphism Classes */
+/* Supabase Glassmorphism & Glow Utilities */
 .glass-panel {
-  background: rgba(19, 25, 36, 0.7);
+  background: rgba(23, 23, 23, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.glass-panel-light {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-}
-
 .glow-brand {
-  box-shadow: 0 0 25px -5px rgba(255, 79, 0, 0.35);
+  box-shadow: 0 0 30px -5px rgba(62, 207, 142, 0.3);
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #FFFFFF 0%, #CBD5E1 100%);
+  background: linear-gradient(135deg, #FFFFFF 0%, #A1A1AA 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .gradient-brand-text {
-  background: linear-gradient(135deg, #FF7448 0%, #FF4F00 50%, #FF2E00 100%);
+  background: linear-gradient(135deg, #6EE7B7 0%, #3ECF8E 50%, #10B981 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
