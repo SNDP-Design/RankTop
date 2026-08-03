@@ -96,36 +96,6 @@ export default function DashboardOverview({ activeWebsiteUrl = 'Enter your websi
   return (
     <div className="w-full space-y-6 font-sans">
       
-      {/* Top Header Banner */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 bg-[#171717] p-6 rounded-2xl border border-[#262626]">
-        <div>
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm font-semibold mb-2 border border-[#3ECF8E]/20">
-            <PieChart className="w-4 h-4" />
-            <span>Master SEO, AEO & GEO Command Center</span>
-          </div>
-          <h1 className="text-2xl font-bold text-white font-sans">Search Traffic & Rankings Dashboard</h1>
-          <p className="text-sm text-zinc-400 mt-1">Live performance analytics, Google AI Overview citations, and LLM visibility for <strong className="text-white">{domain}</strong>.</p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3">
-          <button 
-            onClick={handleRunTelemetryScan}
-            disabled={isScanning}
-            className="px-4 py-2.5 bg-[#1F1F1F] hover:bg-[#262626] text-zinc-200 rounded-xl text-sm font-semibold flex items-center gap-2 border border-[#333] transition-all"
-          >
-            <RefreshCw className={`w-4 h-4 text-[#3ECF8E] ${isScanning ? 'animate-spin' : ''}`} />
-            <span>{isScanning ? 'Syncing GSC...' : 'Sync Telemetry'}</span>
-          </button>
-
-          <button 
-            onClick={() => handleNavigate('swarm')}
-            className="px-4 py-2.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-xl shadow-lg shadow-[#3ECF8E]/20 flex items-center gap-2 transition-all"
-          >
-            <Zap className="w-4 h-4 fill-black" />
-            <span>Start AI Autopilot</span>
-          </button>
-        </div>
-      </div>
 
       {/* 3 Core Trifecta Scorecards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
