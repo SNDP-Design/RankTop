@@ -26,20 +26,20 @@ export default function Navbar({ activeWebsiteUrl, activeAppTab, setActiveAppTab
           {/* Active Workspace Banner */}
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 bg-[#171717] border border-[#262626] rounded-full px-3.5 py-1 text-sm">
-              <span className="text-zinc-400">Target Domain:</span>
+              <span className="text-zinc-400">Target Website:</span>
               <span className="text-white font-semibold flex items-center gap-1.5">
                 <Globe className="w-4 h-4 text-[#3ECF8E]" aria-hidden="true" /> {activeWebsiteUrl || 'mywebsite.com'}
               </span>
-              <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm px-2.5 py-0.5 rounded-full border border-[#3ECF8E]/20 font-medium">ADK Swarm Active</span>
+              <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm px-2.5 py-0.5 rounded-full border border-[#3ECF8E]/20 font-medium">AI Active</span>
             </div>
 
             <button
               onClick={() => setActiveAppTab('swarm')}
-              aria-label="Open AI Swarm Engine"
+              aria-label="Open AI Automation Center"
               className="hidden sm:flex px-4 py-2 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-lg shadow-md shadow-[#3ECF8E]/20 items-center gap-2 transition-all focus-visible:ring-2 focus-visible:ring-[#3ECF8E] focus-visible:outline-none"
             >
               <Bot className="w-4 h-4 text-black" aria-hidden="true" />
-              <span>AI Swarm Engine</span>
+              <span>AI Automation Center</span>
             </button>
           </div>
 

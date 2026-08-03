@@ -13,7 +13,8 @@ import {
   ShieldCheck, 
   Layers, 
   MessageSquare,
-  X
+  X,
+  HelpCircle
 } from 'lucide-react';
 import { SwarmOrchestrator } from '../../agents/SwarmOrchestrator';
 import { geminiService } from '../../services/geminiService';
@@ -35,7 +36,6 @@ export default function SwarmOrchestratorView({ activeWebsiteUrl = 'mywebsite.co
     });
     orchestratorRef.current.notify();
 
-    // Automatically launch autonomous swarm for the user's provided website URL
     if (activeWebsiteUrl) {
       orchestratorRef.current.runFullAutopilotSwarm(activeWebsiteUrl);
     }
@@ -62,17 +62,17 @@ export default function SwarmOrchestratorView({ activeWebsiteUrl = 'mywebsite.co
   const agentsList = Object.values(swarmState.agents || {});
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
+    <div className="p-6 space-y-6 max-w-7xl mx-auto font-sans">
       
-      {/* Top Banner */}
+      {/* Super Simple Top Header */}
       <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm font-semibold mb-2 border border-[#3ECF8E]/20">
-            <Cpu className="w-4 h-4" />
+            <Bot className="w-4 h-4" />
             <span>Target Site: {activeWebsiteUrl}</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white font-outfit">Autonomous Multi-Agent Swarm Center</h1>
-          <p className="text-sm text-zinc-400 mt-1">Coordinated multi-agent DAG pipeline running for <strong className="text-white">{activeWebsiteUrl}</strong></p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white font-sans">AI Automation & Swarm Center</h1>
+          <p className="text-sm text-zinc-400 mt-1">6 specialized AI assistants working together to research keywords, write articles, and boost your website traffic.</p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -90,7 +90,7 @@ export default function SwarmOrchestratorView({ activeWebsiteUrl = 'mywebsite.co
               className="px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm rounded-xl shadow flex items-center gap-2"
             >
               <Square className="w-4 h-4 fill-white" />
-              <span>Stop Swarm</span>
+              <span>Pause AI Swarm</span>
             </button>
           ) : (
             <button
@@ -98,9 +98,24 @@ export default function SwarmOrchestratorView({ activeWebsiteUrl = 'mywebsite.co
               className="px-5 py-2.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-xl shadow-lg shadow-[#3ECF8E]/20 flex items-center gap-2 transition-all"
             >
               <Play className="w-4 h-4 fill-black" />
-              <span>Run Autopilot Swarm</span>
+              <span>Start AI Autopilot</span>
             </button>
           )}
+        </div>
+      </div>
+
+      {/* Simple 3-Step Explanation Card */}
+      <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-zinc-300">
+        <div className="flex items-center gap-2 font-bold text-white">
+          <HelpCircle className="w-5 h-5 text-[#3ECF8E] shrink-0" />
+          <span>How this AI Swarm works:</span>
+        </div>
+        <div className="flex flex-wrap items-center gap-4 text-sm">
+          <span>1. 👑 Orchestrator delegates tasks</span>
+          <span className="text-zinc-600">→</span>
+          <span>2. 🔍 Research & Writer agents create content</span>
+          <span className="text-zinc-600">→</span>
+          <span>3. 🚀 Dispatcher publishes to website</span>
         </div>
       </div>
 
@@ -109,17 +124,17 @@ export default function SwarmOrchestratorView({ activeWebsiteUrl = 'mywebsite.co
         <div className="flex items-center justify-between border-b border-[#262626] pb-4">
           <div className="flex items-center gap-2">
             <Activity className="w-4 h-4 text-[#3ECF8E]" />
-            <h2 className="text-base font-bold text-white font-outfit">Live Agent Swarm DAG Topology</h2>
+            <h2 className="text-base font-bold text-white font-sans">Live AI Assistants Status</h2>
           </div>
 
-          <div className="flex items-center gap-3 text-sm font-mono">
-            <span className="flex items-center gap-1.5 text-[#3ECF8E]">
+          <div className="flex items-center gap-3 text-sm">
+            <span className="flex items-center gap-1.5 text-[#3ECF8E] font-bold">
               <span className="w-2.5 h-2.5 rounded-full bg-[#3ECF8E] animate-ping" /> Engine Status: {swarmState.status}
             </span>
           </div>
         </div>
 
-        {/* Multi-Agent DAG Node Cards */}
+        {/* Multi-Agent Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {agentsList.map((agent) => {
             const isWorking = agent.state !== 'IDLE' && agent.state !== 'COMPLETED';
@@ -138,11 +153,11 @@ export default function SwarmOrchestratorView({ activeWebsiteUrl = 'mywebsite.co
                   <div className="flex items-center gap-2.5">
                     <span className="text-2xl">{agent.avatar}</span>
                     <div>
-                      <h3 className="text-sm font-bold text-white font-outfit">{agent.name}</h3>
-                      <span className="text-sm text-zinc-400 font-mono">{agent.model}</span>
+                      <h3 className="text-sm font-bold text-white font-sans">{agent.name}</h3>
+                      <span className="text-sm text-zinc-400 font-medium">{agent.model}</span>
                     </div>
                   </div>
-                  <span className={`text-sm font-mono font-bold px-2.5 py-0.5 rounded border ${
+                  <span className={`text-sm font-bold px-2.5 py-0.5 rounded border ${
                     agent.state === 'COMPLETED'
                       ? 'bg-[#3ECF8E]/10 text-[#3ECF8E] border-[#3ECF8E]/20'
                       : isWorking
@@ -153,7 +168,7 @@ export default function SwarmOrchestratorView({ activeWebsiteUrl = 'mywebsite.co
                   </span>
                 </div>
 
-                <p className="text-sm text-zinc-300 mt-3 font-mono bg-[#171717] p-2.5 rounded border border-[#262626] truncate">
+                <p className="text-sm text-zinc-300 mt-3 bg-[#171717] p-2.5 rounded border border-[#262626] truncate">
                   {agent.activeTask}
                 </p>
               </div>
@@ -162,20 +177,20 @@ export default function SwarmOrchestratorView({ activeWebsiteUrl = 'mywebsite.co
         </div>
       </div>
 
-      {/* Inter-Agent Message Bus Feed Log */}
+      {/* Inter-Agent Message Log */}
       <div className="bg-[#171717] rounded-2xl border border-[#262626] p-6 space-y-4">
         <div className="flex items-center justify-between border-b border-[#262626] pb-3">
           <div className="flex items-center gap-2">
             <MessageSquare className="w-4 h-4 text-[#3ECF8E]" />
-            <h3 className="text-base font-bold text-white font-outfit">Inter-Agent Communication & Task Event Bus</h3>
+            <h3 className="text-base font-bold text-white font-sans">Live AI Communication & Event Log</h3>
           </div>
-          <span className="text-sm font-mono text-zinc-400">{swarmState.logs.length} Messages Logged</span>
+          <span className="text-sm text-zinc-400">{swarmState.logs.length} Messages</span>
         </div>
 
-        <div className="bg-[#121212] p-4 rounded-xl border border-[#262626] max-h-72 overflow-y-auto space-y-2.5 font-mono text-sm">
+        <div className="bg-[#121212] p-4 rounded-xl border border-[#262626] max-h-72 overflow-y-auto space-y-2.5 text-sm">
           {swarmState.logs.length === 0 ? (
             <div className="text-center py-8 text-zinc-500">
-              Swarm is standing by for {activeWebsiteUrl}.
+              AI Swarm is standing by for {activeWebsiteUrl}. Click "Start AI Autopilot" above.
             </div>
           ) : (
             swarmState.logs.map((log) => (
@@ -195,7 +210,7 @@ export default function SwarmOrchestratorView({ activeWebsiteUrl = 'mywebsite.co
         </div>
       </div>
 
-      {/* Gemini API Key Modal */}
+      {/* Gemini Key Modal */}
       {showKeyModal && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-[#171717] border border-[#262626] rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
@@ -206,11 +221,11 @@ export default function SwarmOrchestratorView({ activeWebsiteUrl = 'mywebsite.co
               <X className="w-5 h-5" />
             </button>
 
-            <h3 className="text-lg font-bold text-white font-outfit mb-2 flex items-center gap-2">
-              <Key className="w-5 h-5 text-[#3ECF8E]" /> Configure Gemini / Vertex AI Key
+            <h3 className="text-lg font-bold text-white font-sans mb-2 flex items-center gap-2">
+              <Key className="w-5 h-5 text-[#3ECF8E]" /> Configure Gemini AI Key
             </h3>
             <p className="text-sm text-zinc-400 mb-4">
-              Enter your Google GenAI API key to execute live Gemini 2.5 Pro / Flash calls. If left empty, the autonomous agent simulator handles execution.
+              Enter your free Google Gemini API key to run live AI calls. If left blank, the built-in simulator handles execution.
             </p>
 
             <form onSubmit={saveApiKey} className="space-y-4">
@@ -219,13 +234,13 @@ export default function SwarmOrchestratorView({ activeWebsiteUrl = 'mywebsite.co
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder="AIzaSy..."
-                className="w-full bg-[#121212] border border-[#262626] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#3ECF8E] font-mono"
+                className="w-full bg-[#121212] border border-[#262626] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#3ECF8E] font-sans"
               />
               <button
                 type="submit"
                 className="w-full py-3.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-xl shadow transition-all"
               >
-                Save Gemini Key
+                Save Key & Connect
               </button>
             </form>
           </div>

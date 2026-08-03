@@ -21,27 +21,27 @@ export default function AppSidebar({ activeWebsiteUrl, setActiveWebsiteUrl, acti
 
   const menuCategories = [
     {
-      category: 'SWARM CONTROL',
+      category: 'AUTOMATION',
       items: [
-        { id: 'swarm', label: 'AI Swarm Center', icon: Bot },
-        { id: 'dashboard', label: 'Performance Analytics', icon: LayoutDashboard },
+        { id: 'swarm', label: 'AI Automation Center', icon: Bot },
+        { id: 'dashboard', label: 'Search Traffic & Rankings', icon: LayoutDashboard },
       ]
     },
     {
-      category: 'SEO ENGINE',
+      category: 'RANKING & CONTENT',
       items: [
-        { id: 'strategy', label: 'Keyword Strategy', icon: Target },
-        { id: 'studio', label: 'AI Blog & Schema Studio', icon: FileText },
-        { id: 'competitors', label: 'Competitor Crawler', icon: Search },
-        { id: 'cms', label: 'CMS Auto-Publishing', icon: Share2 },
+        { id: 'strategy', label: 'Keywords & Topics', icon: Target },
+        { id: 'studio', label: 'AI Article Generator', icon: FileText },
+        { id: 'competitors', label: 'Competitor Ranking Gaps', icon: Search },
+        { id: 'cms', label: 'Auto-Publish to Website', icon: Share2 },
       ]
     },
     {
-      category: 'AEO & GEO ENGINE',
+      category: 'AI SEARCH OPTIMIZATION',
       items: [
-        { id: 'aeo', label: 'AEO Inspector (AI Overviews)', icon: Cpu },
-        { id: 'geo', label: 'GEO Hub (LLM Rankings)', icon: ShieldCheck },
-        { id: 'freetools', label: 'SEO/AEO Micro-Tools', icon: Wrench },
+        { id: 'aeo', label: 'Google AI Overview Inspector', icon: Cpu },
+        { id: 'geo', label: 'ChatGPT & Claude Visibility', icon: ShieldCheck },
+        { id: 'freetools', label: 'Handy SEO Utilities', icon: Wrench },
       ]
     }
   ];
@@ -66,12 +66,12 @@ export default function AppSidebar({ activeWebsiteUrl, setActiveWebsiteUrl, acti
       {/* Top Section */}
       <div className="p-3.5 space-y-3 flex-1 flex flex-col overflow-hidden">
         
-        {/* Interactive Website URL Input Field inside Sidebar */}
+        {/* Interactive Website URL Input Field */}
         <div className="p-3 bg-[#121212] rounded-xl border border-[#262626] space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase tracking-wider text-zinc-400 font-bold flex items-center gap-1.5">
               <Globe className="w-3.5 h-3.5 text-[#3ECF8E]" aria-hidden="true" />
-              Target Website URL
+              Target Website
             </span>
             {isSaved && (
               <span className="text-xs text-[#3ECF8E] flex items-center gap-0.5 font-bold">
@@ -94,12 +94,12 @@ export default function AppSidebar({ activeWebsiteUrl, setActiveWebsiteUrl, acti
               className="w-full py-1.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-lg shadow transition-all flex items-center justify-center gap-1.5 focus-visible:ring-2 focus-visible:ring-[#3ECF8E] focus-visible:outline-none"
             >
               <Play className="w-3.5 h-3.5 fill-black" />
-              <span>Run AI Swarm</span>
+              <span>Start AI Automation</span>
             </button>
           </form>
         </div>
 
-        {/* Categorized Navigation Links (Clean, No Chips/Badges) */}
+        {/* Categorized Navigation Links (Super Simple Labels) */}
         <nav aria-label="SEO AEO GEO Modules" className="space-y-3 flex-1 overflow-y-auto pr-1">
           {menuCategories.map((group, gIdx) => (
             <div key={gIdx} className="space-y-1">
@@ -134,16 +134,16 @@ export default function AppSidebar({ activeWebsiteUrl, setActiveWebsiteUrl, acti
 
       </div>
 
-      {/* Bottom Status Box (Clean) */}
+      {/* Bottom Status Box */}
       <div className="p-3 border-t border-[#262626]">
         <div className="p-3 bg-gradient-to-b from-[#1F1F1F] to-[#121212] rounded-xl border border-[#3ECF8E]/30 text-sm">
           <div className="flex items-center justify-between mb-1">
             <span className="font-bold text-white flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-[#3ECF8E]" aria-hidden="true" /> Trifecta Engine
+              <Sparkles className="w-4 h-4 text-[#3ECF8E]" aria-hidden="true" /> RankTop AI
             </span>
           </div>
           <p className="text-sm text-zinc-300 leading-normal">
-            Swarm active for <strong className="text-white">{activeWebsiteUrl || 'mywebsite.com'}</strong>.
+            Automating rankings for <strong className="text-white">{activeWebsiteUrl || 'mywebsite.com'}</strong>.
           </p>
         </div>
       </div>
