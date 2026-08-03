@@ -8,7 +8,6 @@ import {
   Share2, 
   Wrench, 
   Globe, 
-  Sparkles,
   ShieldCheck,
   Bot
 } from 'lucide-react';
@@ -16,7 +15,7 @@ import {
 export default function AppSidebar({ activeWebsiteUrl, activeTab, setActiveTab }) {
   const menuCategories = [
     {
-      category: '🔍 SEO ENGINE (Search Engine Optimization)',
+      category: '🔍 SEO ENGINE',
       items: [
         { id: 'dashboard', label: 'Search Traffic & Rankings', icon: LayoutDashboard },
         { id: 'strategy', label: 'Keywords & Topics', icon: Target },
@@ -26,14 +25,14 @@ export default function AppSidebar({ activeWebsiteUrl, activeTab, setActiveTab }
       ]
     },
     {
-      category: '🤖 AEO ENGINE (Answer Engine Optimization)',
+      category: '🤖 AEO ENGINE',
       items: [
         { id: 'aeo', label: 'Google AI Overview Inspector', icon: Cpu },
         { id: 'freetools', label: 'Voice & Speakable Schema', icon: Wrench },
       ]
     },
     {
-      category: '🛡️ GEO ENGINE (Generative Engine Optimization)',
+      category: '🛡️ GEO ENGINE',
       items: [
         { id: 'geo', label: 'ChatGPT & Claude Visibility', icon: ShieldCheck },
         { id: 'swarm', label: 'Autonomous AI Swarm', icon: Bot },
@@ -46,11 +45,11 @@ export default function AppSidebar({ activeWebsiteUrl, activeTab, setActiveTab }
       aria-label="Sidebar Navigation"
       className="w-[296px] bg-[#171717] border-r border-[#262626] flex flex-col justify-between shrink-0 h-[calc(100vh-64px)] sticky top-16 overflow-hidden select-none"
     >
-      {/* Top Section */}
+      {/* Top Section with Categories */}
       <div className="p-3.5 space-y-4 flex-1 flex flex-col overflow-hidden">
         
         {/* Active Domain Info Pill */}
-        <div className="p-3 bg-[#121212] rounded-xl border border-[#262626] flex items-center gap-2.5 overflow-hidden">
+        <div className="p-3 bg-[#121212] rounded-xl border border-[#262626] flex items-center gap-2.5 overflow-hidden shrink-0">
           <div className="w-7 h-7 rounded-lg bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 flex items-center justify-center text-[#3ECF8E] shrink-0">
             <Globe className="w-4 h-4" />
           </div>
@@ -94,22 +93,6 @@ export default function AppSidebar({ activeWebsiteUrl, activeTab, setActiveTab }
         </nav>
 
       </div>
-
-      {/* Bottom Status Box */}
-      <div className="p-3 border-t border-[#262626]">
-        <div className="p-3 bg-gradient-to-b from-[#1F1F1F] to-[#121212] rounded-xl border border-[#3ECF8E]/30 text-sm">
-          <div className="flex items-center justify-between mb-1">
-            <span className="font-bold text-white flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-[#3ECF8E]" aria-hidden="true" /> Trifecta Engine
-            </span>
-            <span className="text-xs text-[#3ECF8E] bg-[#3ECF8E]/10 px-2 py-0.5 rounded border border-[#3ECF8E]/20 font-bold">SEO AEO GEO</span>
-          </div>
-          <p className="text-sm text-zinc-300 leading-normal">
-            Automating rankings across Google, AI Overviews & LLMs.
-          </p>
-        </div>
-      </div>
-
     </aside>
   );
 }

@@ -22,7 +22,7 @@ export default function Navbar({ activeWebsiteUrl, setActiveWebsiteUrl, activeAp
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-4">
           
-          {/* Logo - RankTop in Supabase Theme */}
+          {/* Left: Brand Logo */}
           <button
             onClick={() => setActiveAppTab('swarm')}
             aria-label="RankTop AI Home Workspace"
@@ -38,15 +38,16 @@ export default function Navbar({ activeWebsiteUrl, setActiveWebsiteUrl, activeAp
             </div>
           </button>
 
-          {/* Top Navigation Bar: Target Website Input & Start AI Automation Button */}
-          <form onSubmit={handleUpdateWebsite} className="flex items-center gap-2 flex-1 max-w-lg justify-end sm:justify-center">
-            <div className="flex items-center gap-2 bg-[#171717] border border-[#262626] rounded-xl px-3 py-1.5 text-sm w-full max-w-xs focus-within:border-[#3ECF8E] transition-all">
+          {/* Center: Target Website URL Input & Start AI Automation Button */}
+          <form onSubmit={handleUpdateWebsite} className="flex items-center gap-2 flex-1 max-w-xl justify-center">
+            <div className="flex items-center gap-2.5 bg-[#171717] border border-[#262626] rounded-xl px-3.5 py-1.5 text-sm w-full max-w-md focus-within:border-[#3ECF8E] transition-all">
               <Globe className="w-4 h-4 text-[#3ECF8E] shrink-0" aria-hidden="true" />
+              <span className="text-zinc-500 font-medium hidden md:inline">https://</span>
               <input
                 type="text"
                 value={inputUrl}
                 onChange={(e) => setInputUrl(e.target.value)}
-                placeholder="e.g. mywebsite.com"
+                placeholder="yourwebsite.com"
                 aria-label="Target Website URL Input"
                 className="bg-transparent text-white placeholder-zinc-500 text-sm focus:outline-none w-full font-sans"
               />
@@ -68,15 +69,15 @@ export default function Navbar({ activeWebsiteUrl, setActiveWebsiteUrl, activeAp
             </button>
           </form>
 
-          {/* Quick AI Swarm Trigger Button */}
-          <div className="hidden lg:flex items-center gap-2">
+          {/* Right: Quick Action Pill */}
+          <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => setActiveAppTab('swarm')}
-              aria-label="Open AI Automation Center"
-              className="px-3.5 py-1.5 bg-[#1F1F1F] hover:bg-[#262626] text-zinc-300 border border-[#333] font-semibold text-sm rounded-xl flex items-center gap-2 transition-all focus-visible:ring-2 focus-visible:ring-[#3ECF8E] focus-visible:outline-none"
+              aria-label="Open AI Swarm Center"
+              className="px-3.5 py-1.5 bg-[#171717] hover:bg-[#262626] text-zinc-200 border border-[#262626] font-semibold text-sm rounded-xl flex items-center gap-2 transition-all focus-visible:ring-2 focus-visible:ring-[#3ECF8E] focus-visible:outline-none"
             >
               <Bot className="w-4 h-4 text-[#3ECF8E]" aria-hidden="true" />
-              <span>AI Center</span>
+              <span className="hidden md:inline">AI Swarm Center</span>
             </button>
           </div>
 
