@@ -14,13 +14,13 @@ import {
 export default function AppSidebar({ activeTab, setActiveTab }) {
   const menuCategories = [
     {
-      category: '📊 OVERVIEW',
+      category: '', // No label for Master Dashboard
       items: [
         { id: 'dashboard', label: 'Master Dashboard', icon: LayoutDashboard },
       ]
     },
     {
-      category: '🔍 SEO ENGINE',
+      category: 'SEO ENGINE',
       items: [
         { id: 'strategy', label: 'Keywords', icon: Target },
         { id: 'studio', label: 'AI Writer', icon: FileText },
@@ -29,14 +29,14 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
       ]
     },
     {
-      category: '🤖 AEO ENGINE',
+      category: 'AEO ENGINE',
       items: [
         { id: 'aeo', label: 'AI Overviews', icon: Cpu },
         { id: 'freetools', label: 'Voice & FAQ', icon: Wrench },
       ]
     },
     {
-      category: '🛡️ GEO ENGINE',
+      category: 'GEO ENGINE',
       items: [
         { id: 'geo', label: 'LLM Visibility', icon: ShieldCheck },
         { id: 'swarm', label: 'AI Swarm', icon: Bot },
@@ -49,14 +49,16 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
       aria-label="Sidebar Navigation"
       className="w-[296px] bg-[#171717] border-r border-[#262626] flex flex-col justify-between shrink-0 h-[calc(100vh-64px)] overflow-y-auto select-none"
     >
-      {/* Top Section with Consistent Padding & Spacing */}
+      {/* Top Section with Spacious Layout */}
       <div className="p-5 space-y-6 flex-1 flex flex-col">
         <nav aria-label="SEO AEO GEO Modules" className="space-y-6 flex-1">
           {menuCategories.map((group, gIdx) => (
             <div key={gIdx} className="space-y-2">
-              <span className="px-3 text-xs uppercase tracking-wider text-[#3ECF8E] font-bold block mb-2">
-                {group.category}
-              </span>
+              {group.category && (
+                <span className="px-3 text-xs uppercase tracking-wider text-[#3ECF8E] font-bold block mb-2">
+                  {group.category}
+                </span>
+              )}
 
               {group.items.map((item) => {
                 const Icon = item.icon;
