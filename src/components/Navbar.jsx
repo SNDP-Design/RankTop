@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Sparkles, Globe, Play, Check } from 'lucide-react';
 
 export default function Navbar({ activeWebsiteUrl, setActiveWebsiteUrl, activeAppTab, setActiveAppTab }) {
-  const [inputUrl, setInputUrl] = useState(activeWebsiteUrl || 'mywebsite.com');
+  const [inputUrl, setInputUrl] = useState(activeWebsiteUrl || 'https://mywebsite.com');
   const [isSaved, setIsSaved] = useState(false);
 
   const handleUpdateWebsite = (e) => {
@@ -19,7 +19,7 @@ export default function Navbar({ activeWebsiteUrl, setActiveWebsiteUrl, activeAp
 
   return (
     <header role="banner" className="sticky top-0 z-50 bg-[#121212]/95 backdrop-blur-xl border-b border-[#262626] w-full">
-      <div className="w-full px-6 flex items-center justify-between h-16 gap-6">
+      <div className="w-full px-6 flex items-center justify-between h-16 gap-4">
         
         {/* Left: Brand Logo */}
         <button
@@ -40,37 +40,33 @@ export default function Navbar({ activeWebsiteUrl, setActiveWebsiteUrl, activeAp
           </div>
         </button>
 
-        {/* Center/Right: Prominent Expanded Website Input Field + Small Compact Start AI Automation Button */}
-        <form onSubmit={handleUpdateWebsite} className="flex items-center gap-3 flex-1 max-w-3xl justify-end">
-          {/* Expanded Input Field */}
-          <div className="flex items-center gap-3 bg-[#171717] border border-[#262626] rounded-xl px-4 py-2 text-base w-full max-w-xl focus-within:border-[#3ECF8E] transition-all shadow-inner">
-            <Globe className="w-5 h-5 text-[#3ECF8E] shrink-0" aria-hidden="true" />
-            <span className="text-zinc-500 font-medium text-sm hidden md:inline">https://</span>
+        {/* Right: Compact Website Input Field (No HTTP prefix, reduced length, Icon-only CTA button) */}
+        <form onSubmit={handleUpdateWebsite} className="flex items-center gap-2">
+          <div className="flex items-center gap-2 bg-[#171717] border border-[#262626] rounded-xl px-3 py-1.5 text-sm w-72 sm:w-80 focus-within:border-[#3ECF8E] transition-all shadow-inner">
+            <Globe className="w-4 h-4 text-[#3ECF8E] shrink-0" aria-hidden="true" />
             <input
               type="text"
               value={inputUrl}
               onChange={(e) => setInputUrl(e.target.value)}
-              placeholder="yourwebsite.com"
-              aria-label="Target Website URL Input"
-              className="bg-transparent text-white placeholder-zinc-500 text-base focus:outline-none w-full font-sans"
+              placeholder="https://yourwebsite.com"
+              aria-label="Full Website URL Input"
+              className="bg-transparent text-white placeholder-zinc-500 text-sm focus:outline-none w-full font-sans"
             />
             {isSaved && (
               <span className="text-xs text-[#3ECF8E] flex items-center gap-0.5 font-bold shrink-0">
-                <Check className="w-4 h-4" />
+                <Check className="w-3.5 h-3.5" />
               </span>
             )}
+            
+            {/* Search/Run CTA - Icon Only */}
+            <button
+              type="submit"
+              aria-label="Run AI Automation"
+              className="p-2 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold rounded-lg shadow-sm shrink-0 transition-all focus-visible:ring-2 focus-visible:ring-[#3ECF8E] focus-visible:outline-none"
+            >
+              <Play className="w-3.5 h-3.5 fill-black" aria-hidden="true" />
+            </button>
           </div>
-
-          {/* Small Compact Button */}
-          <button
-            type="submit"
-            aria-label="Start AI Automation"
-            className="px-3.5 py-2 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 shrink-0 transition-all focus-visible:ring-2 focus-visible:ring-[#3ECF8E] focus-visible:outline-none"
-          >
-            <Play className="w-3 h-3 fill-black" aria-hidden="true" />
-            <span className="hidden sm:inline">Start AI Automation</span>
-            <span className="sm:hidden">Start</span>
-          </button>
         </form>
 
       </div>
