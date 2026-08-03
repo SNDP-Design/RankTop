@@ -15,7 +15,7 @@ import FreeToolsApp from './components/app/FreeToolsApp';
 
 export default function App() {
   const [activeWebsiteUrl, setActiveWebsiteUrl] = useState('mywebsite.com'); // Website URL managed in Top Navbar Input
-  const [activeAppTab, setActiveAppTab] = useState('swarm'); // 'swarm' | 'dashboard' | 'strategy' | 'studio' | 'aeo' | 'geo' | 'competitors' | 'cms' | 'freetools'
+  const [activeAppTab, setActiveAppTab] = useState('dashboard'); // Default to Dashboard overview
   const [studioKeyword, setStudioKeyword] = useState('');
 
   const openAppWithTab = (tab, keyword = '') => {
@@ -64,17 +64,24 @@ export default function App() {
           )}
 
           {activeAppTab === 'dashboard' && (
-            <DashboardOverview setActiveTab={setActiveAppTab} />
+            <DashboardOverview 
+              activeWebsiteUrl={activeWebsiteUrl} 
+              setActiveTab={openAppWithTab} 
+            />
           )}
 
           {activeAppTab === 'strategy' && (
             <KeywordStrategy 
+              activeWebsiteUrl={activeWebsiteUrl}
               onGenerateArticle={(kw) => openAppWithTab('studio', kw)} 
             />
           )}
 
           {activeAppTab === 'studio' && (
-            <AiBlogStudio initialKeyword={studioKeyword} />
+            <AiBlogStudio 
+              activeWebsiteUrl={activeWebsiteUrl}
+              initialKeyword={studioKeyword} 
+            />
           )}
 
           {activeAppTab === 'aeo' && (
@@ -82,11 +89,12 @@ export default function App() {
           )}
 
           {activeAppTab === 'geo' && (
-            <LlmGeoOptimization />
+            <LlmGeoOptimization activeWebsiteUrl={activeWebsiteUrl} />
           )}
 
           {activeAppTab === 'competitors' && (
             <CompetitorSpy 
+              activeWebsiteUrl={activeWebsiteUrl}
               onGenerateArticle={(kw) => openAppWithTab('studio', kw)} 
             />
           )}
