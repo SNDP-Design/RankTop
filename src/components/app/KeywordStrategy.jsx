@@ -1,198 +1,132 @@
 import React, { useState } from 'react';
-import { Search, Filter, Sparkles, ArrowRight, Zap, Target, BarChart2, CheckCircle2, Globe, RefreshCw } from 'lucide-react';
+import { Target, Search, Sparkles, Filter, CheckCircle2, AlertCircle } from 'lucide-react';
 import { geminiService } from '../../services/geminiService';
 
 export default function KeywordStrategy({ activeWebsiteUrl = 'mywebsite.com', onGenerateArticle }) {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterIntent, setFilterIntent] = useState('all');
-  const [filterDifficulty, setFilterDifficulty] = useState('all');
-  const [isSearching, setIsSearching] = useState(false);
+  const [seedKeyword, setSeedKeyword] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [clusters, setClusters] = useState([]);
 
   const domain = (typeof activeWebsiteUrl === 'string' && activeWebsiteUrl) ? activeWebsiteUrl : 'mywebsite.com';
-  const brandName = domain.split('.')[0] || 'mywebsite';
 
-  // Dynamic Keyword Array
-  const [keywords, setKeywords] = useState([]);
-
-  const handleDiscoverKeywords = async (e) => {
+  const handleGenerateClusters = async (e) => {
     if (e) e.preventDefault();
-    setIsSearching(true);
+    if (!seedKeyword.trim()) return;
 
-    const prompt = `Generate 5 high-opportunity low-KD keywords for website domain "${domain}". Return a valid JSON array of objects with keys: id, keyword, cluster, volume, kd, kdLabel, intent, estTraffic, status.`;
-    
+    setIsGenerating(true);
+
+    const prompt = `Act as an expert SEO strategist. For seed topic "${seedKeyword}" and domain "${domain}", generate 4 low-KD, high-volume keyword opportunities with content intent. Return ONLY a valid JSON array of objects with keys: id, keyword, volume, kd, intent, action.`;
+
     try {
       const resText = await geminiService.generateContent(prompt);
       if (resText) {
         const jsonMatch = resText.match(/\[[\s\S]*\]/);
         if (jsonMatch) {
           const parsed = JSON.parse(jsonMatch[0]);
-          setKeywords(parsed);
-          setIsSearching(false);
+          setClusters(parsed);
+          setIsGenerating(false);
           return;
         }
       }
     } catch (err) {
-      console.warn('Gemini API call error:', err);
+      console.warn('Gemini API failed:', err);
     }
 
     setTimeout(() => {
-      setKeywords([
-        { id: 1, keyword: `best ${brandName} strategies for beginners`, cluster: 'Core Growth', volume: '8,400/mo', kd: 12, kdLabel: 'Very Easy', intent: 'Informational', estTraffic: '2,900/mo', status: 'Discovered' },
-        { id: 2, keyword: `how to optimize ${brandName} workflow`, cluster: 'Workflow Optimization', volume: '5,200/mo', kd: 18, kdLabel: 'Easy', intent: 'Commercial', estTraffic: '1,800/mo', status: 'Discovered' },
-        { id: 3, keyword: `top alternatives to ${brandName} compared`, cluster: 'Competitor Comparison', volume: '11,500/mo', kd: 22, kdLabel: 'Easy', intent: 'Transactional', estTraffic: '3,800/mo', status: 'Discovered' },
-        { id: 4, keyword: `ai overview optimization for ${brandName}`, cluster: 'AEO Strategy', volume: '6,100/mo', kd: 14, kdLabel: 'Very Easy', intent: 'High Intent', estTraffic: '2,100/mo', status: 'Discovered' },
-        { id: 5, keyword: `automated blogging plugin for ${brandName}`, cluster: 'CMS Automation', volume: '4,800/mo', kd: 15, kdLabel: 'Easy', intent: 'Commercial', estTraffic: '1,500/mo', status: 'Discovered' },
+      setClusters([
+        { id: 1, keyword: `${seedKeyword} automation guide 2026`, volume: '18,400/mo', kd: 14, intent: 'Informational', action: 'Write AI Article' },
+        { id: 2, keyword: `best tools for ${seedKeyword}`, volume: '12,900/mo', kd: 18, intent: 'Commercial', action: 'Write AI Article' },
+        { id: 3, keyword: `${seedKeyword} workflow benchmarks`, volume: '6,200/mo', kd: 11, intent: 'Informational', action: 'Write AI Article' },
       ]);
-      setIsSearching(false);
+      setIsGenerating(false);
     }, 1000);
   };
 
-  const filteredKeywords = keywords.filter(k => {
-    const matchesSearch = k.keyword.toLowerCase().includes(searchTerm.toLowerCase()) || k.cluster.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesIntent = filterIntent === 'all' || k.intent.toLowerCase() === filterIntent.toLowerCase();
-    const matchesDiff = filterDifficulty === 'all' || (filterDifficulty === 'easy' ? k.kd <= 25 : k.kd > 25);
-    return matchesSearch && matchesIntent && matchesDiff;
-  });
-
-  const handleArticleClick = (kw) => {
-    if (typeof onGenerateArticle === 'function') {
-      onGenerateArticle(kw);
-    }
-  };
-
   return (
-    <div className="w-full space-y-3 font-sans">
+    <div className="w-full space-y-6 font-sans">
       
       {/* Header Banner */}
-      <div className="bg-[#171717] p-4 rounded-xl border border-[#262626] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-semibold mb-1 border border-[#3ECF8E]/20">
-            <Target className="w-3.5 h-3.5" />
-            <span>Keyword Strategy & Topic Clusters</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm font-semibold mb-2 border border-[#3ECF8E]/20">
+            <Target className="w-4 h-4" />
+            <span>Keyword Strategy & Cluster Finder</span>
           </div>
-          <h1 className="text-xl font-bold text-white font-sans">Low-KD Keywords for {domain}</h1>
-          <p className="text-xs text-zinc-400 mt-0.5">Discover low-competition, high-conversion topic clusters tailored to your target domain.</p>
+          <h1 className="text-2xl font-bold text-white font-sans">Low-Difficulty Keyword Discovery</h1>
+          <p className="text-sm text-zinc-400 mt-1">Extract high-intent, low-KD keyword clusters tailored to {domain}.</p>
         </div>
-
-        <button
-          onClick={handleDiscoverKeywords}
-          disabled={isSearching}
-          className="px-4 py-2 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-xs rounded-lg shadow flex items-center gap-1.5 transition-all shrink-0"
-        >
-          {isSearching ? (
-            <>
-              <div className="w-3.5 h-3.5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-              <span>Analyzing Niche...</span>
-            </>
-          ) : (
-            <>
-              <Sparkles className="w-3.5 h-3.5 text-black" />
-              <span>Discover Keywords</span>
-            </>
-          )}
-        </button>
       </div>
 
-      {/* Filter & Search Bar */}
-      {keywords.length > 0 && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#171717] p-3 rounded-xl border border-[#262626]">
-          <div className="relative w-full sm:w-80">
-            <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search keywords or clusters..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-[#121212] border border-[#262626] rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#3ECF8E]"
-            />
-          </div>
+      {/* Input Form */}
+      <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] w-full">
+        <form onSubmit={handleGenerateClusters} className="flex gap-3">
+          <input
+            type="text"
+            value={seedKeyword}
+            onChange={(e) => setSeedKeyword(e.target.value)}
+            placeholder="Enter seed topic (e.g., SEO Keyword Research)"
+            className="flex-1 bg-[#121212] border border-[#262626] rounded-xl px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-[#3ECF8E]"
+          />
+          <button
+            type="submit"
+            disabled={isGenerating || !seedKeyword.trim()}
+            className="px-5 py-2.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-xl shadow flex items-center gap-2 shrink-0"
+          >
+            {isGenerating ? (
+              <>
+                <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                <span>Finding Clusters...</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-4 h-4 text-black" />
+                <span>Discover Clusters</span>
+              </>
+            )}
+          </button>
+        </form>
+      </div>
 
-          <div className="flex items-center gap-2.5 w-full sm:w-auto">
-            <select
-              value={filterIntent}
-              onChange={(e) => setFilterIntent(e.target.value)}
-              className="bg-[#121212] border border-[#262626] text-xs text-zinc-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-[#3ECF8E]"
-            >
-              <option value="all">All Search Intents</option>
-              <option value="commercial">Commercial</option>
-              <option value="informational">Informational</option>
-              <option value="transactional">Transactional</option>
-              <option value="high intent">High Intent</option>
-            </select>
-
-            <select
-              value={filterDifficulty}
-              onChange={(e) => setFilterDifficulty(e.target.value)}
-              className="bg-[#121212] border border-[#262626] text-xs text-zinc-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-[#3ECF8E]"
-            >
-              <option value="all">All Difficulty Levels</option>
-              <option value="easy">Easy (KD ≤ 25)</option>
-              <option value="medium">Medium (KD &gt; 25)</option>
-            </select>
-          </div>
-        </div>
-      )}
-
-      {/* Keyword Table or Initial Empty State */}
-      <div className="bg-[#171717] rounded-xl border border-[#262626] overflow-hidden w-full">
-        {keywords.length === 0 ? (
+      {/* Cluster Table or Initial Empty State */}
+      <div className="bg-[#171717] rounded-2xl border border-[#262626] overflow-hidden w-full">
+        {clusters.length === 0 ? (
           <div className="p-10 text-center bg-[#121212] space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] mx-auto flex items-center justify-center">
-              <Globe className="w-5 h-5" />
-            </div>
-            <h3 className="text-sm font-bold text-white">No Keywords Analyzed Yet for {domain}</h3>
-            <p className="text-xs text-zinc-400 max-w-md mx-auto">
-              Click <strong className="text-white">Discover Keywords</strong> above to run an AI scan and extract low-competition topic clusters.
+            <Target className="w-8 h-8 text-[#3ECF8E] mx-auto" />
+            <h3 className="text-base font-bold text-white">Ready to Discover Keyword Clusters</h3>
+            <p className="text-sm text-zinc-400 max-w-md mx-auto">
+              Type any seed topic above and click <strong className="text-white">Discover Clusters</strong> to extract low-difficulty opportunities.
             </p>
-            <button
-              onClick={handleDiscoverKeywords}
-              className="px-4 py-2 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-xs rounded-lg shadow"
-            >
-              Run AI Keyword Scan
-            </button>
           </div>
         ) : (
           <div className="overflow-x-auto w-full">
-            <table className="w-full text-left text-xs text-zinc-300">
+            <table className="w-full text-left text-sm text-zinc-300">
               <thead className="bg-[#121212] text-zinc-400 uppercase tracking-wider font-semibold">
                 <tr>
-                  <th className="p-3">Target Keyword</th>
-                  <th className="p-3">Topic Cluster</th>
-                  <th className="p-3">Search Volume</th>
-                  <th className="p-3">Keyword Difficulty (KD)</th>
-                  <th className="p-3">Search Intent</th>
-                  <th className="p-3">Traffic Potential</th>
-                  <th className="p-3 text-right">Action</th>
+                  <th className="p-4">Target Keyword Cluster</th>
+                  <th className="p-4">Search Volume</th>
+                  <th className="p-4">Keyword Difficulty (KD)</th>
+                  <th className="p-4">Search Intent</th>
+                  <th className="p-4 text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#262626]">
-                {filteredKeywords.map((item) => (
+                {clusters.map((item) => (
                   <tr key={item.id} className="hover:bg-[#1F1F1F] transition-colors">
-                    <td className="p-3 font-bold text-white max-w-xs">{item.keyword}</td>
-                    <td className="p-3 text-zinc-400">{item.cluster}</td>
-                    <td className="p-3 font-semibold text-white">{item.volume}</td>
-                    <td className="p-3">
-                      <span className={`px-2 py-0.5 rounded font-semibold border ${
-                        item.kd <= 20
-                          ? 'bg-[#3ECF8E]/10 text-[#3ECF8E] border-[#3ECF8E]/20'
-                          : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                      }`}>
-                        KD {item.kd} ({item.kdLabel})
+                    <td className="p-4 font-bold text-white max-w-xs">{item.keyword}</td>
+                    <td className="p-4 font-semibold text-white">{item.volume}</td>
+                    <td className="p-4">
+                      <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] border border-[#3ECF8E]/20 px-2.5 py-1 rounded text-sm font-bold">
+                        KD {item.kd}
                       </span>
                     </td>
-                    <td className="p-3">
-                      <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] border border-[#3ECF8E]/20 px-2 py-0.5 rounded text-xs">
-                        {item.intent}
-                      </span>
-                    </td>
-                    <td className="p-3 text-[#3ECF8E] font-semibold">{item.estTraffic}</td>
-                    <td className="p-3 text-right">
+                    <td className="p-4 text-zinc-400">{item.intent}</td>
+                    <td className="p-4 text-right">
                       <button
-                        onClick={() => handleArticleClick(item.keyword)}
-                        className="px-3 py-1.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-xs rounded-lg transition-all shadow-sm inline-flex items-center gap-1.5"
+                        onClick={() => onGenerateArticle && onGenerateArticle(item.keyword)}
+                        className="px-4 py-2 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-xl shadow inline-flex items-center gap-1.5"
                       >
-                        <Sparkles className="w-3.5 h-3.5" />
-                        <span>Write Article</span>
+                        <Sparkles className="w-4 h-4" />
+                        <span>{item.action}</span>
                       </button>
                     </td>
                   </tr>

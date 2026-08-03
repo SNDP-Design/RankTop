@@ -86,16 +86,16 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
   };
 
   return (
-    <div className="w-full space-y-5 font-sans">
+    <div className="w-full space-y-6 font-sans">
       
       {/* Top Header Banner */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5 bg-[#171717] p-6 rounded-2xl border border-[#262626]">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 bg-[#171717] p-6 rounded-2xl border border-[#262626]">
         <div>
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-semibold mb-2 border border-[#3ECF8E]/20">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm font-semibold mb-2 border border-[#3ECF8E]/20">
             <PieChart className="w-4 h-4" />
             <span>Master SEO, AEO & GEO Command Center</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white font-sans">Search Traffic & Rankings Dashboard</h1>
+          <h1 className="text-2xl font-bold text-white font-sans">Search Traffic & Rankings Dashboard</h1>
           <p className="text-sm text-zinc-400 mt-1">Live performance analytics, Google AI Overview citations, and LLM visibility for <strong className="text-white">{domain}</strong>.</p>
         </div>
 
@@ -103,7 +103,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
           <button 
             onClick={handleRunTelemetryScan}
             disabled={isScanning}
-            className="px-4 py-2.5 bg-[#1F1F1F] hover:bg-[#262626] text-zinc-200 rounded-xl text-xs font-semibold flex items-center gap-2 border border-[#333] transition-all"
+            className="px-4 py-2.5 bg-[#1F1F1F] hover:bg-[#262626] text-zinc-200 rounded-xl text-sm font-semibold flex items-center gap-2 border border-[#333] transition-all"
           >
             <RefreshCw className={`w-4 h-4 text-[#3ECF8E] ${isScanning ? 'animate-spin' : ''}`} />
             <span>{isScanning ? 'Syncing GSC...' : 'Sync Telemetry'}</span>
@@ -111,7 +111,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
 
           <button 
             onClick={() => handleNavigate('swarm')}
-            className="px-4 py-2.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-xs rounded-xl shadow-lg shadow-[#3ECF8E]/20 flex items-center gap-2 transition-all"
+            className="px-4 py-2.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-xl shadow-lg shadow-[#3ECF8E]/20 flex items-center gap-2 transition-all"
           >
             <Zap className="w-4 h-4 fill-black" />
             <span>Start AI Autopilot</span>
@@ -120,79 +120,79 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
       </div>
 
       {/* 3 Core Trifecta Scorecards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         
         {/* 1. SEO Scorecard */}
-        <div className="bg-[#171717] p-5.5 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden flex flex-col justify-between">
+        <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden flex flex-col justify-between">
           <div className="flex items-center justify-between border-b border-[#262626] pb-3">
-            <span className="text-xs font-bold text-[#3ECF8E] flex items-center gap-1.5 uppercase tracking-wider">
+            <span className="text-sm font-bold text-[#3ECF8E] flex items-center gap-2 uppercase tracking-wider">
               <Search className="w-4 h-4" /> 🔍 SEO Performance
             </span>
-            <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs px-2.5 py-1 rounded-md font-bold border border-[#3ECF8E]/20">
+            <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm px-3 py-1 rounded-lg font-bold border border-[#3ECF8E]/20">
               Rank {metrics.avgRank} Avg
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 pt-1">
-            <div className="p-3.5 bg-[#121212] rounded-xl border border-[#262626]">
-              <span className="text-xs text-zinc-400 block font-medium">Organic Clicks</span>
-              <span className="text-2xl font-extrabold text-white block mt-0.5">{metrics.clicks}</span>
-              <span className="text-xs text-[#3ECF8E] block mt-1">{metrics.clicksGrowth} MoM</span>
+          <div className="grid grid-cols-2 gap-4 pt-1">
+            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626]">
+              <span className="text-sm text-zinc-400 block font-medium">Organic Clicks</span>
+              <span className="text-2xl font-extrabold text-white block mt-1">{metrics.clicks}</span>
+              <span className="text-sm text-[#3ECF8E] block mt-1 font-medium">{metrics.clicksGrowth} MoM</span>
             </div>
-            <div className="p-3.5 bg-[#121212] rounded-xl border border-[#262626]">
-              <span className="text-xs text-zinc-400 block font-medium">Impressions</span>
-              <span className="text-2xl font-extrabold text-white block mt-0.5">{metrics.impressions}</span>
-              <span className="text-xs text-[#3ECF8E] block mt-1">{metrics.impressionsGrowth} MoM</span>
+            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626]">
+              <span className="text-sm text-zinc-400 block font-medium">Impressions</span>
+              <span className="text-2xl font-extrabold text-white block mt-1">{metrics.impressions}</span>
+              <span className="text-sm text-[#3ECF8E] block mt-1 font-medium">{metrics.impressionsGrowth} MoM</span>
             </div>
           </div>
         </div>
 
         {/* 2. AEO Scorecard */}
-        <div className="bg-[#171717] p-5.5 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden flex flex-col justify-between">
+        <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden flex flex-col justify-between">
           <div className="flex items-center justify-between border-b border-[#262626] pb-3">
-            <span className="text-xs font-bold text-[#3ECF8E] flex items-center gap-1.5 uppercase tracking-wider">
+            <span className="text-sm font-bold text-[#3ECF8E] flex items-center gap-2 uppercase tracking-wider">
               <Cpu className="w-4 h-4" /> 🤖 AEO Performance
             </span>
-            <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs px-2.5 py-1 rounded-md font-bold border border-[#3ECF8E]/20">
+            <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm px-3 py-1 rounded-lg font-bold border border-[#3ECF8E]/20">
               {metrics.aeoCitationScore} Citation
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 pt-1">
-            <div className="p-3.5 bg-[#121212] rounded-xl border border-[#262626]">
-              <span className="text-xs text-zinc-400 block font-medium">AI Overview Rate</span>
-              <span className="text-2xl font-extrabold text-white block mt-0.5">{metrics.aeoCitationScore}</span>
-              <span className="text-xs text-[#3ECF8E] block mt-1">Top AI Snippet</span>
+          <div className="grid grid-cols-2 gap-4 pt-1">
+            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626]">
+              <span className="text-sm text-zinc-400 block font-medium">AI Overview Rate</span>
+              <span className="text-2xl font-extrabold text-white block mt-1">{metrics.aeoCitationScore}</span>
+              <span className="text-sm text-[#3ECF8E] block mt-1 font-medium">Top AI Snippet</span>
             </div>
-            <div className="p-3.5 bg-[#121212] rounded-xl border border-[#262626]">
-              <span className="text-xs text-zinc-400 block font-medium">Voice Answer</span>
-              <span className="text-2xl font-extrabold text-white block mt-0.5">{metrics.voiceExtractionScore}</span>
-              <span className="text-xs text-[#3ECF8E] block mt-1">Speakable Schema</span>
+            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626]">
+              <span className="text-sm text-zinc-400 block font-medium">Voice Answer</span>
+              <span className="text-2xl font-extrabold text-white block mt-1">{metrics.voiceExtractionScore}</span>
+              <span className="text-sm text-[#3ECF8E] block mt-1 font-medium">Speakable Schema</span>
             </div>
           </div>
         </div>
 
         {/* 3. GEO Scorecard */}
-        <div className="bg-[#171717] p-5.5 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden flex flex-col justify-between">
+        <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden flex flex-col justify-between">
           <div className="flex items-center justify-between border-b border-[#262626] pb-3">
-            <span className="text-xs font-bold text-[#3ECF8E] flex items-center gap-1.5 uppercase tracking-wider">
+            <span className="text-sm font-bold text-[#3ECF8E] flex items-center gap-2 uppercase tracking-wider">
               <ShieldCheck className="w-4 h-4" /> 🛡️ GEO Performance
             </span>
-            <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs px-2.5 py-1 rounded-md font-bold border border-[#3ECF8E]/20">
+            <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm px-3 py-1 rounded-lg font-bold border border-[#3ECF8E]/20">
               {metrics.chatGptScore} LLM Score
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 pt-1">
-            <div className="p-3.5 bg-[#121212] rounded-xl border border-[#262626]">
-              <span className="text-xs text-zinc-400 block font-medium">ChatGPT Visibility</span>
-              <span className="text-2xl font-extrabold text-white block mt-0.5">{metrics.chatGptScore}</span>
-              <span className="text-xs text-[#3ECF8E] block mt-1">GPTBot Allowed</span>
+          <div className="grid grid-cols-2 gap-4 pt-1">
+            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626]">
+              <span className="text-sm text-zinc-400 block font-medium">ChatGPT Visibility</span>
+              <span className="text-2xl font-extrabold text-white block mt-1">{metrics.chatGptScore}</span>
+              <span className="text-sm text-[#3ECF8E] block mt-1 font-medium">GPTBot Allowed</span>
             </div>
-            <div className="p-3.5 bg-[#121212] rounded-xl border border-[#262626]">
-              <span className="text-xs text-zinc-400 block font-medium">Claude Visibility</span>
-              <span className="text-2xl font-extrabold text-white block mt-0.5">{metrics.claudeScore}</span>
-              <span className="text-xs text-[#3ECF8E] block mt-1">ClaudeBot Allowed</span>
+            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626]">
+              <span className="text-sm text-zinc-400 block font-medium">Claude Visibility</span>
+              <span className="text-2xl font-extrabold text-white block mt-1">{metrics.claudeScore}</span>
+              <span className="text-sm text-[#3ECF8E] block mt-1 font-medium">ClaudeBot Allowed</span>
             </div>
           </div>
         </div>
@@ -200,68 +200,68 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
       </div>
 
       {/* Visual Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         
         {/* Graph 1: SEO Traffic Growth Curve */}
-        <div className="lg:col-span-8 bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[#262626] pb-3 min-h-[48px]">
+        <div className="lg:col-span-8 bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-5 flex flex-col justify-between">
+          <div className="flex items-center justify-between border-b border-[#262626] pb-3">
             <div>
               <h3 className="text-base font-bold text-white font-sans">Google Search Organic Clicks Curve</h3>
-              <p className="text-xs text-zinc-400 mt-0.5">Monthly organic traffic telemetry for {domain}</p>
+              <p className="text-sm text-zinc-400 mt-1">Monthly organic traffic telemetry for {domain}</p>
             </div>
-            <span className="text-xs font-bold text-[#3ECF8E] bg-[#3ECF8E]/10 px-3 py-1.5 rounded-md border border-[#3ECF8E]/20 shrink-0">
+            <span className="text-sm font-bold text-[#3ECF8E] bg-[#3ECF8E]/10 px-3 py-1.5 rounded-lg border border-[#3ECF8E]/20 shrink-0">
               +142% Traffic Growth
             </span>
           </div>
 
-          <div className="h-56 w-full bg-[#121212] rounded-xl p-4 border border-[#262626] flex items-end justify-between gap-2.5">
+          <div className="h-60 w-full bg-[#121212] rounded-xl p-5 border border-[#262626] flex items-end justify-between gap-3">
             {monthlyTraffic.map((item, idx) => (
               <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end group">
                 <div 
                   className="w-full bg-[#3ECF8E] rounded-t transition-all group-hover:bg-[#34D399]" 
                   style={{ height: `${(item.clicks / 2800) * 100}%` }} 
                 />
-                <span className="text-xs text-zinc-400 font-medium">{item.month}</span>
+                <span className="text-sm text-zinc-400 font-medium">{item.month}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Pie Chart Representation: Keyword Distribution */}
-        <div className="lg:col-span-4 bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[#262626] pb-3 min-h-[48px]">
+        <div className="lg:col-span-4 bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-5 flex flex-col justify-between">
+          <div className="flex items-center justify-between border-b border-[#262626] pb-3">
             <div>
               <h3 className="text-base font-bold text-white font-sans">Keyword Ranking Breakdown</h3>
-              <p className="text-xs text-zinc-400 mt-0.5">Search ranking distribution across positions</p>
+              <p className="text-sm text-zinc-400 mt-1">Search ranking distribution across positions</p>
             </div>
-            <span className="text-xs text-zinc-400 bg-[#121212] px-2.5 py-1 rounded border border-[#262626] font-medium shrink-0">
+            <span className="text-sm text-zinc-400 bg-[#121212] px-3 py-1.5 rounded-lg border border-[#262626] font-medium shrink-0">
               142 Keywords
             </span>
           </div>
 
-          <div className="space-y-3 pt-1">
-            <div className="p-3.5 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
+          <div className="space-y-4 pt-1">
+            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between">
+              <div className="flex items-center gap-3">
                 <span className="w-3 h-3 rounded-full bg-[#3ECF8E]" />
-                <span className="text-xs font-bold text-white">Top 3 (#1 - #3)</span>
+                <span className="text-sm font-bold text-white">Top 3 (#1 - #3)</span>
               </div>
-              <span className="text-xs font-bold text-[#3ECF8E]">{metrics.top3Count} Keywords (35%)</span>
+              <span className="text-sm font-bold text-[#3ECF8E]">{metrics.top3Count} Keywords (35%)</span>
             </div>
 
-            <div className="p-3.5 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
+            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between">
+              <div className="flex items-center gap-3">
                 <span className="w-3 h-3 rounded-full bg-blue-400" />
-                <span className="text-xs font-bold text-white">Top 10 (#4 - #10)</span>
+                <span className="text-sm font-bold text-white">Top 10 (#4 - #10)</span>
               </div>
-              <span className="text-xs font-bold text-white">{metrics.top10Count} Keywords (45%)</span>
+              <span className="text-sm font-bold text-white">{metrics.top10Count} Keywords (45%)</span>
             </div>
 
-            <div className="p-3.5 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
+            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between">
+              <div className="flex items-center gap-3">
                 <span className="w-3 h-3 rounded-full bg-zinc-600" />
-                <span className="text-xs font-bold text-white">Top 50 (#11 - #50)</span>
+                <span className="text-sm font-bold text-white">Top 50 (#11 - #50)</span>
               </div>
-              <span className="text-xs font-bold text-zinc-400">{metrics.top50Count} Keywords (20%)</span>
+              <span className="text-sm font-bold text-zinc-400">{metrics.top50Count} Keywords (20%)</span>
             </div>
           </div>
         </div>
@@ -269,52 +269,52 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
       </div>
 
       {/* Bar Chart: LLM Chatbot Citation Scores */}
-      <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4">
-        <div className="flex items-center justify-between border-b border-[#262626] pb-3 min-h-[48px]">
+      <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-5">
+        <div className="flex items-center justify-between border-b border-[#262626] pb-3">
           <div>
             <h3 className="text-base font-bold text-white font-sans">GEO LLM Answer Engine Citation Rates</h3>
-            <p className="text-xs text-zinc-400 mt-0.5">Percentage of brand inclusion in AI answers for {domain}</p>
+            <p className="text-sm text-zinc-400 mt-1">Percentage of brand inclusion in AI answers for {domain}</p>
           </div>
-          <span className="text-xs text-[#3ECF8E] font-bold shrink-0">Updated Live</span>
+          <span className="text-sm text-[#3ECF8E] font-bold shrink-0">Updated Live</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-2">
-            <div className="flex items-center justify-between text-xs text-zinc-400">
+          <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-3">
+            <div className="flex items-center justify-between text-sm text-zinc-400">
               <span className="font-semibold">ChatGPT (GPT-4o)</span>
               <span className="text-[#3ECF8E] font-bold">{metrics.chatGptScore}</span>
             </div>
-            <div className="w-full bg-[#262626] h-2 rounded-full overflow-hidden">
+            <div className="w-full bg-[#262626] h-2.5 rounded-full overflow-hidden">
               <div className="bg-[#3ECF8E] h-full w-[94%]" />
             </div>
           </div>
 
-          <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-2">
-            <div className="flex items-center justify-between text-xs text-zinc-400">
+          <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-3">
+            <div className="flex items-center justify-between text-sm text-zinc-400">
               <span className="font-semibold">Perplexity AI</span>
               <span className="text-[#3ECF8E] font-bold">{metrics.perplexityScore}</span>
             </div>
-            <div className="w-full bg-[#262626] h-2 rounded-full overflow-hidden">
+            <div className="w-full bg-[#262626] h-2.5 rounded-full overflow-hidden">
               <div className="bg-[#3ECF8E] h-full w-[91%]" />
             </div>
           </div>
 
-          <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-2">
-            <div className="flex items-center justify-between text-xs text-zinc-400">
+          <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-3">
+            <div className="flex items-center justify-between text-sm text-zinc-400">
               <span className="font-semibold">Claude 3.5 Sonnet</span>
               <span className="text-[#3ECF8E] font-bold">{metrics.claudeScore}</span>
             </div>
-            <div className="w-full bg-[#262626] h-2 rounded-full overflow-hidden">
+            <div className="w-full bg-[#262626] h-2.5 rounded-full overflow-hidden">
               <div className="bg-[#3ECF8E] h-full w-[88%]" />
             </div>
           </div>
 
-          <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-2">
-            <div className="flex items-center justify-between text-xs text-zinc-400">
+          <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-3">
+            <div className="flex items-center justify-between text-sm text-zinc-400">
               <span className="font-semibold">Google Gemini 2.5</span>
               <span className="text-[#3ECF8E] font-bold">{metrics.geminiScore}</span>
             </div>
-            <div className="w-full bg-[#262626] h-2 rounded-full overflow-hidden">
+            <div className="w-full bg-[#262626] h-2.5 rounded-full overflow-hidden">
               <div className="bg-[#3ECF8E] h-full w-[86%]" />
             </div>
           </div>
@@ -322,31 +322,31 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
       </div>
 
       {/* Recommendations & Top Articles Table */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         
         {/* Simple Actionable Checklist */}
-        <div className="lg:col-span-6 bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 font-sans flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[#262626] pb-3 min-h-[48px]">
+        <div className="lg:col-span-6 bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-5 font-sans flex flex-col justify-between">
+          <div className="flex items-center justify-between border-b border-[#262626] pb-3">
             <div>
               <h3 className="text-base font-bold text-white font-sans">Suggested Actions to Rank Higher</h3>
-              <p className="text-xs text-zinc-400 mt-0.5">Automated AI recommendations to boost rankings</p>
+              <p className="text-sm text-zinc-400 mt-1">Automated AI recommendations to boost rankings</p>
             </div>
-            <span className="text-xs text-[#3ECF8E] font-bold shrink-0">1-Click Fixes</span>
+            <span className="text-sm text-[#3ECF8E] font-bold shrink-0">1-Click Fixes</span>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             {actionItems.map((item) => (
               <div 
                 key={item.id}
                 onClick={() => handleNavigate(item.action)}
-                className="p-3.5 bg-[#121212] rounded-xl border border-[#262626] hover:border-[#3ECF8E] transition-all cursor-pointer flex items-center justify-between gap-3"
+                className="p-4 bg-[#121212] rounded-xl border border-[#262626] hover:border-[#3ECF8E] transition-all cursor-pointer flex items-center justify-between gap-4"
               >
                 <div>
-                  <div className="flex items-center gap-2">
-                    <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs px-2.5 py-0.5 rounded font-bold">{item.tag}</span>
-                    <h4 className="text-xs font-bold text-white">{item.title}</h4>
+                  <div className="flex items-center gap-2.5">
+                    <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm px-2.5 py-0.5 rounded font-bold">{item.tag}</span>
+                    <h4 className="text-sm font-bold text-white">{item.title}</h4>
                   </div>
-                  <p className="text-xs text-zinc-400 mt-1">{item.desc}</p>
+                  <p className="text-sm text-zinc-400 mt-1">{item.desc}</p>
                 </div>
                 <ChevronRight className="w-4 h-4 text-[#3ECF8E] shrink-0" />
               </div>
@@ -355,25 +355,25 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
         </div>
 
         {/* Published Articles Matrix */}
-        <div className="lg:col-span-6 bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 font-sans flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[#262626] pb-3 min-h-[48px]">
+        <div className="lg:col-span-6 bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-5 font-sans flex flex-col justify-between">
+          <div className="flex items-center justify-between border-b border-[#262626] pb-3">
             <div>
               <h3 className="text-base font-bold text-white font-sans">Top Ranking Articles</h3>
-              <p className="text-xs text-zinc-400 mt-0.5">Live organic content performance matrix</p>
+              <p className="text-sm text-zinc-400 mt-1">Live organic content performance matrix</p>
             </div>
-            <button onClick={() => handleNavigate('studio')} className="text-xs text-[#3ECF8E] hover:underline font-bold flex items-center gap-1 shrink-0">
-              <Plus className="w-3.5 h-3.5" /> Write Article
+            <button onClick={() => handleNavigate('studio')} className="text-sm text-[#3ECF8E] hover:underline font-bold flex items-center gap-1 shrink-0">
+              <Plus className="w-4 h-4" /> Write Article
             </button>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             {articles.map((art, idx) => (
-              <div key={idx} className="p-3.5 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between gap-3">
+              <div key={idx} className="p-4 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between gap-4">
                 <div>
-                  <span className="text-xs font-bold text-white block truncate max-w-xs">{art.title}</span>
-                  <span className="text-xs text-zinc-400 mt-0.5 block">{art.clicks} clicks • Rank {art.rank} on Google</span>
+                  <span className="text-sm font-bold text-white block truncate max-w-xs">{art.title}</span>
+                  <span className="text-sm text-zinc-400 mt-1 block">{art.clicks} clicks • Rank {art.rank} on Google</span>
                 </div>
-                <span className="text-xs font-bold text-[#3ECF8E] bg-[#3ECF8E]/10 px-2.5 py-1 rounded border border-[#3ECF8E]/20 shrink-0">
+                <span className="text-sm font-bold text-[#3ECF8E] bg-[#3ECF8E]/10 px-3 py-1 rounded-lg border border-[#3ECF8E]/20 shrink-0">
                   {art.status}
                 </span>
               </div>

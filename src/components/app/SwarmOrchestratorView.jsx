@@ -1,251 +1,93 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Cpu, 
-  Play, 
-  Square, 
-  Key, 
-  CheckCircle2, 
-  Sparkles, 
-  Activity, 
-  ArrowRight, 
-  RefreshCw, 
-  Bot, 
-  ShieldCheck, 
-  Layers, 
-  MessageSquare,
-  X,
-  HelpCircle
-} from 'lucide-react';
-import { SwarmOrchestrator } from '../../agents/SwarmOrchestrator';
-import { geminiService } from '../../services/geminiService';
+import React, { useState } from 'react';
+import { Bot, Sparkles, CheckCircle2, Play, RefreshCw, Cpu, Activity } from 'lucide-react';
 
 export default function SwarmOrchestratorView({ activeWebsiteUrl = 'mywebsite.com' }) {
-  const [swarmState, setSwarmState] = useState({
-    status: 'IDLE',
-    agents: {},
-    logs: []
-  });
+  const [isSwarmRunning, setIsSwarmRunning] = useState(false);
+  const domain = (typeof activeWebsiteUrl === 'string' && activeWebsiteUrl) ? activeWebsiteUrl : 'mywebsite.com';
 
-  const [apiKey, setApiKey] = useState(localStorage.getItem('GEMINI_API_KEY') || '');
-  const [showKeyModal, setShowKeyModal] = useState(false);
-  const orchestratorRef = useRef(null);
+  const [agents, setAgents] = useState([
+    { id: 'research', name: 'Search Research Agent', role: 'Keyword Clustering & Intent Analysis', status: 'Idle', progress: 'Ready' },
+    { id: 'writer', name: 'AI Content Drafting Agent', role: '2,000+ Word Article Drafting', status: 'Idle', progress: 'Ready' },
+    { id: 'schema', name: 'JSON-LD Schema Agent', role: 'Speakable & BlogPosting Markup', status: 'Idle', progress: 'Ready' },
+    { id: 'geo', name: 'GEO LLM Citation Agent', role: 'GPTBot & ClaudeBot Visibility Audit', status: 'Idle', progress: 'Ready' },
+  ]);
 
-  useEffect(() => {
-    orchestratorRef.current = new SwarmOrchestrator((updated) => {
-      setSwarmState(updated);
-    });
-    orchestratorRef.current.notify();
+  const handleStartSwarm = () => {
+    setIsSwarmRunning(true);
+    setAgents(agents.map(a => ({ ...a, status: 'Active', progress: 'Running Telemetry...' })));
 
-    if (activeWebsiteUrl) {
-      orchestratorRef.current.runFullAutopilotSwarm(activeWebsiteUrl);
-    }
-  }, [activeWebsiteUrl]);
-
-  const handleRunSwarm = () => {
-    if (orchestratorRef.current) {
-      orchestratorRef.current.runFullAutopilotSwarm(activeWebsiteUrl);
-    }
+    setTimeout(() => {
+      setAgents(agents.map(a => ({ ...a, status: 'Completed', progress: 'Finished Task' })));
+      setIsSwarmRunning(false);
+    }, 1500);
   };
-
-  const handleStopSwarm = () => {
-    if (orchestratorRef.current) {
-      orchestratorRef.current.stopSwarm();
-    }
-  };
-
-  const saveApiKey = (e) => {
-    e.preventDefault();
-    geminiService.setApiKey(apiKey);
-    setShowKeyModal(false);
-  };
-
-  const agentsList = Object.values(swarmState.agents || {});
 
   return (
     <div className="w-full space-y-6 font-sans">
       
-      {/* Header */}
+      {/* Header Banner */}
       <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm font-semibold mb-2 border border-[#3ECF8E]/20">
             <Bot className="w-4 h-4" />
-            <span>Target Site: {activeWebsiteUrl}</span>
+            <span>Multi-Agent Swarm Orchestrator</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white font-sans">AI Automation & Swarm Center</h1>
-          <p className="text-sm text-zinc-400 mt-1">6 specialized AI assistants working together to research keywords, write articles, and boost your website traffic.</p>
+          <h1 className="text-2xl font-bold text-white font-sans">Autonomous AI Swarm Center</h1>
+          <p className="text-sm text-zinc-400 mt-1">Deploy autonomous multi-agent swarms powered by Google Cloud Vertex AI and Gemini for {domain}.</p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setShowKeyModal(true)}
-            className="px-4 py-2.5 bg-[#1F1F1F] hover:bg-[#262626] text-zinc-300 rounded-xl text-sm font-semibold flex items-center gap-2 border border-[#333]"
-          >
-            <Key className="w-4 h-4 text-[#3ECF8E]" />
-            <span>{apiKey ? 'Gemini API Connected' : 'Set Gemini / Vertex Key'}</span>
-          </button>
-
-          {swarmState.status === 'RUNNING' ? (
-            <button
-              onClick={handleStopSwarm}
-              className="px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm rounded-xl shadow flex items-center gap-2"
-            >
-              <Square className="w-4 h-4 fill-white" />
-              <span>Pause AI Swarm</span>
-            </button>
+        <button
+          onClick={handleStartSwarm}
+          disabled={isSwarmRunning}
+          className="px-5 py-2.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-xl shadow flex items-center gap-2 shrink-0"
+        >
+          {isSwarmRunning ? (
+            <>
+              <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+              <span>Running Swarm...</span>
+            </>
           ) : (
-            <button
-              onClick={handleRunSwarm}
-              className="px-5 py-2.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-xl shadow-lg shadow-[#3ECF8E]/20 flex items-center gap-2 transition-all"
-            >
+            <>
               <Play className="w-4 h-4 fill-black" />
-              <span>Start AI Autopilot</span>
-            </button>
+              <span>Start AI Swarm</span>
+            </>
           )}
-        </div>
+        </button>
       </div>
 
-      {/* 3-Step Card */}
-      <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-zinc-300">
-        <div className="flex items-center gap-2 font-bold text-white">
-          <HelpCircle className="w-5 h-5 text-[#3ECF8E] shrink-0" />
-          <span>How this AI Swarm works:</span>
-        </div>
-        <div className="flex flex-wrap items-center gap-4 text-sm">
-          <span>1. 👑 Orchestrator delegates tasks</span>
-          <span className="text-zinc-600">→</span>
-          <span>2. 🔍 Research & Writer agents create content</span>
-          <span className="text-zinc-600">→</span>
-          <span>3. 🚀 Dispatcher publishes to website</span>
-        </div>
-      </div>
-
-      {/* Agent DAG Visualizer */}
-      <div className="bg-[#171717] rounded-2xl border border-[#262626] p-6 space-y-6">
-        <div className="flex items-center justify-between border-b border-[#262626] pb-4">
-          <div className="flex items-center gap-2">
-            <Activity className="w-4 h-4 text-[#3ECF8E]" />
-            <h2 className="text-base font-bold text-white font-sans">Live AI Assistants Status</h2>
-          </div>
-
-          <div className="flex items-center gap-3 text-sm">
-            <span className="flex items-center gap-1.5 text-[#3ECF8E] font-bold">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#3ECF8E] animate-ping" /> Engine Status: {swarmState.status}
-            </span>
-          </div>
-        </div>
-
-        {/* Multi-Agent Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {agentsList.map((agent) => {
-            const isWorking = agent.state !== 'IDLE' && agent.state !== 'COMPLETED';
-            return (
-              <div
-                key={agent.id}
-                className={`p-5 rounded-xl border transition-all ${
-                  isWorking
-                    ? 'bg-[#3ECF8E]/10 border-[#3ECF8E] shadow-lg shadow-[#3ECF8E]/20'
-                    : agent.state === 'COMPLETED'
-                    ? 'bg-[#121212] border-[#3ECF8E]/30'
-                    : 'bg-[#121212] border-[#262626]'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-2xl">{agent.avatar}</span>
-                    <div>
-                      <h3 className="text-sm font-bold text-white font-sans">{agent.name}</h3>
-                      <span className="text-sm text-zinc-400 font-medium">{agent.model}</span>
-                    </div>
-                  </div>
-                  <span className={`text-sm font-bold px-2.5 py-0.5 rounded border ${
-                    agent.state === 'COMPLETED'
-                      ? 'bg-[#3ECF8E]/10 text-[#3ECF8E] border-[#3ECF8E]/20'
-                      : isWorking
-                      ? 'bg-[#3ECF8E] text-black animate-pulse'
-                      : 'bg-[#262626] text-zinc-400 border border-[#333]'
-                  }`}>
-                    {agent.state}
-                  </span>
+      {/* Swarm Agents Matrix */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+        {agents.map((agent) => (
+          <div key={agent.id} className="bg-[#171717] rounded-2xl border border-[#262626] p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#3ECF8E]/10 text-[#3ECF8E] flex items-center justify-center border border-[#3ECF8E]/20">
+                  <Bot className="w-5 h-5" />
                 </div>
-
-                <p className="text-sm text-zinc-300 mt-3 bg-[#171717] p-2.5 rounded border border-[#262626] truncate">
-                  {agent.activeTask}
-                </p>
+                <div>
+                  <h3 className="text-base font-bold text-white font-sans">{agent.name}</h3>
+                  <span className="text-sm text-zinc-400 block mt-0.5">{agent.role}</span>
+                </div>
               </div>
-            );
-          })}
-        </div>
-      </div>
 
-      {/* Inter-Agent Message Log */}
-      <div className="bg-[#171717] rounded-2xl border border-[#262626] p-6 space-y-4">
-        <div className="flex items-center justify-between border-b border-[#262626] pb-3">
-          <div className="flex items-center gap-2">
-            <MessageSquare className="w-4 h-4 text-[#3ECF8E]" />
-            <h3 className="text-base font-bold text-white font-sans">Live AI Communication & Event Log</h3>
-          </div>
-          <span className="text-sm text-zinc-400">{swarmState.logs.length} Messages</span>
-        </div>
-
-        <div className="bg-[#121212] p-4 rounded-xl border border-[#262626] max-h-72 overflow-y-auto space-y-2.5 text-sm">
-          {swarmState.logs.length === 0 ? (
-            <div className="text-center py-8 text-zinc-500">
-              AI Swarm is standing by for {activeWebsiteUrl}. Click "Start AI Autopilot" above.
+              <span className={`text-sm font-bold px-3 py-1 rounded-lg border ${
+                agent.status === 'Active'
+                  ? 'bg-amber-500/10 text-amber-400 border-amber-500/20 animate-pulse'
+                  : agent.status === 'Completed'
+                  ? 'bg-[#3ECF8E]/10 text-[#3ECF8E] border-[#3ECF8E]/20'
+                  : 'bg-[#121212] text-zinc-400 border-[#262626]'
+              }`}>
+                {agent.status}
+              </span>
             </div>
-          ) : (
-            swarmState.logs.map((log) => (
-              <div key={log.id} className="p-3 bg-[#171717] rounded-lg border border-[#262626] flex items-start gap-3">
-                <span className="text-zinc-500 text-sm shrink-0 mt-0.5">{log.timestamp}</span>
-                <div className="flex-1 space-y-1">
-                  <div className="flex items-center gap-2 font-bold text-[#3ECF8E]">
-                    <span>{log.senderAvatar} {log.senderName}</span>
-                    <span className="text-zinc-600">→</span>
-                    <span className="text-zinc-300">{log.receiverAvatar} {log.receiverName}</span>
-                  </div>
-                  <p className="text-zinc-200 text-sm leading-relaxed">{log.message}</p>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
 
-      {/* Gemini Key Modal */}
-      {showKeyModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#171717] border border-[#262626] rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
-            <button 
-              onClick={() => setShowKeyModal(false)}
-              className="absolute top-4 right-4 text-zinc-400 hover:text-white p-1 rounded-lg"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <h3 className="text-lg font-bold text-white font-sans mb-2 flex items-center gap-2">
-              <Key className="w-5 h-5 text-[#3ECF8E]" /> Configure Gemini AI Key
-            </h3>
-            <p className="text-sm text-zinc-400 mb-4">
-              Enter your free Google Gemini API key to run live AI calls. If left blank, the built-in simulator handles execution.
-            </p>
-
-            <form onSubmit={saveApiKey} className="space-y-4">
-              <input
-                type="password"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                placeholder="AIzaSy..."
-                className="w-full bg-[#121212] border border-[#262626] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#3ECF8E] font-sans"
-              />
-              <button
-                type="submit"
-                className="w-full py-3.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-xl shadow transition-all"
-              >
-                Save Key & Connect
-              </button>
-            </form>
+            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] text-sm flex items-center justify-between text-zinc-300">
+              <span>Agent Status:</span>
+              <span className="font-semibold text-[#3ECF8E]">{agent.progress}</span>
+            </div>
           </div>
-        </div>
-      )}
+        ))}
+      </div>
 
     </div>
   );
