@@ -61,7 +61,7 @@ export default function AppSidebar({ activeWebsiteUrl, setActiveWebsiteUrl, acti
   return (
     <aside 
       aria-label="Sidebar Navigation"
-      className="w-64 bg-[#171717] border-r border-[#262626] flex flex-col justify-between shrink-0 h-[calc(100vh-64px)] sticky top-16 overflow-hidden select-none"
+      className="w-[296px] bg-[#171717] border-r border-[#262626] flex flex-col justify-between shrink-0 h-[calc(100vh-64px)] sticky top-16 overflow-hidden select-none"
     >
       {/* Top Section */}
       <div className="p-3.5 space-y-3 flex-1 flex flex-col overflow-hidden">
@@ -99,7 +99,7 @@ export default function AppSidebar({ activeWebsiteUrl, setActiveWebsiteUrl, acti
           </form>
         </div>
 
-        {/* Categorized Navigation Links (Super Simple Labels) */}
+        {/* Categorized Navigation Links */}
         <nav aria-label="SEO AEO GEO Modules" className="space-y-3 flex-1 overflow-y-auto pr-1">
           {menuCategories.map((group, gIdx) => (
             <div key={gIdx} className="space-y-1">
