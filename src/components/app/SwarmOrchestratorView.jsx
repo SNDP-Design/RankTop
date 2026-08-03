@@ -62,27 +62,27 @@ export default function SwarmOrchestratorView() {
       {/* Top Banner */}
       <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-400 text-xs font-semibold mb-2">
-            <Cpu className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-500/10 text-brand-400 text-sm font-semibold mb-2">
+            <Cpu className="w-4 h-4" />
             <span>Google ADK & Vertex AI Architecture</span>
           </div>
-          <h1 className="text-2xl font-bold text-white font-outfit">Autonomous Multi-Agent AI Swarm Center</h1>
-          <p className="text-xs text-slate-400 mt-1">Coordinated multi-agent DAG pipeline powered by Gemini 2.5 Pro & Gemini 2.5 Flash</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white font-outfit">Autonomous Multi-Agent AI Swarm Center</h1>
+          <p className="text-sm text-slate-400 mt-1">Coordinated multi-agent DAG pipeline powered by Gemini 2.5 Pro & Gemini 2.5 Flash</p>
         </div>
 
         <div className="flex items-center gap-3">
           <button
             onClick={() => setShowKeyModal(true)}
-            className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold flex items-center gap-2 border border-slate-700"
+            className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm font-semibold flex items-center gap-2 border border-slate-700"
           >
-            <Key className="w-3.5 h-3.5 text-amber-400" />
+            <Key className="w-4 h-4 text-amber-400" />
             <span>{apiKey ? 'Gemini API Connected' : 'Set Gemini / Vertex Key'}</span>
           </button>
 
           {swarmState.status === 'RUNNING' ? (
             <button
               onClick={handleStopSwarm}
-              className="px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl shadow flex items-center gap-2"
+              className="px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm rounded-xl shadow flex items-center gap-2"
             >
               <Square className="w-4 h-4 fill-white" />
               <span>Stop Swarm</span>
@@ -90,7 +90,7 @@ export default function SwarmOrchestratorView() {
           ) : (
             <button
               onClick={handleRunSwarm}
-              className="px-5 py-2.5 bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white font-bold text-xs rounded-xl shadow-lg shadow-brand-500/25 flex items-center gap-2"
+              className="px-5 py-2.5 bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white font-bold text-sm rounded-xl shadow-lg shadow-brand-500/25 flex items-center gap-2"
             >
               <Play className="w-4 h-4 fill-white" />
               <span>Run Autopilot Swarm</span>
@@ -104,12 +104,12 @@ export default function SwarmOrchestratorView() {
         <div className="flex items-center justify-between border-b border-slate-800 pb-4">
           <div className="flex items-center gap-2">
             <Activity className="w-4 h-4 text-brand-500" />
-            <h2 className="text-sm font-bold text-white font-outfit">Live Agent Swarm DAG Topology</h2>
+            <h2 className="text-base font-bold text-white font-outfit">Live Agent Swarm DAG Topology</h2>
           </div>
 
-          <div className="flex items-center gap-3 text-xs font-mono">
+          <div className="flex items-center gap-3 text-sm font-mono">
             <span className="flex items-center gap-1.5 text-emerald-400">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" /> Engine Status: {swarmState.status}
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" /> Engine Status: {swarmState.status}
             </span>
           </div>
         </div>
@@ -121,7 +121,7 @@ export default function SwarmOrchestratorView() {
             return (
               <div
                 key={agent.id}
-                className={`p-4 rounded-xl border transition-all ${
+                className={`p-5 rounded-xl border transition-all ${
                   isWorking
                     ? 'bg-brand-500/10 border-brand-500 shadow-lg shadow-brand-500/20'
                     : agent.state === 'COMPLETED'
@@ -131,13 +131,13 @@ export default function SwarmOrchestratorView() {
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2.5">
-                    <span className="text-xl">{agent.avatar}</span>
+                    <span className="text-2xl">{agent.avatar}</span>
                     <div>
-                      <h3 className="text-xs font-bold text-white font-outfit">{agent.name}</h3>
-                      <span className="text-[10px] text-slate-400 font-mono">{agent.model}</span>
+                      <h3 className="text-sm font-bold text-white font-outfit">{agent.name}</h3>
+                      <span className="text-sm text-slate-400 font-mono">{agent.model}</span>
                     </div>
                   </div>
-                  <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border ${
+                  <span className={`text-sm font-mono font-bold px-2.5 py-0.5 rounded border ${
                     agent.state === 'COMPLETED'
                       ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
                       : isWorking
@@ -148,7 +148,7 @@ export default function SwarmOrchestratorView() {
                   </span>
                 </div>
 
-                <p className="text-[11px] text-slate-300 mt-2 font-mono bg-slate-900 p-2 rounded border border-slate-800/80 truncate">
+                <p className="text-sm text-slate-300 mt-3 font-mono bg-slate-900 p-2.5 rounded border border-slate-800/80 truncate">
                   {agent.activeTask}
                 </p>
               </div>
@@ -162,12 +162,12 @@ export default function SwarmOrchestratorView() {
         <div className="flex items-center justify-between border-b border-slate-800 pb-3">
           <div className="flex items-center gap-2">
             <MessageSquare className="w-4 h-4 text-brand-400" />
-            <h3 className="text-sm font-bold text-white font-outfit">Inter-Agent Communication & Task Event Bus</h3>
+            <h3 className="text-base font-bold text-white font-outfit">Inter-Agent Communication & Task Event Bus</h3>
           </div>
-          <span className="text-xs font-mono text-slate-400">{swarmState.logs.length} Messages Logged</span>
+          <span className="text-sm font-mono text-slate-400">{swarmState.logs.length} Messages Logged</span>
         </div>
 
-        <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 max-h-72 overflow-y-auto space-y-2.5 font-mono text-xs">
+        <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 max-h-72 overflow-y-auto space-y-2.5 font-mono text-sm">
           {swarmState.logs.length === 0 ? (
             <div className="text-center py-8 text-slate-500">
               Swarm is standing by. Click "Run Autopilot Swarm" above to launch agent delegation.
@@ -175,14 +175,14 @@ export default function SwarmOrchestratorView() {
           ) : (
             swarmState.logs.map((log) => (
               <div key={log.id} className="p-3 bg-slate-900 rounded-lg border border-slate-800/80 flex items-start gap-3">
-                <span className="text-slate-500 text-[10px] shrink-0 mt-0.5">{log.timestamp}</span>
+                <span className="text-slate-500 text-sm shrink-0 mt-0.5">{log.timestamp}</span>
                 <div className="flex-1 space-y-1">
                   <div className="flex items-center gap-2 font-bold text-brand-400">
                     <span>{log.senderAvatar} {log.senderName}</span>
                     <span className="text-slate-600">→</span>
                     <span className="text-slate-300">{log.receiverAvatar} {log.receiverName}</span>
                   </div>
-                  <p className="text-slate-200 text-[11px] leading-relaxed">{log.message}</p>
+                  <p className="text-slate-200 text-sm leading-relaxed">{log.message}</p>
                 </div>
               </div>
             ))
@@ -204,7 +204,7 @@ export default function SwarmOrchestratorView() {
             <h3 className="text-lg font-bold text-white font-outfit mb-2 flex items-center gap-2">
               <Key className="w-5 h-5 text-amber-400" /> Configure Gemini / Vertex AI Key
             </h3>
-            <p className="text-xs text-slate-400 mb-4">
+            <p className="text-sm text-slate-400 mb-4">
               Enter your Google GenAI API key to execute live Gemini 2.5 Pro / Flash calls. If left empty, the autonomous agent simulator handles execution.
             </p>
 
@@ -214,11 +214,11 @@ export default function SwarmOrchestratorView() {
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder="AIzaSy..."
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-brand-500 font-mono"
+                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500 font-mono"
               />
               <button
                 type="submit"
-                className="w-full py-3 bg-brand-500 hover:bg-brand-400 text-white font-bold text-xs rounded-xl shadow transition-all"
+                className="w-full py-3.5 bg-brand-500 hover:bg-brand-400 text-white font-bold text-sm rounded-xl shadow transition-all"
               >
                 Save Gemini Key
               </button>

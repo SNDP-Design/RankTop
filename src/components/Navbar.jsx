@@ -14,26 +14,26 @@ export default function Navbar({ activeAppTab, setActiveAppTab }) {
             </div>
             <div>
               <span className="font-extrabold text-xl tracking-tight text-white flex items-center gap-1 font-outfit">
-                RankTop<span className="text-brand-500 font-mono text-xs font-semibold bg-brand-500/10 px-1.5 py-0.5 rounded border border-brand-500/20">.ai</span>
+                RankTop<span className="text-brand-500 font-mono text-sm font-semibold bg-brand-500/10 px-2 py-0.5 rounded border border-brand-500/20">.ai</span>
               </span>
             </div>
           </div>
 
           {/* Active Workspace Banner */}
           <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-full px-3 py-1 text-xs">
+            <div className="hidden sm:flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-full px-3 py-1 text-sm">
               <span className="text-slate-400">Workspace:</span>
               <span className="text-white font-semibold flex items-center gap-1">
-                <Globe className="w-3.5 h-3.5 text-brand-500" /> mywebsite.com
+                <Globe className="w-4 h-4 text-brand-500" /> mywebsite.com
               </span>
-              <span className="bg-emerald-500/10 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full border border-emerald-500/20 font-medium">ADK Swarm Active</span>
+              <span className="bg-emerald-500/10 text-emerald-400 text-sm px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-medium">ADK Swarm Active</span>
             </div>
 
             <button
               onClick={() => setActiveAppTab('swarm')}
-              className="px-3.5 py-1.5 bg-brand-500 hover:bg-brand-400 text-white font-bold text-xs rounded-lg shadow flex items-center gap-1.5 transition-all"
+              className="px-4 py-2 bg-brand-500 hover:bg-brand-400 text-white font-bold text-sm rounded-lg shadow flex items-center gap-2 transition-all"
             >
-              <Bot className="w-3.5 h-3.5" />
+              <Bot className="w-4 h-4" />
               <span>AI Swarm Engine</span>
             </button>
           </div>

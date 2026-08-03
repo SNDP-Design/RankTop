@@ -5,8 +5,15 @@
 @tailwind utilities;
 
 @layer base {
-  body {
+  html, body {
     @apply bg-[#0B0F17] text-slate-100 font-sans antialiased selection:bg-brand-500 selection:text-white;
+    font-size: 14px !important;
+    min-font-size: 14px !important;
+  }
+
+  /* Strict Minimum Font Size Rule Across Whole App */
+  *, ::before, ::after {
+    min-font-size: 14px !important;
   }
 }
 
