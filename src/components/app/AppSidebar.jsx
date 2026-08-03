@@ -47,15 +47,15 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
   return (
     <aside 
       aria-label="Sidebar Navigation"
-      className="w-[296px] bg-[#171717] border-r border-[#262626] flex flex-col justify-between shrink-0 h-[calc(100vh-64px)] overflow-y-auto select-none"
+      className="w-[296px] bg-[#171717] border-r border-[#262626] flex flex-col justify-between shrink-0 h-[calc(100vh-64px)] overflow-hidden select-none"
     >
-      {/* Top Section with Spacious Layout */}
-      <div className="p-5 space-y-6 flex-1 flex flex-col">
-        <nav aria-label="SEO AEO GEO Modules" className="space-y-6 flex-1">
+      {/* Fixed Non-Scrollable Layout with Compact Fitting Spacing */}
+      <div className="p-4 space-y-4 flex-1 flex flex-col overflow-hidden">
+        <nav aria-label="SEO AEO GEO Modules" className="space-y-4 flex-1 overflow-hidden">
           {menuCategories.map((group, gIdx) => (
-            <div key={gIdx} className="space-y-2">
+            <div key={gIdx} className="space-y-1.5">
               {group.category && (
-                <span className="px-3 text-xs uppercase tracking-wider text-[#3ECF8E] font-bold block mb-2">
+                <span className="px-3 text-[11px] uppercase tracking-wider text-[#3ECF8E] font-bold block mb-1">
                   {group.category}
                 </span>
               )}
@@ -68,14 +68,14 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
                     key={item.id}
                     onClick={() => setActiveTab(item.id)}
                     aria-current={isActive ? 'page' : undefined}
-                    className={`w-full flex items-center justify-start px-4 py-3 rounded-xl text-base font-semibold transition-all focus-visible:ring-2 focus-visible:ring-[#3ECF8E] focus-visible:outline-none ${
+                    className={`w-full flex items-center justify-start px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all focus-visible:ring-2 focus-visible:ring-[#3ECF8E] focus-visible:outline-none ${
                       isActive
-                        ? 'bg-[#3ECF8E] text-black font-bold shadow-lg shadow-[#3ECF8E]/20'
+                        ? 'bg-[#3ECF8E] text-black font-bold shadow-md shadow-[#3ECF8E]/20'
                         : 'text-zinc-300 hover:text-white hover:bg-[#262626]'
                     }`}
                   >
                     <div className="flex items-center gap-3 truncate">
-                      <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-black' : 'text-zinc-400'}`} aria-hidden="true" />
+                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-black' : 'text-zinc-400'}`} aria-hidden="true" />
                       <span className="truncate">{item.label}</span>
                     </div>
                   </button>
