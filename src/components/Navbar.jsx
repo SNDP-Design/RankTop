@@ -18,7 +18,7 @@ export default function Navbar({ activeWebsiteUrl, setActiveWebsiteUrl, activeAp
   };
 
   return (
-    <header role="banner" className="sticky top-0 z-50 bg-[#121212]/95 backdrop-blur-xl border-b border-[#262626] w-full">
+    <header role="banner" className="bg-[#121212]/95 backdrop-blur-xl border-b border-[#262626] w-full" style={{ position: 'fixed', top: 0, left: 0, right: 0, height: '64px', zIndex: 50 }}>
       <div className="w-full px-6 flex items-center justify-between h-16 gap-4">
         
         {/* Left: Brand Logo */}

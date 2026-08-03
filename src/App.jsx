@@ -58,7 +58,7 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen flex flex-col bg-[#121212] text-slate-100 font-sans selection:bg-[#3ECF8E] selection:text-black">
+    <div style={{ height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }} className="bg-[#121212] text-slate-100 font-sans selection:bg-[#3ECF8E] selection:text-black">
         
         {/* Global Accessibility Skip Link */}
         <a 
@@ -68,16 +68,18 @@ export default function App() {
           Skip to main content
         </a>
 
-        {/* Global Top Navbar */}
+        {/* Global Top Navbar — position:fixed, sits above everything */}
         <Navbar 
           activeWebsiteUrl={activeWebsiteUrl}
           setActiveWebsiteUrl={setActiveWebsiteUrl}
           activeAppTab={activeAppTab}
           setActiveAppTab={openAppWithTab}
         />
+        {/* Spacer: 64px to push content below the fixed Navbar */}
+        <div style={{ height: '64px', flexShrink: 0 }} aria-hidden="true" />
 
         {/* RANKTOP WEB APP WORKSPACE (Zero Layout Shift Architecture across all modules) */}
-        <div className="flex-1 flex overflow-hidden h-[calc(100vh-64px)]">
+        <div style={{ flex: 1, display: 'flex', overflow: 'hidden', minHeight: 0 }}>
           <AppSidebar 
             activeWebsiteUrl={activeWebsiteUrl}
             activeTab={activeAppTab} 
@@ -88,7 +90,8 @@ export default function App() {
             id="main-content"
             role="main"
             aria-label="Workspace Module View"
-            className="flex-1 overflow-y-auto bg-[#0F0F0F] h-full p-6 pb-24 focus-visible:outline-none font-sans"
+            style={{ flex: 1, overflowY: 'auto', background: '#0F0F0F', minHeight: 0 }}
+            className="p-6 pb-24 focus-visible:outline-none font-sans"
           >
             <div className="w-full space-y-6">
               {renderActiveModule()}
