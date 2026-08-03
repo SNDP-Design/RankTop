@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Sparkles, Copy, Check, Download, Share2, Globe, Cpu, CheckCircle2 } from 'lucide-react';
+import { FileText, Sparkles, Copy, Check } from 'lucide-react';
 import { geminiService } from '../../services/geminiService';
+import { useAgents } from '../../context/AgentContext';
 
-export default function AiBlogStudio({ activeWebsiteUrl = 'mywebsite.com', initialKeyword = '' }) {
+export default function AiBlogStudio({ initialKeyword = '' }) {
+  const { websiteUrl } = useAgents();
   const [targetKeyword, setTargetKeyword] = useState(initialKeyword || '');
   const [wordCount, setWordCount] = useState('2000');
   const [tone, setTone] = useState('Authoritative & Professional');
@@ -10,7 +12,7 @@ export default function AiBlogStudio({ activeWebsiteUrl = 'mywebsite.com', initi
   const [generatedArticle, setGeneratedArticle] = useState('');
   const [copied, setCopied] = useState(false);
 
-  const domain = (typeof activeWebsiteUrl === 'string' && activeWebsiteUrl) ? activeWebsiteUrl : 'mywebsite.com';
+  const domain = websiteUrl || 'mywebsite.com';
 
   useEffect(() => {
     if (initialKeyword) {

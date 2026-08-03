@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { AgentProvider } from './context/AgentContext';
 import Navbar from './components/Navbar';
+import ApiKeyModal from './components/ApiKeyModal';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
 // RankTop Web App Workspace Components
@@ -14,92 +16,80 @@ import CompetitorSpy from './components/app/CompetitorSpy';
 import CmsIntegrations from './components/app/CmsIntegrations';
 import FreeToolsApp from './components/app/FreeToolsApp';
 
-export default function App() {
-  const [activeWebsiteUrl, setActiveWebsiteUrl] = useState('https://mywebsite.com'); // Website URL managed in Top Navbar Input
-  const [activeAppTab, setActiveAppTab] = useState('dashboard'); // Default to Master Dashboard overview
+function WorkspaceShell() {
+  const [activeAppTab, setActiveAppTab] = useState('dashboard');
   const [studioKeyword, setStudioKeyword] = useState('');
 
   const openAppWithTab = (tab, keyword = '') => {
-    if (keyword) {
-      setStudioKeyword(keyword);
-    }
+    if (keyword) setStudioKeyword(keyword);
     setActiveAppTab(tab || 'dashboard');
-    
-    // Smooth reset scroll position inside main content container
     const mainEl = document.getElementById('main-content');
-    if (mainEl) {
-      mainEl.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    if (mainEl) mainEl.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const renderActiveModule = () => {
     switch (activeAppTab) {
-      case 'swarm':
-        return <SwarmOrchestratorView activeWebsiteUrl={activeWebsiteUrl} />;
-      case 'strategy':
-        return <KeywordStrategy activeWebsiteUrl={activeWebsiteUrl} onGenerateArticle={(kw) => openAppWithTab('studio', kw)} />;
-      case 'studio':
-        return <AiBlogStudio activeWebsiteUrl={activeWebsiteUrl} initialKeyword={studioKeyword} />;
-      case 'aeo':
-        return <AeoSimulatorApp />;
-      case 'geo':
-        return <LlmGeoOptimization activeWebsiteUrl={activeWebsiteUrl} />;
-      case 'competitors':
-        return <CompetitorSpy activeWebsiteUrl={activeWebsiteUrl} onGenerateArticle={(kw) => openAppWithTab('studio', kw)} />;
-      case 'cms':
-        return <CmsIntegrations />;
-      case 'freetools':
-        return <FreeToolsApp />;
+      case 'swarm':      return <SwarmOrchestratorView />;
+      case 'strategy':   return <KeywordStrategy onGenerateArticle={(kw) => openAppWithTab('studio', kw)} />;
+      case 'studio':     return <AiBlogStudio initialKeyword={studioKeyword} />;
+      case 'aeo':        return <AeoSimulatorApp />;
+      case 'geo':        return <LlmGeoOptimization />;
+      case 'competitors': return <CompetitorSpy onGenerateArticle={(kw) => openAppWithTab('studio', kw)} />;
+      case 'cms':        return <CmsIntegrations />;
+      case 'freetools':  return <FreeToolsApp />;
       case 'dashboard':
-      default:
-        return <DashboardOverview activeWebsiteUrl={activeWebsiteUrl} setActiveTab={openAppWithTab} />;
+      default:           return <DashboardOverview setActiveTab={openAppWithTab} />;
     }
   };
 
   return (
-    <ErrorBoundary>
-    <div style={{ height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }} className="bg-[#121212] text-slate-100 font-sans selection:bg-[#3ECF8E] selection:text-black">
-        
-        {/* Global Accessibility Skip Link */}
-        <a 
-          href="#main-content" 
-          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-[#3ECF8E] focus:text-black focus:font-bold focus:rounded-lg"
+    <>
+      {/* Fixed Navbar */}
+      <Navbar />
+      {/* ApiKey Modal — rendered at root level, overlays everything */}
+      <ApiKeyModal />
+      {/* 64px spacer for fixed navbar */}
+      <div style={{ height: '64px', flexShrink: 0 }} aria-hidden="true" />
+
+      {/* App workspace */}
+      <div style={{ flex: 1, display: 'flex', overflow: 'hidden', minHeight: 0 }}>
+        <AppSidebar activeTab={activeAppTab} setActiveTab={openAppWithTab} />
+
+        <main
+          id="main-content"
+          role="main"
+          aria-label="Workspace Module View"
+          style={{ flex: 1, overflowY: 'auto', background: '#0F0F0F', minHeight: 0 }}
+          className="p-6 pb-24 focus-visible:outline-none font-sans"
         >
-          Skip to main content
-        </a>
-
-        {/* Global Top Navbar — position:fixed, sits above everything */}
-        <Navbar 
-          activeWebsiteUrl={activeWebsiteUrl}
-          setActiveWebsiteUrl={setActiveWebsiteUrl}
-          activeAppTab={activeAppTab}
-          setActiveAppTab={openAppWithTab}
-        />
-        {/* Spacer: 64px to push content below the fixed Navbar */}
-        <div style={{ height: '64px', flexShrink: 0 }} aria-hidden="true" />
-
-        {/* RANKTOP WEB APP WORKSPACE (Zero Layout Shift Architecture across all modules) */}
-        <div style={{ flex: 1, display: 'flex', overflow: 'hidden', minHeight: 0 }}>
-          <AppSidebar 
-            activeWebsiteUrl={activeWebsiteUrl}
-            activeTab={activeAppTab} 
-            setActiveTab={openAppWithTab} 
-          />
-
-          <main 
-            id="main-content"
-            role="main"
-            aria-label="Workspace Module View"
-            style={{ flex: 1, overflowY: 'auto', background: '#0F0F0F', minHeight: 0 }}
-            className="p-6 pb-24 focus-visible:outline-none font-sans"
-          >
-            <div className="w-full space-y-6">
-              {renderActiveModule()}
-            </div>
-          </main>
-        </div>
-
+          <div className="w-full space-y-6">
+            {renderActiveModule()}
+          </div>
+        </main>
       </div>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <ErrorBoundary>
+      <AgentProvider>
+        <div
+          style={{ height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+          className="bg-[#121212] text-slate-100 font-sans selection:bg-[#3ECF8E] selection:text-black"
+        >
+          {/* Global Accessibility Skip Link */}
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-[#3ECF8E] focus:text-black focus:font-bold focus:rounded-lg"
+          >
+            Skip to main content
+          </a>
+
+          <WorkspaceShell />
+        </div>
+      </AgentProvider>
     </ErrorBoundary>
   );
 }

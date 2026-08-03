@@ -1,386 +1,225 @@
-import React, { useState } from 'react';
-import { 
-  TrendingUp, 
-  Eye, 
-  MousePointer, 
-  Target, 
-  Sparkles, 
-  ArrowUpRight, 
-  CheckCircle2, 
-  RefreshCw, 
-  FileText, 
-  Share2, 
-  AlertCircle, 
-  Cpu, 
-  Zap, 
-  Globe, 
-  ChevronRight, 
-  BarChart2, 
-  PieChart,
-  ShieldCheck,
-  Activity,
-  Plus,
-  Search
-} from 'lucide-react';
+import React from 'react';
+import { LayoutDashboard, TrendingUp, Zap, Globe2, AlertCircle, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
+import { useAgents } from '../../context/AgentContext';
 
-export default function DashboardOverview({ activeWebsiteUrl = 'Enter your website', setActiveTab }) {
-  const [isScanning, setIsScanning] = useState(false);
+function ScoreRing({ score, color, label }) {
+  const r = 28;
+  const circ = 2 * Math.PI * r;
+  const offset = circ - (score / 100) * circ;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+      <svg width="72" height="72" viewBox="0 0 72 72">
+        <circle cx="36" cy="36" r={r} fill="none" stroke="#1f1f1f" strokeWidth="6" />
+        <circle
+          cx="36" cy="36" r={r} fill="none"
+          stroke={color} strokeWidth="6"
+          strokeDasharray={circ} strokeDashoffset={offset}
+          strokeLinecap="round"
+          style={{ transform: 'rotate(-90deg)', transformOrigin: '50% 50%', transition: 'stroke-dashoffset 1s ease' }}
+        />
+        <text x="36" y="40" textAnchor="middle" fontSize="15" fontWeight="700" fill={color}>{score}</text>
+      </svg>
+      <span style={{ fontSize: '13px', fontWeight: 600, color: '#a1a1aa' }}>{label}</span>
+    </div>
+  );
+}
 
-  // Clean string helper
-  const domain = (typeof activeWebsiteUrl === 'string' && activeWebsiteUrl && activeWebsiteUrl !== 'Enter your website') ? activeWebsiteUrl : 'your website';
-  const brandName = domain.split('.')[0] || 'your website';
+function AgentEmptyState({ setActiveTab }) {
+  const { setSettingsOpen, hasApiKey, isAnyRunning } = useAgents();
+  return (
+    <div style={{
+      background: '#171717', border: '1px solid #262626', borderRadius: '16px',
+      padding: '48px 32px', textAlign: 'center',
+    }}>
+      <div style={{
+        width: '56px', height: '56px', borderRadius: '16px',
+        background: 'rgba(62,207,142,0.1)', border: '1px solid rgba(62,207,142,0.2)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px',
+      }}>
+        <LayoutDashboard size={24} color="#3ECF8E" />
+      </div>
+      <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#fff', margin: '0 0 8px' }}>
+        Master SEO, AEO & GEO Dashboard
+      </h2>
+      <p style={{ fontSize: '14px', color: '#71717a', margin: '0 0 24px', maxWidth: '420px', marginInline: 'auto' }}>
+        {!hasApiKey()
+          ? 'Add your Gemini API key and enter your website URL to activate all AI agents.'
+          : isAnyRunning
+          ? 'Agents are running — results will populate here shortly.'
+          : 'Enter your website URL in the top bar and press Enter to run all 7 AI agents.'
+        }
+      </p>
+      <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+        {!hasApiKey() && (
+          <button
+            onClick={() => setSettingsOpen(true)}
+            style={{
+              padding: '10px 20px', background: '#3ECF8E', color: '#000',
+              borderRadius: '10px', border: 'none', cursor: 'pointer',
+              fontSize: '14px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px',
+            }}
+          >
+            <Sparkles size={15} /> Add Gemini API Key
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
 
-  // Zero-State Metrics for first-time clean user
-  const [metrics, setMetrics] = useState({
-    clicks: '0',
-    clicksGrowth: '0%',
-    impressions: '0',
-    impressionsGrowth: '0%',
-    avgRank: 'N/A',
-    top3Count: 0,
-    top10Count: 0,
-    top50Count: 0,
-    aeoCitationScore: '0%',
-    voiceExtractionScore: '0%',
-    chatGptScore: '0%',
-    claudeScore: '0%',
-    perplexityScore: '0%',
-    geminiScore: '0%'
-  });
+export default function DashboardOverview({ setActiveTab }) {
+  const { agentResults, agentStatus, isAnyRunning, websiteUrl } = useAgents();
+  const data = agentResults.dashboard;
+  const status = agentStatus.dashboard;
 
-  const [monthlyTraffic, setMonthlyTraffic] = useState([]);
-  const [articles, setArticles] = useState([]);
-  const [actionItems, setActionItems] = useState([
-    { id: 1, title: 'Connect Domain & Run Telemetry', desc: 'Enter your domain in top navigation to pull live search data.', action: 'strategy', tag: 'Setup Step' },
-    { id: 2, title: 'Discover Low-KD Keyword Opportunities', desc: 'Extract high-intent keyword clusters tailored to your niche.', action: 'strategy', tag: 'SEO Action' },
-    { id: 3, title: 'Draft First AI Article with Schema', desc: 'Create 2,000+ word articles with voice & speakable FAQ schema.', action: 'studio', tag: 'Content Action' },
-  ]);
+  const domain = websiteUrl || 'your website';
 
-  const handleRunTelemetryScan = () => {
-    setIsScanning(true);
-    setTimeout(() => {
-      setMetrics({
-        clicks: '1,240',
-        clicksGrowth: '+12.4%',
-        impressions: '18,500',
-        impressionsGrowth: '+24.1%',
-        avgRank: '#6.4',
-        top3Count: 3,
-        top10Count: 8,
-        top50Count: 15,
-        aeoCitationScore: '64.0%',
-        voiceExtractionScore: '72%',
-        chatGptScore: '80%',
-        claudeScore: '75%',
-        perplexityScore: '78%',
-        geminiScore: '70%'
-      });
-      setMonthlyTraffic([
-        { month: 'Jan', clicks: 120 },
-        { month: 'Feb', clicks: 240 },
-        { month: 'Mar', clicks: 410 },
-        { month: 'Apr', clicks: 680 },
-        { month: 'May', clicks: 920 },
-        { month: 'Jun', clicks: 1240 },
-      ]);
-      setIsScanning(false);
-    }, 1200);
-  };
+  if (status === 'idle' || (!data && status !== 'running')) {
+    return (
+      <div className="w-full space-y-6 font-sans">
+        <AgentEmptyState setActiveTab={setActiveTab} />
+      </div>
+    );
+  }
 
-  const handleNavigate = (tab) => {
-    if (typeof setActiveTab === 'function') {
-      setActiveTab(tab);
-    }
-  };
+  if (status === 'running') {
+    return (
+      <div className="w-full space-y-6 font-sans">
+        <div style={{
+          background: '#171717', border: '1px solid #262626', borderRadius: '16px',
+          padding: '48px 32px', textAlign: 'center',
+        }}>
+          <Loader2 size={36} color="#3ECF8E" style={{ margin: '0 auto 16px', animation: 'spin 1s linear infinite' }} />
+          <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#fff', margin: '0 0 8px' }}>
+            Analyzing {domain}…
+          </h3>
+          <p style={{ fontSize: '14px', color: '#71717a', margin: 0 }}>
+            Gemini AI is auditing your SEO, AEO & GEO standing.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (status === 'error' || !data) {
+    return (
+      <div className="w-full space-y-6 font-sans">
+        <div style={{
+          background: '#171717', border: '1px solid #3f1515', borderRadius: '16px',
+          padding: '32px', textAlign: 'center',
+        }}>
+          <AlertCircle size={32} color="#ef4444" style={{ margin: '0 auto 12px' }} />
+          <p style={{ fontSize: '14px', color: '#ef4444', margin: 0 }}>
+            Analysis failed. Check your Gemini API key and try again.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const seoScore = data.seoScore ?? 0;
+  const aeoScore = data.aeoScore ?? 0;
+  const geoScore = data.geoScore ?? 0;
 
   return (
     <div className="w-full space-y-6 font-sans">
-      
 
-      {/* 3 Core Trifecta Scorecards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
-        {/* 1. SEO Scorecard */}
-        <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[#262626] pb-3">
-            <span className="text-sm font-bold text-[#3ECF8E] flex items-center gap-2 uppercase tracking-wider">
-              <Search className="w-4 h-4" /> 🔍 SEO Performance
-            </span>
-            <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm px-3 py-1 rounded-lg font-bold border border-[#3ECF8E]/20">
-              Rank {metrics.avgRank}
+      {/* Domain header */}
+      <div style={{
+        background: '#171717', border: '1px solid #262626', borderRadius: '16px',
+        padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px',
+      }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: '6px',
+              padding: '4px 10px', borderRadius: '99px',
+              background: 'rgba(62,207,142,0.1)', border: '1px solid rgba(62,207,142,0.2)',
+              fontSize: '13px', fontWeight: 700, color: '#3ECF8E',
+            }}>
+              <Globe2 size={12} /> {domain}
             </span>
           </div>
-
-          <div className="grid grid-cols-2 gap-4 pt-1">
-            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626]">
-              <span className="text-sm text-zinc-400 block font-medium">Organic Clicks</span>
-              <span className="text-2xl font-extrabold text-white block mt-1">{metrics.clicks}</span>
-              <span className="text-sm text-zinc-500 block mt-1 font-medium">{metrics.clicksGrowth} MoM</span>
-            </div>
-            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626]">
-              <span className="text-sm text-zinc-400 block font-medium">Impressions</span>
-              <span className="text-2xl font-extrabold text-white block mt-1">{metrics.impressions}</span>
-              <span className="text-sm text-zinc-500 block mt-1 font-medium">{metrics.impressionsGrowth} MoM</span>
-            </div>
-          </div>
+          <p style={{ fontSize: '14px', color: '#71717a', margin: 0 }}>{data.summary}</p>
         </div>
-
-        {/* 2. AEO Scorecard */}
-        <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[#262626] pb-3">
-            <span className="text-sm font-bold text-[#3ECF8E] flex items-center gap-2 uppercase tracking-wider">
-              <Cpu className="w-4 h-4" /> 🤖 AEO Performance
-            </span>
-            <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm px-3 py-1 rounded-lg font-bold border border-[#3ECF8E]/20">
-              {metrics.aeoCitationScore} Citation
-            </span>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 pt-1">
-            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626]">
-              <span className="text-sm text-zinc-400 block font-medium">AI Overview Rate</span>
-              <span className="text-2xl font-extrabold text-white block mt-1">{metrics.aeoCitationScore}</span>
-              <span className="text-sm text-zinc-500 block mt-1 font-medium">AI Snippet</span>
-            </div>
-            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626]">
-              <span className="text-sm text-zinc-400 block font-medium">Voice Answer</span>
-              <span className="text-2xl font-extrabold text-white block mt-1">{metrics.voiceExtractionScore}</span>
-              <span className="text-sm text-zinc-500 block mt-1 font-medium">Speakable Schema</span>
-            </div>
-          </div>
-        </div>
-
-        {/* 3. GEO Scorecard */}
-        <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4 relative overflow-hidden flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[#262626] pb-3">
-            <span className="text-sm font-bold text-[#3ECF8E] flex items-center gap-2 uppercase tracking-wider">
-              <ShieldCheck className="w-4 h-4" /> 🛡️ GEO Performance
-            </span>
-            <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm px-3 py-1 rounded-lg font-bold border border-[#3ECF8E]/20">
-              {metrics.chatGptScore} LLM Score
-            </span>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 pt-1">
-            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626]">
-              <span className="text-sm text-zinc-400 block font-medium">ChatGPT Visibility</span>
-              <span className="text-2xl font-extrabold text-white block mt-1">{metrics.chatGptScore}</span>
-              <span className="text-sm text-zinc-500 block mt-1 font-medium">GPTBot Status</span>
-            </div>
-            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626]">
-              <span className="text-sm text-zinc-400 block font-medium">Claude Visibility</span>
-              <span className="text-2xl font-extrabold text-white block mt-1">{metrics.claudeScore}</span>
-              <span className="text-sm text-zinc-500 block mt-1 font-medium">ClaudeBot Status</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      {/* Visual Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        
-        {/* Graph 1: SEO Traffic Growth Curve */}
-        <div className="lg:col-span-8 bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-5 flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[#262626] pb-3">
-            <div>
-              <h3 className="text-base font-bold text-white font-sans">Google Search Organic Clicks Curve</h3>
-              <p className="text-sm text-zinc-400 mt-1">Monthly organic traffic telemetry for {domain}</p>
-            </div>
-            <span className="text-sm font-bold text-zinc-400 bg-[#121212] px-3 py-1.5 rounded-lg border border-[#262626] shrink-0">
-              Telemetry Telemetry
-            </span>
-          </div>
-
-          <div className="h-60 w-full bg-[#121212] rounded-xl p-5 border border-[#262626] flex items-center justify-center">
-            {monthlyTraffic.length === 0 ? (
-              <div className="text-center space-y-2">
-                <BarChart2 className="w-8 h-8 text-[#3ECF8E] mx-auto" />
-                <p className="text-sm text-zinc-400">Click <strong className="text-white">Sync Telemetry</strong> to load live organic traffic analytics.</p>
-              </div>
-            ) : (
-              <div className="h-full w-full flex items-end justify-between gap-3">
-                {monthlyTraffic.map((item, idx) => (
-                  <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end group">
-                    <div 
-                      className="w-full bg-[#3ECF8E] rounded-t transition-all group-hover:bg-[#34D399]" 
-                      style={{ height: `${(item.clicks / 1500) * 100}%` }} 
-                    />
-                    <span className="text-sm text-zinc-400 font-medium">{item.month}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Pie Chart Representation: Keyword Distribution */}
-        <div className="lg:col-span-4 bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-5 flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[#262626] pb-3">
-            <div>
-              <h3 className="text-base font-bold text-white font-sans">Keyword Ranking Breakdown</h3>
-              <p className="text-sm text-zinc-400 mt-1">Search ranking distribution across positions</p>
-            </div>
-            <span className="text-sm text-zinc-400 bg-[#121212] px-3 py-1.5 rounded-lg border border-[#262626] font-medium shrink-0">
-              0 Keywords
-            </span>
-          </div>
-
-          <div className="space-y-4 pt-1">
-            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span className="w-3 h-3 rounded-full bg-[#3ECF8E]" />
-                <span className="text-sm font-bold text-white">Top 3 (#1 - #3)</span>
-              </div>
-              <span className="text-sm font-bold text-zinc-400">{metrics.top3Count} Keywords</span>
-            </div>
-
-            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span className="w-3 h-3 rounded-full bg-blue-400" />
-                <span className="text-sm font-bold text-white">Top 10 (#4 - #10)</span>
-              </div>
-              <span className="text-sm font-bold text-zinc-400">{metrics.top10Count} Keywords</span>
-            </div>
-
-            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span className="w-3 h-3 rounded-full bg-zinc-600" />
-                <span className="text-sm font-bold text-white">Top 50 (#11 - #50)</span>
-              </div>
-              <span className="text-sm font-bold text-zinc-400">{metrics.top50Count} Keywords</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      {/* Bar Chart: LLM Chatbot Citation Scores */}
-      <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-5">
-        <div className="flex items-center justify-between border-b border-[#262626] pb-3">
-          <div>
-            <h3 className="text-base font-bold text-white font-sans">GEO LLM Answer Engine Citation Rates</h3>
-            <p className="text-sm text-zinc-400 mt-1">Percentage of brand inclusion in AI answers for {domain}</p>
-          </div>
-          <span className="text-sm text-zinc-400 font-bold shrink-0">Live Status</span>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-3">
-            <div className="flex items-center justify-between text-sm text-zinc-400">
-              <span className="font-semibold">ChatGPT (GPT-4o)</span>
-              <span className="text-zinc-400 font-bold">{metrics.chatGptScore}</span>
-            </div>
-            <div className="w-full bg-[#262626] h-2.5 rounded-full overflow-hidden">
-              <div className="bg-[#3ECF8E] h-full w-0" />
-            </div>
-          </div>
-
-          <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-3">
-            <div className="flex items-center justify-between text-sm text-zinc-400">
-              <span className="font-semibold">Perplexity AI</span>
-              <span className="text-zinc-400 font-bold">{metrics.perplexityScore}</span>
-            </div>
-            <div className="w-full bg-[#262626] h-2.5 rounded-full overflow-hidden">
-              <div className="bg-[#3ECF8E] h-full w-0" />
-            </div>
-          </div>
-
-          <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-3">
-            <div className="flex items-center justify-between text-sm text-zinc-400">
-              <span className="font-semibold">Claude 3.5 Sonnet</span>
-              <span className="text-zinc-400 font-bold">{metrics.claudeScore}</span>
-            </div>
-            <div className="w-full bg-[#262626] h-2.5 rounded-full overflow-hidden">
-              <div className="bg-[#3ECF8E] h-full w-0" />
-            </div>
-          </div>
-
-          <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-3">
-            <div className="flex items-center justify-between text-sm text-zinc-400">
-              <span className="font-semibold">Google Gemini 2.5</span>
-              <span className="text-zinc-400 font-bold">{metrics.geminiScore}</span>
-            </div>
-            <div className="w-full bg-[#262626] h-2.5 rounded-full overflow-hidden">
-              <div className="bg-[#3ECF8E] h-full w-0" />
-            </div>
-          </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3ECF8E', animation: 'pulse 2s infinite' }} />
+          <span style={{ fontSize: '13px', color: '#3ECF8E', fontWeight: 600 }}>Analysis Complete</span>
         </div>
       </div>
 
-      {/* Recommendations & Top Articles Table */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        
-        {/* Simple Actionable Checklist */}
-        <div className="lg:col-span-6 bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-5 font-sans flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[#262626] pb-3">
-            <div>
-              <h3 className="text-base font-bold text-white font-sans">Suggested Actions to Rank Higher</h3>
-              <p className="text-sm text-zinc-400 mt-1">Automated AI recommendations to boost rankings</p>
-            </div>
-            <span className="text-sm text-[#3ECF8E] font-bold shrink-0">1-Click Fixes</span>
-          </div>
+      {/* Score Rings + Quick Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-          <div className="space-y-4">
-            {actionItems.map((item) => (
-              <div 
-                key={item.id}
-                onClick={() => handleNavigate(item.action)}
-                className="p-4 bg-[#121212] rounded-xl border border-[#262626] hover:border-[#3ECF8E] transition-all cursor-pointer flex items-center justify-between gap-4"
-              >
-                <div>
-                  <div className="flex items-center gap-2.5">
-                    <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm px-2.5 py-0.5 rounded font-bold">{item.tag}</span>
-                    <h4 className="text-sm font-bold text-white">{item.title}</h4>
-                  </div>
-                  <p className="text-sm text-zinc-400 mt-1">{item.desc}</p>
-                </div>
-                <ChevronRight className="w-4 h-4 text-[#3ECF8E] shrink-0" />
+        {/* Score Rings */}
+        <div style={{
+          background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px',
+        }}>
+          <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#fff', margin: '0 0 20px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            Visibility Scores
+          </h3>
+          <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: '16px' }}>
+            <ScoreRing score={seoScore} color="#3ECF8E" label="SEO Score" />
+            <ScoreRing score={aeoScore} color="#60a5fa" label="AEO Score" />
+            <ScoreRing score={geoScore} color="#a78bfa" label="GEO Score" />
+          </div>
+        </div>
+
+        {/* Quick Stats */}
+        <div style={{
+          background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px',
+          display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px',
+        }}>
+          {[
+            { label: 'Est. Monthly Clicks', value: data.organicClicks ?? '—', icon: TrendingUp, color: '#3ECF8E' },
+            { label: 'Avg. Position', value: data.avgPosition ?? '—', icon: Zap, color: '#60a5fa' },
+            { label: 'Indexed Pages', value: data.indexedPages ?? '—', icon: Globe2, color: '#a78bfa' },
+            { label: 'AI Brand Mention', value: data.brandMentionedInAI ? 'Yes ✓' : 'Not Found', icon: Sparkles, color: data.brandMentionedInAI ? '#3ECF8E' : '#f59e0b' },
+          ].map(({ label, value, icon: Icon, color }) => (
+            <div key={label} style={{
+              background: '#121212', borderRadius: '12px', border: '1px solid #1f1f1f',
+              padding: '16px', display: 'flex', flexDirection: 'column', gap: '6px',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Icon size={14} color={color} />
+                <span style={{ fontSize: '12px', color: '#71717a', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</span>
               </div>
+              <span style={{ fontSize: '22px', fontWeight: 800, color: '#fff' }}>{value}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Issues + Quick Wins */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px' }}>
+          <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#ef4444', margin: '0 0 16px', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <AlertCircle size={14} /> Top Issues
+          </h3>
+          <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {(data.topIssues ?? []).map((issue, i) => (
+              <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontSize: '14px', color: '#d4d4d8' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#ef4444', marginTop: '6px', flexShrink: 0 }} />
+                {issue}
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
 
-        {/* Published Articles Matrix */}
-        <div className="lg:col-span-6 bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-5 font-sans flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[#262626] pb-3">
-            <div>
-              <h3 className="text-base font-bold text-white font-sans">Top Ranking Articles</h3>
-              <p className="text-sm text-zinc-400 mt-1">Live organic content performance matrix</p>
-            </div>
-            <button onClick={() => handleNavigate('studio')} className="text-sm text-[#3ECF8E] hover:underline font-bold flex items-center gap-1 shrink-0">
-              <Plus className="w-4 h-4" /> Write Article
-            </button>
-          </div>
-
-          <div className="space-y-4">
-            {articles.length === 0 ? (
-              <div className="p-8 text-center bg-[#121212] rounded-xl border border-[#262626] space-y-2">
-                <FileText className="w-8 h-8 text-[#3ECF8E] mx-auto" />
-                <p className="text-sm text-zinc-400">No articles published yet.</p>
-                <button
-                  onClick={() => handleNavigate('studio')}
-                  className="px-4 py-2 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-xl inline-flex items-center gap-1.5 shadow"
-                >
-                  <Plus className="w-4 h-4" /> Write First Article
-                </button>
-              </div>
-            ) : (
-              articles.map((art, idx) => (
-                <div key={idx} className="p-4 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between gap-4">
-                  <div>
-                    <span className="text-sm font-bold text-white block truncate max-w-xs">{art.title}</span>
-                    <span className="text-sm text-zinc-400 mt-1 block">{art.clicks} clicks • Rank {art.rank} on Google</span>
-                  </div>
-                  <span className="text-sm font-bold text-[#3ECF8E] bg-[#3ECF8E]/10 px-3 py-1 rounded-lg border border-[#3ECF8E]/20 shrink-0">
-                    {art.status}
-                  </span>
-                </div>
-              ))
-            )}
-          </div>
+        <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px' }}>
+          <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#3ECF8E', margin: '0 0 16px', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <CheckCircle2 size={14} /> Quick Wins
+          </h3>
+          <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {(data.quickWins ?? []).map((win, i) => (
+              <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontSize: '14px', color: '#d4d4d8' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#3ECF8E', marginTop: '6px', flexShrink: 0 }} />
+                {win}
+              </li>
+            ))}
+          </ul>
         </div>
-
       </div>
 
     </div>
