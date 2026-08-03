@@ -16,15 +16,9 @@ import {
 export default function AppSidebar({ activeWebsiteUrl, activeTab, setActiveTab }) {
   const menuCategories = [
     {
-      category: 'AUTOMATION',
+      category: '🔍 SEO ENGINE (Search Engine Optimization)',
       items: [
-        { id: 'swarm', label: 'AI Automation Center', icon: Bot },
         { id: 'dashboard', label: 'Search Traffic & Rankings', icon: LayoutDashboard },
-      ]
-    },
-    {
-      category: 'RANKING & CONTENT',
-      items: [
         { id: 'strategy', label: 'Keywords & Topics', icon: Target },
         { id: 'studio', label: 'AI Article Generator', icon: FileText },
         { id: 'competitors', label: 'Competitor Ranking Gaps', icon: Search },
@@ -32,11 +26,17 @@ export default function AppSidebar({ activeWebsiteUrl, activeTab, setActiveTab }
       ]
     },
     {
-      category: 'AI SEARCH OPTIMIZATION',
+      category: '🤖 AEO ENGINE (Answer Engine Optimization)',
       items: [
         { id: 'aeo', label: 'Google AI Overview Inspector', icon: Cpu },
+        { id: 'freetools', label: 'Voice & Speakable Schema', icon: Wrench },
+      ]
+    },
+    {
+      category: '🛡️ GEO ENGINE (Generative Engine Optimization)',
+      items: [
         { id: 'geo', label: 'ChatGPT & Claude Visibility', icon: ShieldCheck },
-        { id: 'freetools', label: 'Handy SEO Utilities', icon: Wrench },
+        { id: 'swarm', label: 'Autonomous AI Swarm', icon: Bot },
       ]
     }
   ];
@@ -46,7 +46,7 @@ export default function AppSidebar({ activeWebsiteUrl, activeTab, setActiveTab }
       aria-label="Sidebar Navigation"
       className="w-[296px] bg-[#171717] border-r border-[#262626] flex flex-col justify-between shrink-0 h-[calc(100vh-64px)] sticky top-16 overflow-hidden select-none"
     >
-      {/* Top Navigation Links Section */}
+      {/* Top Section */}
       <div className="p-3.5 space-y-4 flex-1 flex flex-col overflow-hidden">
         
         {/* Active Domain Info Pill */}
@@ -55,16 +55,16 @@ export default function AppSidebar({ activeWebsiteUrl, activeTab, setActiveTab }
             <Globe className="w-4 h-4" />
           </div>
           <div className="truncate">
-            <span className="text-xs uppercase tracking-wider text-zinc-500 font-bold block">Active Target Site</span>
+            <span className="text-xs uppercase tracking-wider text-zinc-500 font-bold block">Target Website</span>
             <span className="text-sm font-bold text-white truncate block">{activeWebsiteUrl || 'mywebsite.com'}</span>
           </div>
         </div>
 
-        {/* Categorized Navigation Links */}
+        {/* Categorized Navigation Links divided into SEO, AEO, and GEO */}
         <nav aria-label="SEO AEO GEO Modules" className="space-y-4 flex-1 overflow-y-auto pr-1">
           {menuCategories.map((group, gIdx) => (
             <div key={gIdx} className="space-y-1">
-              <span className="px-3 text-xs uppercase tracking-wider text-zinc-500 font-bold block mb-1">
+              <span className="px-3 text-xs uppercase tracking-wider text-[#3ECF8E] font-bold block mb-1">
                 {group.category}
               </span>
 
@@ -100,12 +100,12 @@ export default function AppSidebar({ activeWebsiteUrl, activeTab, setActiveTab }
         <div className="p-3 bg-gradient-to-b from-[#1F1F1F] to-[#121212] rounded-xl border border-[#3ECF8E]/30 text-sm">
           <div className="flex items-center justify-between mb-1">
             <span className="font-bold text-white flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-[#3ECF8E]" aria-hidden="true" /> RankTop AI
+              <Sparkles className="w-4 h-4 text-[#3ECF8E]" aria-hidden="true" /> Trifecta Engine
             </span>
-            <span className="text-xs text-[#3ECF8E] bg-[#3ECF8E]/10 px-2 py-0.5 rounded border border-[#3ECF8E]/20 font-bold">Autopilot</span>
+            <span className="text-xs text-[#3ECF8E] bg-[#3ECF8E]/10 px-2 py-0.5 rounded border border-[#3ECF8E]/20 font-bold">SEO AEO GEO</span>
           </div>
           <p className="text-sm text-zinc-300 leading-normal">
-            Automating rankings for <strong className="text-white">{activeWebsiteUrl || 'mywebsite.com'}</strong>.
+            Automating rankings across Google, AI Overviews & LLMs.
           </p>
         </div>
       </div>
