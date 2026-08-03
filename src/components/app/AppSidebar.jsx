@@ -32,9 +32,10 @@ export default function AppSidebar({ activeWebsiteUrl, onResetWebsiteUrl, active
       aria-label="Sidebar Navigation"
       className="w-64 bg-[#171717] border-r border-[#262626] flex flex-col justify-between shrink-0 h-[calc(100vh-64px)] sticky top-16 overflow-hidden select-none"
     >
-      <div className="p-3 space-y-3 flex-1 flex flex-col overflow-hidden">
+      {/* Top Section: Active Site Banner + 9 Module Links */}
+      <div className="p-3 space-y-2.5 flex-1 flex flex-col overflow-hidden">
         
-        {/* Workspace Switcher displaying Active Website */}
+        {/* Active Target Site Switcher */}
         <div className="p-2.5 bg-[#121212] rounded-xl border border-[#262626] flex items-center justify-between">
           <div className="flex items-center gap-2 overflow-hidden">
             <div className="w-7 h-7 rounded-lg bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 flex items-center justify-center text-[#3ECF8E] shrink-0">
@@ -50,13 +51,13 @@ export default function AppSidebar({ activeWebsiteUrl, onResetWebsiteUrl, active
           <button 
             onClick={onResetWebsiteUrl}
             aria-label="Change active website URL"
-            className="text-zinc-400 hover:text-white p-1 rounded hover:bg-[#262626] focus-visible:ring-2 focus-visible:ring-[#3ECF8E] focus-visible:outline-none"
+            className="text-zinc-400 hover:text-white p-1 rounded hover:bg-[#262626] focus-visible:ring-2 focus-visible:ring-[#3ECF8E] focus-visible:outline-none transition-colors"
           >
             <Plus className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Navigation Menu */}
+        {/* Navigation Links - Fixed Non-Scrollable Layout */}
         <nav aria-label="Main Modules" className="space-y-1 flex-1 flex flex-col justify-around">
           <span className="px-3 text-sm uppercase tracking-wider text-zinc-500 font-bold block mb-1">
             RankTop Swarm Modules
@@ -76,12 +77,12 @@ export default function AppSidebar({ activeWebsiteUrl, onResetWebsiteUrl, active
                     : 'text-zinc-300 hover:text-white hover:bg-[#262626]'
                 }`}
               >
-                <div className="flex items-center gap-2.5">
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-black' : 'text-zinc-400'}`} aria-hidden="true" />
-                  <span>{item.label}</span>
+                <div className="flex items-center gap-2.5 truncate">
+                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-black' : 'text-zinc-400'}`} aria-hidden="true" />
+                  <span className="truncate">{item.label}</span>
                 </div>
                 {item.badge && (
-                  <span className={`text-sm px-2 py-0.5 rounded-full font-medium ${
+                  <span className={`text-sm px-2 py-0.5 rounded-full font-medium shrink-0 ml-1 ${
                     isActive
                       ? 'bg-black/20 text-black font-bold'
                       : 'bg-[#262626] text-zinc-400 border border-[#333]'
@@ -96,7 +97,7 @@ export default function AppSidebar({ activeWebsiteUrl, onResetWebsiteUrl, active
 
       </div>
 
-      {/* Autopilot Status Box */}
+      {/* Bottom Autopilot Status Box */}
       <div className="p-3 border-t border-[#262626]">
         <div className="p-3 bg-gradient-to-b from-[#1F1F1F] to-[#121212] rounded-xl border border-[#3ECF8E]/30 text-sm">
           <div className="flex items-center justify-between mb-1">
@@ -106,7 +107,7 @@ export default function AppSidebar({ activeWebsiteUrl, onResetWebsiteUrl, active
             <span className="text-sm text-[#3ECF8E] bg-[#3ECF8E]/10 px-2 py-0.5 rounded border border-[#3ECF8E]/20 font-medium">6 Agents</span>
           </div>
           <p className="text-sm text-zinc-300 leading-normal">
-            Autonomous Swarm running for <strong className="text-white">{activeWebsiteUrl}</strong>.
+            Autonomous Swarm active for <strong className="text-white">{activeWebsiteUrl || 'mywebsite.com'}</strong>.
           </p>
         </div>
       </div>
