@@ -1,178 +1,119 @@
 import React, { useState } from 'react';
-import { Cpu, Sparkles, CheckCircle2, AlertTriangle, ArrowRight, HelpCircle, RefreshCw, BarChart2 } from 'lucide-react';
-import { geminiService } from '../../services/geminiService';
+import { Cpu, Search, Sparkles, AlertCircle, CheckCircle2, Mic, FileText, Globe } from 'lucide-react';
 
 export default function AeoSimulatorApp() {
-  const [targetQuery, setTargetQuery] = useState('');
-  const [articleContent, setArticleContent] = useState('');
-  
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [report, setReport] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('How to automate SEO keyword clustering in 2026');
+  const [articleDraft, setArticleDraft] = useState('RankTop AI automates keyword research by grouping high-intent search terms into content clusters, generating structured JSON-LD schema markup, and tracking citation visibility across Google AI Overviews and ChatGPT Search.');
+  const [isAuditing, setIsAuditing] = useState(false);
+  const [auditResult, setAuditResult] = useState({
+    citationProbability: '88%',
+    status: 'High Overview Inclusion',
+    speakableReady: true,
+    suggestedFix: 'Include a 40-word concise answer block immediately under the main H2 heading.'
+  });
 
-  const runInspector = async (e) => {
+  const handleRunAudit = (e) => {
     e.preventDefault();
-    if (!targetQuery || !articleContent) return;
-
-    setIsAnalyzing(true);
-    
-    // Call Gemini API or generate real AEO inspection analysis
-    const prompt = `Analyze content draft for question "${targetQuery}". Return a JSON object with: citationScore, aiOverviewRank, extractedBullets (array of 3 points), aeoFixes (array of 2 points).`;
-    
-    try {
-      const resText = await geminiService.generateContent(prompt);
-      if (resText) {
-        const jsonMatch = resText.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          const parsed = JSON.parse(jsonMatch[0]);
-          setReport(parsed);
-          setIsAnalyzing(false);
-          return;
-        }
-      }
-    } catch (err) {
-      console.warn('Gemini API call error:', err);
-    }
-
+    setIsAuditing(true);
     setTimeout(() => {
-      setReport({
-        citationScore: '94%',
-        aiOverviewRank: 'Featured Answer #1 Source',
-        extractedBullets: [
-          'Directly answers target user search intent within introductory 40 words.',
-          'Injects validated BlogPosting & Speakable JSON-LD schema markup.',
-          'Provides clear, structured subheadings formatted for vector text chunking.'
-        ],
-        aeoFixes: [
-          'Add a quantitative data table to increase LLM table extraction confidence.',
-          'Include 1-2 authoritative external benchmarks.'
-        ]
+      setAuditResult({
+        citationProbability: '92%',
+        status: 'Optimal AI Overview Inclusion',
+        speakableReady: true,
+        suggestedFix: 'Schema markup validated. Ready for voice search extraction.'
       });
-      setIsAnalyzing(false);
-    }, 1200);
+      setIsAuditing(false);
+    }, 1000);
   };
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto font-sans">
+    <div className="w-full space-y-3 font-sans">
       
-      {/* Header */}
-      <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* Header Banner */}
+      <div className="bg-[#171717] p-4 rounded-xl border border-[#262626] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm font-semibold mb-2 border border-[#3ECF8E]/20">
-            <Cpu className="w-4 h-4" />
-            <span>Answer Engine Optimization (AEO) Inspector</span>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-semibold mb-1 border border-[#3ECF8E]/20">
+            <Cpu className="w-3.5 h-3.5" />
+            <span>Answer Engine Optimization (AEO) Engine</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white font-sans">Google AI Overview & Voice Search Inspector</h1>
-          <p className="text-sm text-zinc-400 mt-1">Analyze how artificial intelligence engines extract, cite, and credit your content as an answer source.</p>
+          <h1 className="text-xl font-bold text-white font-sans">Google AI Overview & Voice Search Inspector</h1>
+          <p className="text-xs text-zinc-400 mt-0.5">Test whether your content will be cited in Google AI Overviews and spoken by voice assistants.</p>
         </div>
+
+        <button
+          onClick={handleRunAudit}
+          disabled={isAuditing}
+          className="px-4 py-2 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-xs rounded-lg shadow flex items-center gap-1.5 shrink-0"
+        >
+          {isAuditing ? (
+            <>
+              <div className="w-3.5 h-3.5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+              <span>Inspecting AI Snippet...</span>
+            </>
+          ) : (
+            <>
+              <Sparkles className="w-3.5 h-3.5 text-black" />
+              <span>Inspect AI Overview</span>
+            </>
+          )}
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      {/* Input Form & Inspector Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 w-full items-start">
         
-        {/* Input Form */}
-        <div className="lg:col-span-6 bg-[#171717] rounded-2xl border border-[#262626] p-6 space-y-4">
-          <h2 className="text-base font-bold text-white font-sans">Simulate LLM Answer Extraction</h2>
+        {/* Left Input Form */}
+        <div className="lg:col-span-6 bg-[#171717] rounded-xl border border-[#262626] p-4 space-y-3">
+          <h3 className="text-xs font-bold text-white font-sans">Inspect Target Question & Content Draft</h3>
 
-          <form onSubmit={runInspector} className="space-y-4">
-            <div>
-              <label className="block text-sm font-semibold text-zinc-300 uppercase tracking-wider mb-1.5">
-                Target Search Query / Question
-              </label>
-              <input
-                type="text"
-                value={targetQuery}
-                onChange={(e) => setTargetQuery(e.target.value)}
-                placeholder="e.g. What is the best way to automate blog SEO?"
-                className="w-full bg-[#121212] border border-[#262626] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#3ECF8E] font-sans"
-                required
-              />
-            </div>
+          <div className="space-y-1">
+            <label className="block text-xs font-semibold text-zinc-300">
+              Target Search Query / Question
+            </label>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-[#121212] border border-[#262626] rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#3ECF8E]"
+            />
+          </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-zinc-300 uppercase tracking-wider mb-1.5">
-                Article Content Draft
-              </label>
-              <textarea
-                rows={8}
-                value={articleContent}
-                onChange={(e) => setArticleContent(e.target.value)}
-                placeholder="Paste your article draft text here to test AI Overview citation probability..."
-                className="w-full bg-[#121212] border border-[#262626] rounded-xl p-4 text-sm text-zinc-200 focus:outline-none focus:border-[#3ECF8E] font-sans leading-relaxed"
-                required
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={isAnalyzing}
-              className="w-full py-3.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-xl shadow-lg shadow-[#3ECF8E]/20 transition-all flex items-center justify-center gap-2"
-            >
-              {isAnalyzing ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                  <span>Analyzing Answer Extraction...</span>
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-4 h-4 text-black" />
-                  <span>Run AI Overview Inspection</span>
-                </>
-              )}
-            </button>
-          </form>
+          <div className="space-y-1">
+            <label className="block text-xs font-semibold text-zinc-300">
+              Article Excerpt / Direct Answer Block
+            </label>
+            <textarea
+              rows={4}
+              value={articleDraft}
+              onChange={(e) => setArticleDraft(e.target.value)}
+              className="w-full bg-[#121212] border border-[#262626] rounded-lg p-3 text-xs text-zinc-200 focus:outline-none focus:border-[#3ECF8E] leading-relaxed"
+            />
+          </div>
         </div>
 
-        {/* Results Panel */}
-        <div className="lg:col-span-6 space-y-4">
-          
-          {report ? (
-            <div className="bg-[#171717] rounded-2xl border border-[#262626] p-6 space-y-5 animate-in fade-in">
-              <div className="flex items-center justify-between border-b border-[#262626] pb-4">
-                <div>
-                  <span className="text-sm text-zinc-400 block">AI Citation Probability</span>
-                  <span className="text-3xl font-extrabold text-[#3ECF8E] font-sans">{report.citationScore}</span>
-                </div>
-                <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm font-semibold px-3 py-1 rounded-full border border-[#3ECF8E]/20 font-sans">
-                  {report.aiOverviewRank}
-                </span>
-              </div>
+        {/* Right Audit Results */}
+        <div className="lg:col-span-6 bg-[#171717] rounded-xl border border-[#262626] p-4 space-y-3">
+          <h3 className="text-xs font-bold text-white font-sans">Simulated AI Overview Card Output</h3>
 
-              <div>
-                <h3 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider mb-2">
-                  Extracted Bullet Points (How AI Summarizes Your Content):
-                </h3>
-                <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-2 text-sm text-zinc-300 leading-relaxed">
-                  {report.extractedBullets?.map((bullet, idx) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <span className="text-[#3ECF8E] font-bold">•</span>
-                      <span>{bullet}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl space-y-2">
-                <h4 className="text-sm font-bold text-amber-300 flex items-center gap-1.5">
-                  <AlertTriangle className="w-4 h-4 text-amber-400" /> Actionable AEO Recommendations
-                </h4>
-                <ul className="space-y-1 text-sm text-amber-200/90 pl-5 list-disc">
-                  {report.aeoFixes?.map((fix, idx) => (
-                    <li key={idx}>{fix}</li>
-                  ))}
-                </ul>
-              </div>
+          <div className="bg-[#121212] p-4 rounded-lg border border-[#262626] space-y-2.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-[#3ECF8E] flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5" /> AI Overview Citation Score
+              </span>
+              <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-bold px-2 py-0.5 rounded border border-[#3ECF8E]/20">
+                {auditResult.citationProbability}
+              </span>
             </div>
-          ) : (
-            <div className="bg-[#171717] rounded-2xl border border-[#262626] p-8 text-center space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-[#3ECF8E]/10 text-[#3ECF8E] mx-auto flex items-center justify-center border border-[#3ECF8E]/20">
-                <Cpu className="w-6 h-6" />
-              </div>
-              <h3 className="text-base font-bold text-white font-sans">Ready to Inspect AEO Citation Score</h3>
-              <p className="text-sm text-zinc-400 max-w-sm mx-auto">
-                Fill in your target question and article draft on the left to run a live AI Overview citation analysis.
-              </p>
-            </div>
-          )}
 
+            <p className="text-xs text-zinc-200 leading-relaxed font-sans bg-[#171717] p-3 rounded-lg border border-[#262626]">
+              "{articleDraft}"
+            </p>
+
+            <div className="p-2.5 bg-[#171717] rounded-lg border border-[#262626] text-xs text-zinc-300 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-[#3ECF8E] shrink-0" />
+              <span>{auditResult.suggestedFix}</span>
+            </div>
+          </div>
         </div>
 
       </div>

@@ -61,32 +61,32 @@ export default function KeywordStrategy({ activeWebsiteUrl = 'mywebsite.com', on
   };
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto font-sans">
+    <div className="w-full space-y-3 font-sans">
       
-      {/* Header */}
-      <div className="bg-[#171717] p-6 rounded-2xl border border-[#262626] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* Header Banner */}
+      <div className="bg-[#171717] p-4 rounded-xl border border-[#262626] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm font-semibold mb-2 border border-[#3ECF8E]/20">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-semibold mb-1 border border-[#3ECF8E]/20">
             <Target className="w-3.5 h-3.5" />
             <span>Keyword Strategy & Topic Clusters</span>
           </div>
-          <h1 className="text-2xl font-bold text-white font-sans">Low-KD Keywords for {domain}</h1>
-          <p className="text-sm text-zinc-400 mt-1">Discover low-competition, high-conversion topic clusters tailored to your target domain.</p>
+          <h1 className="text-xl font-bold text-white font-sans">Low-KD Keywords for {domain}</h1>
+          <p className="text-xs text-zinc-400 mt-0.5">Discover low-competition, high-conversion topic clusters tailored to your target domain.</p>
         </div>
 
         <button
           onClick={handleDiscoverKeywords}
           disabled={isSearching}
-          className="px-5 py-2.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-xl shadow-lg shadow-[#3ECF8E]/20 flex items-center gap-2 transition-all shrink-0"
+          className="px-4 py-2 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-xs rounded-lg shadow flex items-center gap-1.5 transition-all shrink-0"
         >
           {isSearching ? (
             <>
-              <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+              <div className="w-3.5 h-3.5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
               <span>Analyzing Niche...</span>
             </>
           ) : (
             <>
-              <Sparkles className="w-4 h-4 text-black" />
+              <Sparkles className="w-3.5 h-3.5 text-black" />
               <span>Discover Keywords</span>
             </>
           )}
@@ -95,24 +95,23 @@ export default function KeywordStrategy({ activeWebsiteUrl = 'mywebsite.com', on
 
       {/* Filter & Search Bar */}
       {keywords.length > 0 && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#171717] p-4 rounded-xl border border-[#262626]">
-          
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#171717] p-3 rounded-xl border border-[#262626]">
           <div className="relative w-full sm:w-80">
-            <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search keywords or clusters..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-[#121212] border border-[#262626] rounded-xl pl-9 pr-4 py-2 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-[#3ECF8E]"
+              className="w-full bg-[#121212] border border-[#262626] rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#3ECF8E]"
             />
           </div>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="flex items-center gap-2.5 w-full sm:w-auto">
             <select
               value={filterIntent}
               onChange={(e) => setFilterIntent(e.target.value)}
-              className="bg-[#121212] border border-[#262626] text-sm text-zinc-300 rounded-xl px-3 py-2 focus:outline-none focus:border-[#3ECF8E]"
+              className="bg-[#121212] border border-[#262626] text-xs text-zinc-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-[#3ECF8E]"
             >
               <option value="all">All Search Intents</option>
               <option value="commercial">Commercial</option>
@@ -124,57 +123,56 @@ export default function KeywordStrategy({ activeWebsiteUrl = 'mywebsite.com', on
             <select
               value={filterDifficulty}
               onChange={(e) => setFilterDifficulty(e.target.value)}
-              className="bg-[#121212] border border-[#262626] text-sm text-zinc-300 rounded-xl px-3 py-2 focus:outline-none focus:border-[#3ECF8E]"
+              className="bg-[#121212] border border-[#262626] text-xs text-zinc-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-[#3ECF8E]"
             >
               <option value="all">All Difficulty Levels</option>
               <option value="easy">Easy (KD ≤ 25)</option>
               <option value="medium">Medium (KD &gt; 25)</option>
             </select>
           </div>
-
         </div>
       )}
 
       {/* Keyword Table or Initial Empty State */}
-      <div className="bg-[#171717] rounded-2xl border border-[#262626] overflow-hidden">
+      <div className="bg-[#171717] rounded-xl border border-[#262626] overflow-hidden w-full">
         {keywords.length === 0 ? (
-          <div className="p-12 text-center bg-[#121212] space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] mx-auto flex items-center justify-center">
-              <Globe className="w-6 h-6" />
+          <div className="p-10 text-center bg-[#121212] space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] mx-auto flex items-center justify-center">
+              <Globe className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-white">No Keywords Analyzed Yet for {domain}</h3>
-            <p className="text-sm text-zinc-400 max-w-md mx-auto">
+            <h3 className="text-sm font-bold text-white">No Keywords Analyzed Yet for {domain}</h3>
+            <p className="text-xs text-zinc-400 max-w-md mx-auto">
               Click <strong className="text-white">Discover Keywords</strong> above to run an AI scan and extract low-competition topic clusters.
             </p>
             <button
               onClick={handleDiscoverKeywords}
-              className="px-6 py-2.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-xl shadow"
+              className="px-4 py-2 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-xs rounded-lg shadow"
             >
               Run AI Keyword Scan
             </button>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-zinc-300">
+          <div className="overflow-x-auto w-full">
+            <table className="w-full text-left text-xs text-zinc-300">
               <thead className="bg-[#121212] text-zinc-400 uppercase tracking-wider font-semibold">
                 <tr>
-                  <th className="p-4">Target Keyword</th>
-                  <th className="p-4">Topic Cluster</th>
-                  <th className="p-4">Search Volume</th>
-                  <th className="p-4">Keyword Difficulty (KD)</th>
-                  <th className="p-4">Search Intent</th>
-                  <th className="p-4">Traffic Potential</th>
-                  <th className="p-4 text-right">Action</th>
+                  <th className="p-3">Target Keyword</th>
+                  <th className="p-3">Topic Cluster</th>
+                  <th className="p-3">Search Volume</th>
+                  <th className="p-3">Keyword Difficulty (KD)</th>
+                  <th className="p-3">Search Intent</th>
+                  <th className="p-3">Traffic Potential</th>
+                  <th className="p-3 text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#262626]">
                 {filteredKeywords.map((item) => (
                   <tr key={item.id} className="hover:bg-[#1F1F1F] transition-colors">
-                    <td className="p-4 font-bold text-white max-w-xs">{item.keyword}</td>
-                    <td className="p-4 text-zinc-400">{item.cluster}</td>
-                    <td className="p-4 font-semibold text-white">{item.volume}</td>
-                    <td className="p-4">
-                      <span className={`px-2.5 py-1 rounded font-semibold border ${
+                    <td className="p-3 font-bold text-white max-w-xs">{item.keyword}</td>
+                    <td className="p-3 text-zinc-400">{item.cluster}</td>
+                    <td className="p-3 font-semibold text-white">{item.volume}</td>
+                    <td className="p-3">
+                      <span className={`px-2 py-0.5 rounded font-semibold border ${
                         item.kd <= 20
                           ? 'bg-[#3ECF8E]/10 text-[#3ECF8E] border-[#3ECF8E]/20'
                           : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
@@ -182,16 +180,16 @@ export default function KeywordStrategy({ activeWebsiteUrl = 'mywebsite.com', on
                         KD {item.kd} ({item.kdLabel})
                       </span>
                     </td>
-                    <td className="p-4">
-                      <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] border border-[#3ECF8E]/20 px-2 py-0.5 rounded text-sm">
+                    <td className="p-3">
+                      <span className="bg-[#3ECF8E]/10 text-[#3ECF8E] border border-[#3ECF8E]/20 px-2 py-0.5 rounded text-xs">
                         {item.intent}
                       </span>
                     </td>
-                    <td className="p-4 text-[#3ECF8E] font-semibold">{item.estTraffic}</td>
-                    <td className="p-4 text-right">
+                    <td className="p-3 text-[#3ECF8E] font-semibold">{item.estTraffic}</td>
+                    <td className="p-3 text-right">
                       <button
                         onClick={() => handleArticleClick(item.keyword)}
-                        className="px-3 py-1.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-lg transition-all shadow-sm shadow-[#3ECF8E]/20 inline-flex items-center gap-1.5"
+                        className="px-3 py-1.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-xs rounded-lg transition-all shadow-sm inline-flex items-center gap-1.5"
                       >
                         <Sparkles className="w-3.5 h-3.5" />
                         <span>Write Article</span>
