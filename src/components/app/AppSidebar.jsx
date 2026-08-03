@@ -14,9 +14,14 @@ import {
 export default function AppSidebar({ activeTab, setActiveTab }) {
   const menuCategories = [
     {
+      category: '📊 OVERVIEW DASHBOARD',
+      items: [
+        { id: 'dashboard', label: 'Master SEO, AEO & GEO Dashboard', icon: LayoutDashboard },
+      ]
+    },
+    {
       category: '🔍 SEO ENGINE',
       items: [
-        { id: 'dashboard', label: 'Search Traffic & Rankings', icon: LayoutDashboard },
         { id: 'strategy', label: 'Keywords & Topics', icon: Target },
         { id: 'studio', label: 'AI Article Generator', icon: FileText },
         { id: 'competitors', label: 'Competitor Ranking Gaps', icon: Search },
@@ -46,7 +51,7 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
     >
       {/* Top Section with Categories */}
       <div className="p-3.5 space-y-4 flex-1 flex flex-col overflow-hidden">
-        {/* Categorized Navigation Links divided into SEO, AEO, and GEO */}
+        {/* Categorized Navigation Links divided into OVERVIEW, SEO, AEO, and GEO */}
         <nav aria-label="SEO AEO GEO Modules" className="space-y-4 flex-1 overflow-y-auto pr-1">
           {menuCategories.map((group, gIdx) => (
             <div key={gIdx} className="space-y-1">
