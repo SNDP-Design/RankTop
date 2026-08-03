@@ -28,7 +28,7 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
   ];
 
   return (
-    <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between shrink-0 min-h-[calc(100vh-80px)]">
+    <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between shrink-0 min-h-[calc(100vh-64px)]">
       
       <div className="p-4 space-y-6">
         
@@ -41,7 +41,7 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
             <div className="truncate">
               <span className="text-xs font-bold text-white block truncate">mywebsite.com</span>
               <span className="text-[10px] text-emerald-400 flex items-center gap-1 font-mono">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Autopilot Active
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> RankTop Active
               </span>
             </div>
           </div>
@@ -53,7 +53,7 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
         {/* Navigation Menu */}
         <nav className="space-y-1">
           <span className="px-3 text-[10px] font-mono uppercase tracking-wider text-slate-500 font-bold block mb-2">
-            Autonomous Swarm Engine
+            RankTop Swarm Modules
           </span>
 
           {menuItems.map((item) => {
@@ -94,12 +94,12 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
         <div className="p-3 bg-gradient-to-b from-brand-950/60 to-slate-950 rounded-xl border border-brand-500/20 text-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="font-bold text-white flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-brand-400" /> ADK Swarm Active
+              <Sparkles className="w-3.5 h-3.5 text-brand-400" /> RankTop Swarm
             </span>
             <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">6 Agents</span>
           </div>
           <p className="text-[11px] text-slate-300 leading-normal">
-            Autonomous multi-agent pipeline monitoring Google AI Overviews.
+            Autonomous Multi-Agent AI Swarm monitoring search rankings.
           </p>
         </div>
       </div>
