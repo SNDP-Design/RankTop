@@ -8,10 +8,9 @@
   html, body {
     @apply bg-[#121212] text-slate-100 antialiased selection:bg-[#3ECF8E] selection:text-black;
     font-family: 'Inter', sans-serif !important;
-    font-size: 14px !important;
+    font-size: 14px;
   }
 
-  /* Enforce Inter font family and strict typography limits across whole web app */
   *, ::before, ::after {
     font-family: 'Inter', sans-serif !important;
   }
