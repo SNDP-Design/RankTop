@@ -71,8 +71,8 @@ export default function App() {
           setActiveAppTab={openAppWithTab}
         />
 
-        {/* RANKTOP WEB APP WORKSPACE (Spacious Breathable Layout with 40px left/right padding and space-y-6) */}
-        <div className="flex-1 flex overflow-hidden h-[calc(100vh-64px)]">
+        {/* RANKTOP WEB APP WORKSPACE (Fixed Non-Scrollable Sidebar + Smooth Main Viewport) */}
+        <div className="flex-1 flex overflow-hidden h-[calc(100vh-64px)] relative">
           <AppSidebar 
             activeWebsiteUrl={activeWebsiteUrl}
             activeTab={activeAppTab} 
@@ -83,7 +83,7 @@ export default function App() {
             id="main-content"
             role="main"
             aria-label="Workspace Module View"
-            className="flex-1 overflow-y-auto bg-[#0F0F0F] h-full py-6 px-10 pb-24 focus-visible:outline-none font-sans"
+            className="flex-1 pl-[296px] overflow-y-auto bg-[#0F0F0F] h-full py-6 px-10 pb-24 focus-visible:outline-none font-sans"
           >
             <div className="w-full space-y-6">
               {renderActiveModule()}

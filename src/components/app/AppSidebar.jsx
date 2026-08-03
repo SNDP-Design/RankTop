@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { 
   LayoutDashboard, 
   Target, 
@@ -12,6 +12,8 @@ import {
 } from 'lucide-react';
 
 export default function AppSidebar({ activeTab, setActiveTab }) {
+  const sidebarRef = useRef(null);
+
   const menuCategories = [
     {
       category: '', // Master Dashboard at top
@@ -44,14 +46,33 @@ export default function AppSidebar({ activeTab, setActiveTab }) {
     }
   ];
 
+  // Prevent any wheel or touch scrolling over the sidebar at DOM level
+  useEffect(() => {
+    const sidebar = sidebarRef.current;
+    if (!sidebar) return;
+
+    const preventScroll = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    sidebar.addEventListener('wheel', preventScroll, { passive: false });
+    sidebar.addEventListener('touchmove', preventScroll, { passive: false });
+
+    return () => {
+      sidebar.removeEventListener('wheel', preventScroll);
+      sidebar.removeEventListener('touchmove', preventScroll);
+    };
+  }, []);
+
   return (
     <aside 
+      ref={sidebarRef}
       aria-label="Sidebar Navigation"
-      onWheel={(e) => e.stopPropagation()}
       style={{ overflow: 'hidden', touchAction: 'none', userSelect: 'none' }}
-      className="w-[296px] bg-[#171717] border-r border-[#262626] flex flex-col justify-between shrink-0 h-[calc(100vh-64px)] select-none overflow-hidden"
+      className="w-[296px] bg-[#171717] border-r border-[#262626] flex flex-col justify-between shrink-0 h-[calc(100vh-64px)] fixed top-16 left-0 z-30 select-none overflow-hidden"
     >
-      {/* Spacious Breathable Sidebar Navigation with Sleek Smaller Icons */}
+      {/* Fixed Non-Scrollable Sidebar Container */}
       <div className="p-6 space-y-6 flex-1 flex flex-col overflow-hidden">
         <nav aria-label="SEO AEO GEO Modules" className="space-y-6 flex-1 overflow-hidden">
           {menuCategories.map((group, gIdx) => (
