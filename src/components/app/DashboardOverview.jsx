@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   TrendingUp, 
   Eye, 
@@ -21,13 +21,14 @@ import {
   Activity,
   Plus
 } from 'lucide-react';
-import { geminiService } from '../../services/geminiService';
 
 export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', setActiveTab }) {
   const [isScanning, setIsScanning] = useState(false);
-  const [hasScanned, setHasScanned] = useState(true);
 
-  // Dynamic Telemetry Metrics State based on Active Target Website URL
+  // Safe string helpers to prevent any split/replace errors
+  const domain = (typeof activeWebsiteUrl === 'string' && activeWebsiteUrl) ? activeWebsiteUrl : 'mywebsite.com';
+  const brandName = domain.split('.')[0] || 'mywebsite';
+
   const [metrics, setMetrics] = useState({
     clicks: '18,450',
     clicksGrowth: '+32.4%',
@@ -45,7 +46,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
     geminiScore: '86%'
   });
 
-  const [monthlyTraffic, setMonthlyTraffic] = useState([
+  const [monthlyTraffic] = useState([
     { month: 'Jan', clicks: 320 },
     { month: 'Feb', clicks: 410 },
     { month: 'Mar', clicks: 580 },
@@ -58,25 +59,29 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
     { month: 'Oct', clicks: 2480 },
   ]);
 
-  const [articles, setArticles] = useState([
-    { title: `The Ultimate Guide to ${activeWebsiteUrl.split('.')[0]} Growth in 2026`, clicks: "1,420", impressions: "28,400", rank: "#2", status: "Published on Website" },
-    { title: `How to Rank in Google AI Overviews for ${activeWebsiteUrl.split('.')[0]}`, clicks: "980", impressions: "18,200", rank: "#1", status: "Published on Website" },
-    { title: `Top AI Blog Tools for ${activeWebsiteUrl.split('.')[0]}: Benchmarks`, clicks: "2,100", impressions: "34,900", rank: "#3", status: "Published on Website" },
+  const [articles] = useState([
+    { title: `The Ultimate Guide to ${brandName} Growth in 2026`, clicks: "1,420", impressions: "28,400", rank: "#2", status: "Published on Website" },
+    { title: `How to Rank in Google AI Overviews for ${brandName}`, clicks: "980", impressions: "18,200", rank: "#1", status: "Published on Website" },
+    { title: `Top AI Blog Tools for ${brandName}: Benchmarks`, clicks: "2,100", impressions: "34,900", rank: "#3", status: "Published on Website" },
   ]);
 
-  const [actionItems, setActionItems] = useState([
+  const [actionItems] = useState([
     { id: 1, title: 'Optimize Headline Titles for +18% CTR', desc: 'AI detected 3 high-impression titles. Click to optimize.', action: 'studio', tag: 'SEO Action' },
     { id: 2, title: 'Inject Voice & Speakable FAQ Schema', desc: 'Add structured FAQ blocks so Google AI Overviews reads your answers.', action: 'freetools', tag: 'AEO Action' },
     { id: 3, title: 'Unblock ChatGPT & Claude AI Crawlers', desc: 'Ensure PerplexityBot and GPTBot are allowed in robots.txt.', action: 'geo', tag: 'GEO Action' },
   ]);
 
-  // Re-run telemetry scan when active website URL changes
   const handleRunTelemetryScan = () => {
     setIsScanning(true);
     setTimeout(() => {
-      setHasScanned(true);
       setIsScanning(false);
     }, 1000);
+  };
+
+  const handleNavigate = (tab) => {
+    if (typeof setActiveTab === 'function') {
+      setActiveTab(tab);
+    }
   };
 
   return (
@@ -90,7 +95,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
             <span>Master SEO, AEO & GEO Command Center</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-white font-sans">Search Traffic & Rankings Dashboard</h1>
-          <p className="text-sm text-zinc-400 mt-1">Live performance analytics, Google AI Overview citations, and LLM visibility for <strong className="text-white">{activeWebsiteUrl}</strong>.</p>
+          <p className="text-sm text-zinc-400 mt-1">Live performance analytics, Google AI Overview citations, and LLM visibility for <strong className="text-white">{domain}</strong>.</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
@@ -104,7 +109,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
           </button>
 
           <button 
-            onClick={() => setActiveTab('swarm')}
+            onClick={() => handleNavigate('swarm')}
             className="px-4 py-2.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-xl shadow-lg shadow-[#3ECF8E]/20 flex items-center gap-2 transition-all"
           >
             <Zap className="w-4 h-4 fill-black" />
@@ -201,7 +206,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
           <div className="flex items-center justify-between border-b border-[#262626] pb-3">
             <div>
               <h3 className="text-base font-bold text-white font-sans">Google Search Organic Clicks Curve</h3>
-              <p className="text-xs text-zinc-400">Monthly organic traffic telemetry for {activeWebsiteUrl}</p>
+              <p className="text-xs text-zinc-400">Monthly organic traffic telemetry for {domain}</p>
             </div>
             <span className="text-xs font-bold text-[#3ECF8E] bg-[#3ECF8E]/10 px-2.5 py-1 rounded border border-[#3ECF8E]/20">
               +142% Traffic Growth
@@ -262,7 +267,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
         <div className="flex items-center justify-between border-b border-[#262626] pb-3">
           <div>
             <h3 className="text-base font-bold text-white font-sans">GEO LLM Answer Engine Citation Rates</h3>
-            <p className="text-xs text-zinc-400">Percentage of brand inclusion in AI answers for {activeWebsiteUrl}</p>
+            <p className="text-xs text-zinc-400">Percentage of brand inclusion in AI answers for {domain}</p>
           </div>
           <span className="text-xs text-[#3ECF8E] font-bold">Updated Live</span>
         </div>
@@ -324,7 +329,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
             {actionItems.map((item) => (
               <div 
                 key={item.id}
-                onClick={() => setActiveTab(item.action)}
+                onClick={() => handleNavigate(item.action)}
                 className="p-4 bg-[#121212] rounded-xl border border-[#262626] hover:border-[#3ECF8E] transition-all cursor-pointer flex items-center justify-between gap-3"
               >
                 <div>
@@ -344,7 +349,7 @@ export default function DashboardOverview({ activeWebsiteUrl = 'mywebsite.com', 
         <div className="lg:col-span-6 bg-[#171717] p-6 rounded-2xl border border-[#262626] space-y-4">
           <div className="flex items-center justify-between border-b border-[#262626] pb-3">
             <h3 className="text-base font-bold text-white font-sans">Top Ranking Articles</h3>
-            <button onClick={() => setActiveTab('studio')} className="text-xs text-[#3ECF8E] hover:underline font-bold flex items-center gap-1">
+            <button onClick={() => handleNavigate('studio')} className="text-xs text-[#3ECF8E] hover:underline font-bold flex items-center gap-1">
               <Plus className="w-3.5 h-3.5" /> Write Article
             </button>
           </div>

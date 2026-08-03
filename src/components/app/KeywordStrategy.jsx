@@ -8,15 +8,17 @@ export default function KeywordStrategy({ activeWebsiteUrl = 'mywebsite.com', on
   const [filterDifficulty, setFilterDifficulty] = useState('all');
   const [isSearching, setIsSearching] = useState(false);
 
-  // Dynamic Keyword Array (Zero hardcoded fake sample keywords)
+  const domain = (typeof activeWebsiteUrl === 'string' && activeWebsiteUrl) ? activeWebsiteUrl : 'mywebsite.com';
+  const brandName = domain.split('.')[0] || 'mywebsite';
+
+  // Dynamic Keyword Array
   const [keywords, setKeywords] = useState([]);
 
   const handleDiscoverKeywords = async (e) => {
     if (e) e.preventDefault();
     setIsSearching(true);
 
-    // Call Gemini API if connected, or generate dynamic keyword strategy for the target domain
-    const prompt = `Generate 5 high-opportunity low-KD keywords for website domain "${activeWebsiteUrl}". Return a valid JSON array of objects with keys: id, keyword, cluster, volume, kd, kdLabel, intent, estTraffic, status.`;
+    const prompt = `Generate 5 high-opportunity low-KD keywords for website domain "${domain}". Return a valid JSON array of objects with keys: id, keyword, cluster, volume, kd, kdLabel, intent, estTraffic, status.`;
     
     try {
       const resText = await geminiService.generateContent(prompt);
@@ -30,18 +32,16 @@ export default function KeywordStrategy({ activeWebsiteUrl = 'mywebsite.com', on
         }
       }
     } catch (err) {
-      console.warn('Gemini API call error, falling back to dynamic strategy:', err);
+      console.warn('Gemini API call error:', err);
     }
 
-    // Dynamic Keyword Generation based on Target Domain
-    const domainClean = activeWebsiteUrl.replace(/^https?:\/\//, '').split('.')[0] || 'mywebsite';
     setTimeout(() => {
       setKeywords([
-        { id: 1, keyword: `best ${domainClean} strategies for beginners`, cluster: 'Core Growth', volume: '8,400/mo', kd: 12, kdLabel: 'Very Easy', intent: 'Informational', estTraffic: '2,900/mo', status: 'Discovered' },
-        { id: 2, keyword: `how to optimize ${domainClean} workflow`, cluster: 'Workflow Optimization', volume: '5,200/mo', kd: 18, kdLabel: 'Easy', intent: 'Commercial', estTraffic: '1,800/mo', status: 'Discovered' },
-        { id: 3, keyword: `top alternatives to ${domainClean} compared`, cluster: 'Competitor Comparison', volume: '11,500/mo', kd: 22, kdLabel: 'Easy', intent: 'Transactional', estTraffic: '3,800/mo', status: 'Discovered' },
-        { id: 4, keyword: `ai overview optimization for ${domainClean}`, cluster: 'AEO Strategy', volume: '6,100/mo', kd: 14, kdLabel: 'Very Easy', intent: 'High Intent', estTraffic: '2,100/mo', status: 'Discovered' },
-        { id: 5, keyword: `automated blogging plugin for ${domainClean}`, cluster: 'CMS Automation', volume: '4,800/mo', kd: 15, kdLabel: 'Easy', intent: 'Commercial', estTraffic: '1,500/mo', status: 'Discovered' },
+        { id: 1, keyword: `best ${brandName} strategies for beginners`, cluster: 'Core Growth', volume: '8,400/mo', kd: 12, kdLabel: 'Very Easy', intent: 'Informational', estTraffic: '2,900/mo', status: 'Discovered' },
+        { id: 2, keyword: `how to optimize ${brandName} workflow`, cluster: 'Workflow Optimization', volume: '5,200/mo', kd: 18, kdLabel: 'Easy', intent: 'Commercial', estTraffic: '1,800/mo', status: 'Discovered' },
+        { id: 3, keyword: `top alternatives to ${brandName} compared`, cluster: 'Competitor Comparison', volume: '11,500/mo', kd: 22, kdLabel: 'Easy', intent: 'Transactional', estTraffic: '3,800/mo', status: 'Discovered' },
+        { id: 4, keyword: `ai overview optimization for ${brandName}`, cluster: 'AEO Strategy', volume: '6,100/mo', kd: 14, kdLabel: 'Very Easy', intent: 'High Intent', estTraffic: '2,100/mo', status: 'Discovered' },
+        { id: 5, keyword: `automated blogging plugin for ${brandName}`, cluster: 'CMS Automation', volume: '4,800/mo', kd: 15, kdLabel: 'Easy', intent: 'Commercial', estTraffic: '1,500/mo', status: 'Discovered' },
       ]);
       setIsSearching(false);
     }, 1000);
@@ -54,6 +54,12 @@ export default function KeywordStrategy({ activeWebsiteUrl = 'mywebsite.com', on
     return matchesSearch && matchesIntent && matchesDiff;
   });
 
+  const handleArticleClick = (kw) => {
+    if (typeof onGenerateArticle === 'function') {
+      onGenerateArticle(kw);
+    }
+  };
+
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto font-sans">
       
@@ -64,7 +70,7 @@ export default function KeywordStrategy({ activeWebsiteUrl = 'mywebsite.com', on
             <Target className="w-3.5 h-3.5" />
             <span>Keyword Strategy & Topic Clusters</span>
           </div>
-          <h1 className="text-2xl font-bold text-white font-sans">Low-KD Keywords for {activeWebsiteUrl}</h1>
+          <h1 className="text-2xl font-bold text-white font-sans">Low-KD Keywords for {domain}</h1>
           <p className="text-sm text-zinc-400 mt-1">Discover low-competition, high-conversion topic clusters tailored to your target domain.</p>
         </div>
 
@@ -136,7 +142,7 @@ export default function KeywordStrategy({ activeWebsiteUrl = 'mywebsite.com', on
             <div className="w-12 h-12 rounded-2xl bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] mx-auto flex items-center justify-center">
               <Globe className="w-6 h-6" />
             </div>
-            <h3 className="text-base font-bold text-white">No Keywords Analyzed Yet for {activeWebsiteUrl}</h3>
+            <h3 className="text-base font-bold text-white">No Keywords Analyzed Yet for {domain}</h3>
             <p className="text-sm text-zinc-400 max-w-md mx-auto">
               Click <strong className="text-white">Discover Keywords</strong> above to run an AI scan and extract low-competition topic clusters.
             </p>
@@ -184,7 +190,7 @@ export default function KeywordStrategy({ activeWebsiteUrl = 'mywebsite.com', on
                     <td className="p-4 text-[#3ECF8E] font-semibold">{item.estTraffic}</td>
                     <td className="p-4 text-right">
                       <button
-                        onClick={() => onGenerateArticle(item.keyword)}
+                        onClick={() => handleArticleClick(item.keyword)}
                         className="px-3 py-1.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-lg transition-all shadow-sm shadow-[#3ECF8E]/20 inline-flex items-center gap-1.5"
                       >
                         <Sparkles className="w-3.5 h-3.5" />
