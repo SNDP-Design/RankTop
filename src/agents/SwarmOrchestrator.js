@@ -4,7 +4,7 @@ export class SwarmOrchestrator {
   constructor(onUpdate) {
     this.onUpdate = onUpdate; // State listener callback
     this.status = 'IDLE'; // 'IDLE' | 'RUNNING' | 'AWAITING_APPROVAL' | 'COMPLETED' | 'PAUSED'
-    this.mode = 'hitl'; // 'hitl' (Human-In-The-Loop) | 'autopilot' (Full Autopilot)
+    this.mode = 'autopilot'; // 'autopilot' (Full Autopilot default) | 'hitl' (Human-In-The-Loop)
     this.currentStepIndex = 0;
     this.logs = [];
     this.pendingApproval = null; // { id, gate, title, description, payload, resolve, reject }
