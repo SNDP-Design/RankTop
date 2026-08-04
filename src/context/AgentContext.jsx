@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
+import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
 import { geminiService } from '../services/geminiService';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -20,6 +20,29 @@ const AGENT_IDS = ['dashboard', 'keywords', 'competitors', 'aeo', 'geo', 'faq', 
 const initialStatus = () =>
   Object.fromEntries(AGENT_IDS.map((id) => [id, 'idle']));
 // status values: 'idle' | 'running' | 'done' | 'error'
+
+// ─── localStorage helpers ─────────────────────────────────────────────────────
+const LS_URL     = 'ranktop_website_url';
+const LS_RESULTS = 'ranktop_agent_results';
+
+function loadFromStorage() {
+  try {
+    const url     = localStorage.getItem(LS_URL) || '';
+    const results = JSON.parse(localStorage.getItem(LS_RESULTS) || '{}');
+    return { url, results };
+  } catch {
+    return { url: '', results: {} };
+  }
+}
+
+function saveToStorage(url, results) {
+  try {
+    localStorage.setItem(LS_URL, url);
+    localStorage.setItem(LS_RESULTS, JSON.stringify(results));
+  } catch (e) {
+    console.warn('[RankTop] localStorage write failed:', e);
+  }
+}
 
 // ─── Gemini Prompts ───────────────────────────────────────────────────────────
 
@@ -131,12 +154,25 @@ Return exactly 8 items.`,
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function AgentProvider({ children }) {
-  const [websiteUrl, setWebsiteUrl] = useState('');
-  const [agentResults, setAgentResults] = useState({});
-  const [agentStatus, setAgentStatus] = useState(initialStatus());
+  // ── Rehydrate from localStorage on first render ──────────────────────────
+  const { url: savedUrl, results: savedResults } = loadFromStorage();
+
+  // Restore status to 'done' for every agent that has a saved result
+  const restoredStatus = Object.fromEntries(
+    AGENT_IDS.map((id) => [id, savedResults[id] ? 'done' : 'idle'])
+  );
+
+  const [websiteUrl, setWebsiteUrl] = useState(savedUrl);
+  const [agentResults, setAgentResults] = useState(savedResults);
+  const [agentStatus, setAgentStatus] = useState(restoredStatus);
   const [isAnyRunning, setIsAnyRunning] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const abortRef = useRef(false);
+
+  // ── Persist to localStorage whenever url or results change ───────────────
+  useEffect(() => {
+    saveToStorage(websiteUrl, agentResults);
+  }, [websiteUrl, agentResults]);
 
   const setOneStatus = useCallback((id, status) => {
     setAgentStatus((prev) => ({ ...prev, [id]: status }));
