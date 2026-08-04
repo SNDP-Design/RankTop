@@ -83,41 +83,41 @@ function AgentEmptyState({ setActiveTab }) {
   );
 }
 
-function DailyGrowthChart({ domain }) {
+function DailyGrowthChart({ domain, gscData, onConnectGsc, gscLoading }) {
   const [range, setRange] = useState('30d'); // 'today' | '7d' | '30d'
   const [hoverIndex, setHoverIndex] = useState(null);
 
-  const daysCount = range === 'today' ? 12 : range === '7d' ? 7 : 30;
+  const daysCount = range === 'today' ? 1 : range === '7d' ? 7 : 30;
 
+  // Build authentic dataset (from Search Console or real zeros if not connected)
   const chartData = React.useMemo(() => {
+    if (gscData?.dailyBreakdown && gscData.dailyBreakdown.length > 0) {
+      const slice = gscData.dailyBreakdown.slice(-daysCount);
+      return slice.map((item) => ({
+        date: new Date(item.date).toLocaleDateString([], { month: 'short', day: 'numeric' }),
+        clicks: item.clicks ?? 0,
+        impressions: item.impressions ?? 0,
+        position: item.position ?? '0',
+      }));
+    }
+
+    // Honest zero state array for the selected timeframe (No fake numbers)
     const list = [];
     const now = new Date();
     for (let i = daysCount - 1; i >= 0; i--) {
       const d = new Date();
-      if (range === 'today') {
-        d.setHours(now.getHours() - (i * 2));
-      } else {
-        d.setDate(now.getDate() - i);
-      }
-
-      const dayLabel = range === 'today'
-        ? d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        : d.toLocaleDateString([], { month: 'short', day: 'numeric' });
-
-      const progressRatio = (daysCount - i) / daysCount;
-      const baseClicks = range === 'today' ? 3 + Math.floor(Math.random() * 4) : Math.floor(12 + progressRatio * 75 + Math.random() * 10);
-      const baseImpressions = range === 'today' ? Math.floor(baseClicks * 14 + Math.random() * 30) : Math.floor(baseClicks * 22 + Math.random() * 150);
-
+      d.setDate(now.getDate() - i);
       list.push({
-        date: dayLabel,
-        clicks: baseClicks,
-        impressions: baseImpressions,
-        position: Math.max(1, (24 - progressRatio * 16 + (Math.random() * 1.5 - 0.75)).toFixed(1))
+        date: d.toLocaleDateString([], { month: 'short', day: 'numeric' }),
+        clicks: 0,
+        impressions: 0,
+        position: '—',
       });
     }
     return list;
-  }, [range, daysCount]);
+  }, [gscData, daysCount]);
 
+  const hasRealData = Boolean(gscData?.dailyBreakdown && gscData.dailyBreakdown.length > 0);
   const maxClicks = Math.max(...chartData.map(d => d.clicks), 1);
   const totalClicks = chartData.reduce((acc, d) => acc + d.clicks, 0);
   const totalImpressions = chartData.reduce((acc, d) => acc + d.impressions, 0);
@@ -132,28 +132,45 @@ function DailyGrowthChart({ domain }) {
             <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#fff', margin: 0 }}>Day-by-Day Organic Growth & Traffic Trend</h3>
           </div>
           <p style={{ fontSize: '13px', color: '#71717a', margin: '4px 0 0' }}>
-            Daily clicks, impression growth, and search position for <span style={{ color: '#3ECF8E', fontWeight: 600 }}>{domain}</span>
+            Live daily clicks, impression growth, and search position for <span style={{ color: '#3ECF8E', fontWeight: 600 }}>{domain}</span>
           </p>
         </div>
 
-        <div style={{ display: 'flex', background: '#121212', padding: '4px', borderRadius: '10px', border: '1px solid #262626' }}>
-          {[
-            { id: 'today', label: 'Today (24h)' },
-            { id: '7d',    label: '7 Days' },
-            { id: '30d',   label: '30 Days Growth' }
-          ].map(t => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          {!hasRealData && (
             <button
-              key={t.id}
-              onClick={() => { setRange(t.id); setHoverIndex(null); }}
+              onClick={onConnectGsc}
+              disabled={gscLoading}
               style={{
-                padding: '6px 14px', borderRadius: '8px', border: 'none', fontSize: '12px', fontWeight: 700, cursor: 'pointer',
-                background: range === t.id ? '#3ECF8E' : 'transparent',
-                color: range === t.id ? '#000' : '#71717a', transition: 'all 0.15s'
+                padding: '6px 14px', background: '#4285F4', color: '#fff', border: 'none',
+                borderRadius: '8px', fontSize: '12px', fontWeight: 700, cursor: 'pointer',
+                display: 'inline-flex', alignItems: 'center', gap: '6px'
               }}
             >
-              {t.label}
+              {gscLoading ? <Loader2 size={13} className="animate-spin" /> : <Globe2 size={13} />}
+              Connect Search Console to Sync Live Chart
             </button>
-          ))}
+          )}
+
+          <div style={{ display: 'flex', background: '#121212', padding: '4px', borderRadius: '10px', border: '1px solid #262626' }}>
+            {[
+              { id: 'today', label: 'Today' },
+              { id: '7d',    label: '7 Days' },
+              { id: '30d',   label: '30 Days Growth' }
+            ].map(t => (
+              <button
+                key={t.id}
+                onClick={() => { setRange(t.id); setHoverIndex(null); }}
+                style={{
+                  padding: '6px 14px', borderRadius: '8px', border: 'none', fontSize: '12px', fontWeight: 700, cursor: 'pointer',
+                  background: range === t.id ? '#3ECF8E' : 'transparent',
+                  color: range === t.id ? '#000' : '#71717a', transition: 'all 0.15s'
+                }}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -164,9 +181,6 @@ function DailyGrowthChart({ domain }) {
           </div>
           <div style={{ fontSize: '22px', fontWeight: 800, color: '#3ECF8E', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
             {totalClicks.toLocaleString()}
-            <span style={{ fontSize: '12px', color: '#3ECF8E', background: 'rgba(62,207,142,0.15)', padding: '2px 6px', borderRadius: '4px', display: 'inline-flex', alignItems: 'center' }}>
-              <ArrowUpRight size={12} /> +38%
-            </span>
           </div>
         </div>
         <div>
@@ -178,13 +192,13 @@ function DailyGrowthChart({ domain }) {
         <div>
           <div style={{ fontSize: '11px', color: '#71717a', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Selected Date</div>
           <div style={{ fontSize: '15px', fontWeight: 700, color: '#fff', marginTop: '4px' }}>
-            {activeHover.date}
+            {activeHover?.date || '—'}
           </div>
         </div>
         <div>
           <div style={{ fontSize: '11px', color: '#71717a', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Selected Clicks & Pos</div>
           <div style={{ fontSize: '15px', fontWeight: 700, color: '#3ECF8E', marginTop: '4px' }}>
-            {activeHover.clicks} clicks <span style={{ color: '#a78bfa', fontWeight: 600 }}>({`#${activeHover.position}`})</span>
+            {activeHover?.clicks ?? 0} clicks <span style={{ color: '#a78bfa', fontWeight: 600 }}>({activeHover?.position !== '—' ? `#${activeHover?.position}` : '—'})</span>
           </div>
         </div>
       </div>
@@ -192,7 +206,7 @@ function DailyGrowthChart({ domain }) {
       <div style={{ position: 'relative', height: '180px', width: '100%', marginTop: '12px' }}>
         <div style={{ display: 'flex', alignItems: 'flex-end', height: '140px', gap: range === '30d' ? '4px' : '16px', paddingBottom: '8px', borderBottom: '1px solid #262626' }}>
           {chartData.map((d, idx) => {
-            const heightPercent = Math.max(10, (d.clicks / maxClicks) * 100);
+            const heightPercent = totalClicks > 0 ? Math.max(8, (d.clicks / maxClicks) * 100) : 4;
             const isHovered = hoverIndex === idx || (hoverIndex === null && idx === chartData.length - 1);
             return (
               <div
@@ -204,10 +218,10 @@ function DailyGrowthChart({ domain }) {
                   style={{
                     width: '100%',
                     height: `${heightPercent}%`,
-                    background: isHovered ? 'linear-gradient(180deg, #3ECF8E 0%, rgba(62,207,142,0.3) 100%)' : 'rgba(62,207,142,0.3)',
+                    background: isHovered ? 'linear-gradient(180deg, #3ECF8E 0%, rgba(62,207,142,0.3) 100%)' : 'rgba(62,207,142,0.15)',
                     borderRadius: '4px 4px 0 0',
                     transition: 'all 0.15s ease',
-                    boxShadow: isHovered ? '0 0 12px rgba(62,207,142,0.4)' : 'none'
+                    boxShadow: isHovered && totalClicks > 0 ? '0 0 12px rgba(62,207,142,0.4)' : 'none'
                   }}
                 />
               </div>
@@ -319,7 +333,12 @@ export default function DashboardOverview({ setActiveTab }) {
     <div className="w-full space-y-6 font-sans">
 
       {/* Day-by-Day Organic Growth & Traffic Trend Component */}
-      <DailyGrowthChart domain={domain} />
+      <DailyGrowthChart
+        domain={domain}
+        gscData={gscData}
+        onConnectGsc={handleConnectGsc}
+        gscLoading={gscLoading}
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 

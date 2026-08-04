@@ -144,6 +144,20 @@ class GscClientService {
         }),
       });
 
+      // 3. Fetch Real Daily Performance Breakdown
+      const dateRes = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          startDate,
+          endDate,
+          dimensions: ['date'],
+        }),
+      });
+
       if (!overviewRes.ok) {
         const err = await overviewRes.json().catch(() => ({}));
         throw new Error(err.error?.message || `Search Console API error (${overviewRes.status})`);
@@ -151,6 +165,7 @@ class GscClientService {
 
       const overviewData = await overviewRes.json();
       const queryData = await queryRes.json();
+      const dateData = await dateRes.json().catch(() => ({}));
 
       const overall = overviewData.rows?.[0] || null;
       const queries = (queryData.rows || []).map((r) => ({
@@ -159,6 +174,13 @@ class GscClientService {
         impressions: r.impressions,
         ctr: (r.ctr * 100).toFixed(1) + '%',
         position: r.position.toFixed(1),
+      }));
+
+      const dailyBreakdown = (dateData.rows || []).map((r) => ({
+        date: r.keys[0],
+        clicks: r.clicks,
+        impressions: r.impressions,
+        position: r.position ? r.position.toFixed(1) : '0',
       }));
 
       return {
@@ -173,6 +195,7 @@ class GscClientService {
           avgPosition: overall.position.toFixed(1),
         } : { clicks: 0, impressions: 0, ctr: '0%', avgPosition: '0' },
         topQueries: queries,
+        dailyBreakdown,
       };
     } catch (err) {
       console.error('[GSC Analytics Fetch]', err);
