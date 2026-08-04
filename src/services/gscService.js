@@ -112,14 +112,52 @@ class GscClientService {
   }
 
   /**
+   * Fetches list of all verified site properties in user's Google Search Console account
+   */
+  async getVerifiedSites() {
+    const token = this.getToken();
+    if (!token) return [];
+    try {
+      const res = await fetch('https://www.googleapis.com/webmasters/v3/sites', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) return [];
+      const data = await res.json();
+      return (data.siteEntry || []).map(s => s.siteUrl);
+    } catch (err) {
+      console.warn('[GSC Sites Fetch Error]', err);
+      return [];
+    }
+  }
+
+  /**
    * Queries Google Search Analytics API directly from browser using fetch
    */
   async fetchGscAnalytics(domain, days = 28) {
     const token = this.getToken();
     if (!token) throw new Error('Search Console not connected');
 
-    const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
-    const siteUrl = cleanDomain.startsWith('http') ? cleanDomain : `https://${cleanDomain}`;
+    const rawDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '').toLowerCase();
+    const coreDomain = rawDomain.replace(/^www\./, '');
+
+    // 0. Auto-detect exact property format from user's verified sites list
+    const verifiedSites = await this.getVerifiedSites();
+    let siteUrl = null;
+
+    if (verifiedSites.length > 0) {
+      // Look for sc-domain:xgrowth.uno, https://www.xgrowth.uno/, https://xgrowth.uno/, etc.
+      siteUrl = verifiedSites.find(s => {
+        const lower = s.toLowerCase();
+        return lower === `sc-domain:${coreDomain}` ||
+               lower.includes(rawDomain) ||
+               lower.includes(coreDomain);
+      });
+    }
+
+    if (!siteUrl) {
+      // Fallback format
+      siteUrl = rawDomain.startsWith('http') ? rawDomain : `https://${rawDomain}/`;
+    }
 
     const endDate = new Date().toISOString().slice(0, 10);
     const startDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
