@@ -1,7 +1,8 @@
-import React from 'react';
-import { LayoutDashboard, TrendingUp, Zap, Globe2, AlertCircle, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { LayoutDashboard, TrendingUp, Zap, Globe2, AlertCircle, CheckCircle2, Loader2, Sparkles, ExternalLink } from 'lucide-react';
 import { useAgents } from '../../context/AgentContext';
 import { getBackendUrl } from '../../config';
+import { gscService } from '../../services/gscService';
 
 function ScoreRing({ score, color, label }) {
   const r = 28;
