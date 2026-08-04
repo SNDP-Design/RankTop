@@ -1,6 +1,7 @@
-import React from 'react';
-import { Bot, CheckCircle2, Loader2, AlertCircle, Clock, Zap, TrendingUp } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Bot, CheckCircle2, Loader2, AlertCircle, Clock, Zap, TrendingUp, Settings2, Mail, Globe, KeyRound, Power, ExternalLink, Play } from 'lucide-react';
 import { useAgents } from '../../context/AgentContext';
+import { backendPost, backendGet, getBackendUrl } from '../../config';
 
 const AGENTS = [
   { id: 'dashboard', name: 'SEO Analyst Agent',        desc: 'Auditing domain health & scoring SEO/AEO/GEO',        color: '#3ECF8E' },
@@ -32,13 +33,92 @@ function StatusBadge({ status }) {
 }
 
 export default function SwarmOrchestratorView() {
-  const { agentStatus, agentResults, isAnyRunning, websiteUrl, triggerAllAgents, setSettingsOpen, hasApiKey } = useAgents();
+  const { agentStatus, agentResults, isAnyRunning, websiteUrl, setSettingsOpen, hasApiKey } = useAgents();
+
+  const [backendUrl, setBackendUrl] = useState(getBackendUrl());
+  const [email, setEmail] = useState('');
+  const [wpUrl, setWpUrl] = useState('');
+  const [wpUser, setWpUser] = useState('');
+  const [wpPass, setWpPass] = useState('');
+  
+  const [isLoopActive, setIsLoopActive] = useState(false);
+  const [loopHistory, setLoopHistory] = useState([]);
+  const [loadingLoop, setLoadingLoop] = useState(false);
+  const [msg, setMsg] = useState(null);
 
   const totalDone    = Object.values(agentStatus).filter((s) => s === 'done').length;
-  const totalRunning = Object.values(agentStatus).filter((s) => s === 'running').length;
-  const totalError   = Object.values(agentStatus).filter((s) => s === 'error').length;
   const totalAgents  = AGENTS.length;
   const swarmData    = agentResults.swarm;
+  const domain       = websiteUrl || 'yourwebsite.com';
+
+  useEffect(() => {
+    if (!backendUrl || !domain) return;
+    backendGet(`/api/agent-loop/status?domain=${encodeURIComponent(domain)}`)
+      .then((data) => {
+        if (data) {
+          setIsLoopActive(Boolean(data.active));
+          if (data.history) setLoopHistory(data.history);
+          if (data.emailNotifications) setEmail(data.emailNotifications);
+        }
+      })
+      .catch(() => {});
+  }, [backendUrl, domain]);
+
+  const handleSaveBackendUrl = (e) => {
+    e.preventDefault();
+    localStorage.setItem('RANKTOP_BACKEND_URL', backendUrl.trim());
+    setMsg({ type: 'success', text: 'Backend URL updated!' });
+    setTimeout(() => setMsg(null), 3000);
+  };
+
+  const handleToggleAutonomy = async () => {
+    if (!backendUrl) {
+      setMsg({ type: 'error', text: 'Please configure and save Backend URL first!' });
+      return;
+    }
+    if (!email.trim()) {
+      setMsg({ type: 'error', text: 'Please provide an email for notifications!' });
+      return;
+    }
+
+    setLoadingLoop(true);
+    try {
+      if (isLoopActive) {
+        await backendPost('/api/agent-loop/stop', { domain });
+        setIsLoopActive(false);
+        setMsg({ type: 'success', text: 'Autonomous loop paused.' });
+      } else {
+        await backendPost('/api/agent-loop/start', {
+          domain,
+          email: email.trim(),
+          wpSiteUrl: wpUrl.trim(),
+          wpUsername: wpUser.trim(),
+          wpAppPassword: wpPass.trim(),
+        });
+        setIsLoopActive(true);
+        setMsg({ type: 'success', text: 'Autonomous loop activated! First run triggered.' });
+      }
+    } catch (err) {
+      setMsg({ type: 'error', text: err.message || 'Failed to toggle autonomy.' });
+    } finally {
+      setLoadingLoop(false);
+      setTimeout(() => setMsg(null), 4000);
+    }
+  };
+
+  const handleRunNow = async () => {
+    if (!backendUrl) return;
+    setLoadingLoop(true);
+    try {
+      await backendPost('/api/agent-loop/run-now', { domain });
+      setMsg({ type: 'success', text: 'Manual run triggered!' });
+    } catch (err) {
+      setMsg({ type: 'error', text: err.message || 'Run failed' });
+    } finally {
+      setLoadingLoop(false);
+      setTimeout(() => setMsg(null), 3000);
+    }
+  };
 
   return (
     <div className="w-full space-y-6 font-sans">
@@ -49,10 +129,10 @@ export default function SwarmOrchestratorView() {
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '99px', background: 'rgba(62,207,142,0.1)', border: '1px solid rgba(62,207,142,0.2)', fontSize: '13px', fontWeight: 700, color: '#3ECF8E', marginBottom: '8px' }}>
             <Bot size={13} /> AI Swarm Orchestrator
           </div>
-          <h1 style={{ fontSize: '22px', fontWeight: 800, color: '#fff', margin: '0 0 4px' }}>Multi-Agent Swarm Control Panel</h1>
+          <h1 style={{ fontSize: '22px', fontWeight: 800, color: '#fff', margin: '0 0 4px' }}>Autonomous Multi-Agent Swarm</h1>
           <p style={{ fontSize: '14px', color: '#71717a', margin: 0 }}>
             {websiteUrl
-              ? `Managing ${totalAgents} agents for ${websiteUrl} — ${totalDone} complete, ${totalRunning} running`
+              ? `Managing ${totalAgents} agents for ${websiteUrl} — ${totalDone} complete`
               : 'Enter your website URL above to launch all 7 AI agents simultaneously.'}
           </p>
         </div>
@@ -61,8 +141,133 @@ export default function SwarmOrchestratorView() {
             onClick={() => setSettingsOpen(true)}
             style={{ padding: '10px 20px', background: '#3ECF8E', color: '#000', border: 'none', borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
           >
-            <Zap size={15} /> Add API Key to Start
+            <Zap size={15} /> Add Gemini API Key
           </button>
+        )}
+      </div>
+
+      {/* Message Banner */}
+      {msg && (
+        <div style={{
+          padding: '12px 16px', borderRadius: '12px', fontSize: '14px', fontWeight: 600,
+          background: msg.type === 'success' ? 'rgba(62,207,142,0.1)' : 'rgba(239,68,68,0.1)',
+          border: `1px solid ${msg.type === 'success' ? 'rgba(62,207,142,0.3)' : 'rgba(239,68,68,0.3)'}`,
+          color: msg.type === 'success' ? '#3ECF8E' : '#ef4444',
+          display: 'flex', alignItems: 'center', gap: '8px',
+        }}>
+          {msg.type === 'success' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+          {msg.text}
+        </div>
+      )}
+
+      {/* Autonomy & Backend Configuration Panel */}
+      <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Settings2 size={18} color="#3ECF8E" />
+            <h2 style={{ fontSize: '16px', fontWeight: 700, color: '#fff', margin: 0 }}>Full Autonomy & Server Settings</h2>
+          </div>
+          <button
+            onClick={handleToggleAutonomy}
+            disabled={loadingLoop}
+            style={{
+              padding: '10px 20px', borderRadius: '10px', border: 'none', cursor: 'pointer',
+              background: isLoopActive ? '#ef4444' : '#3ECF8E', color: isLoopActive ? '#fff' : '#000',
+              fontSize: '14px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px',
+              opacity: loadingLoop ? 0.7 : 1, transition: 'all 0.15s',
+            }}
+          >
+            {loadingLoop ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <Power size={16} />
+            )}
+            {isLoopActive ? 'Pause Autonomy Loop' : 'Enable 24/7 Full Autonomy'}
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Backend URL & Email Config */}
+          <div className="space-y-4">
+            <div>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#a1a1aa', marginBottom: '6px' }}>
+                Backend Server URL (Render / Railway)
+              </label>
+              <form onSubmit={handleSaveBackendUrl} style={{ display: 'flex', gap: '8px' }}>
+                <input
+                  type="url"
+                  value={backendUrl}
+                  onChange={(e) => setBackendUrl(e.target.value)}
+                  placeholder="https://ranktop-backend.onrender.com"
+                  style={{ flex: 1, background: '#121212', border: '1px solid #2d2d2d', borderRadius: '8px', padding: '8px 12px', fontSize: '14px', color: '#fff', outline: 'none' }}
+                />
+                <button type="submit" style={{ padding: '8px 14px', background: '#262626', color: '#fff', border: '1px solid #333', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
+                  Save
+                </button>
+              </form>
+            </div>
+
+            <div>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#a1a1aa', marginBottom: '6px' }}>
+                Weekly Email Reports & Alerts Address
+              </label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#121212', border: '1px solid #2d2d2d', borderRadius: '8px', padding: '0 12px' }}>
+                <Mail size={15} color="#71717a" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@domain.com"
+                  style={{ flex: 1, background: 'transparent', border: 'none', padding: '10px 0', fontSize: '14px', color: '#fff', outline: 'none' }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* WordPress Auto-Publish Credentials */}
+          <div className="space-y-3" style={{ background: '#121212', border: '1px solid #222', borderRadius: '12px', padding: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 700, color: '#3ECF8E', textTransform: 'uppercase' }}>
+              <Globe size={14} /> WordPress Auto-Publishing Integration
+            </div>
+            <input
+              type="text"
+              value={wpUrl}
+              onChange={(e) => setWpUrl(e.target.value)}
+              placeholder="WordPress Site URL (https://myblog.com)"
+              style={{ width: '100%', background: '#171717', border: '1px solid #2d2d2d', borderRadius: '8px', padding: '8px 12px', fontSize: '13px', color: '#fff', outline: 'none' }}
+            />
+            <div className="grid grid-cols-2 gap-2">
+              <input
+                type="text"
+                value={wpUser}
+                onChange={(e) => setWpUser(e.target.value)}
+                placeholder="WP Username"
+                style={{ background: '#171717', border: '1px solid #2d2d2d', borderRadius: '8px', padding: '8px 12px', fontSize: '13px', color: '#fff', outline: 'none' }}
+              />
+              <input
+                type="password"
+                value={wpPass}
+                onChange={(e) => setWpPass(e.target.value)}
+                placeholder="App Password"
+                style={{ background: '#171717', border: '1px solid #2d2d2d', borderRadius: '8px', padding: '8px 12px', fontSize: '13px', color: '#fff', outline: 'none' }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {isLoopActive && (
+          <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #222', display: 'flex', alignItems: 'center', justifyBetween: 'space-between' }}>
+            <span style={{ fontSize: '13px', color: '#3ECF8E', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span className="w-2 h-2 rounded-full bg-[#3ECF8E] animate-pulse" /> Autonomous agent is active and running weekly cron loops.
+            </span>
+            <button
+              onClick={handleRunNow}
+              disabled={loadingLoop}
+              style={{ padding: '6px 14px', background: '#262626', color: '#3ECF8E', border: '1px solid rgba(62,207,142,0.3)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+            >
+              <Play size={12} /> Run Loop Now
+            </button>
+          </div>
         )}
       </div>
 
@@ -70,7 +275,7 @@ export default function SwarmOrchestratorView() {
       {(isAnyRunning || totalDone > 0) && (
         <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '20px 24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-            <span style={{ fontSize: '14px', fontWeight: 700, color: '#fff' }}>Swarm Progress</span>
+            <span style={{ fontSize: '14px', fontWeight: 700, color: '#fff' }}>Swarm Execution Progress</span>
             <span style={{ fontSize: '14px', fontWeight: 700, color: '#3ECF8E' }}>{totalDone}/{totalAgents} agents</span>
           </div>
           <div style={{ height: '8px', background: '#1f1f1f', borderRadius: '99px', overflow: 'hidden' }}>
@@ -114,7 +319,33 @@ export default function SwarmOrchestratorView() {
         })}
       </div>
 
-      {/* Strategic Action Plan (from swarm agent) */}
+      {/* Execution History */}
+      {loopHistory.length > 0 && (
+        <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px' }}>
+          <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#fff', margin: '0 0 16px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Autonomous Execution History
+          </h3>
+          <div className="space-y-2">
+            {loopHistory.map((item, i) => (
+              <div key={i} style={{ background: '#121212', border: '1px solid #222', borderRadius: '8px', padding: '10px 14px', display: 'flex', alignItems: 'center', justifyBetween: 'space-between', fontSize: '13px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ color: item.result === 'success' ? '#3ECF8E' : '#ef4444', fontWeight: 700 }}>
+                    {item.action_type?.toUpperCase()}
+                  </span>
+                  <span style={{ color: '#a1a1aa' }}>{item.ran_at}</span>
+                </div>
+                {item.result_url && (
+                  <a href={item.result_url} target="_blank" rel="noopener noreferrer" style={{ color: '#3ECF8E', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    View <ExternalLink size={12} />
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Strategic Action Plan */}
       {swarmData && !swarmData._raw && (
         <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px' }}>
           <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#3ECF8E', margin: '0 0 16px', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '6px' }}>

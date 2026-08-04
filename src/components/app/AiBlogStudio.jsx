@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Sparkles, Copy, Check } from 'lucide-react';
+import { FileText, Sparkles, Copy, Check, Share2 } from 'lucide-react';
 import { geminiService } from '../../services/geminiService';
 import { useAgents } from '../../context/AgentContext';
 
@@ -156,16 +156,25 @@ By structuring direct answer blocks and embedding speakable schema, your brand s
 
         {/* Right Output Panel */}
         <div className="lg:col-span-7 bg-[#171717] rounded-2xl border border-[#262626] p-6 space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <h3 className="text-sm font-bold text-white font-sans uppercase tracking-wider">Article Preview & Schema Output</h3>
             {generatedArticle && (
-              <button
-                onClick={handleCopyText}
-                className="px-3.5 py-1.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black rounded-lg text-sm font-bold flex items-center gap-1.5 shadow"
-              >
-                {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                <span>{copied ? 'Copied' : 'Copy Article'}</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleCopyText}
+                  className="px-3.5 py-1.5 bg-[#262626] hover:bg-[#333] text-white border border-[#333] rounded-lg text-sm font-bold flex items-center gap-1.5 shadow transition-all"
+                >
+                  {copied ? <Check className="w-4 h-4 text-[#3ECF8E]" /> : <Copy className="w-4 h-4" />}
+                  <span>{copied ? 'Copied' : 'Copy'}</span>
+                </button>
+                <button
+                  onClick={() => alert('To publish automatically, configure your WordPress credentials in the AI Swarm tab!')}
+                  className="px-3.5 py-1.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black rounded-lg text-sm font-bold flex items-center gap-1.5 shadow transition-all"
+                >
+                  <Share2 className="w-4 h-4 text-black" />
+                  <span>Publish to WordPress</span>
+                </button>
+              </div>
             )}
           </div>
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { LayoutDashboard, TrendingUp, Zap, Globe2, AlertCircle, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
 import { useAgents } from '../../context/AgentContext';
+import { getBackendUrl } from '../../config';
 
 function ScoreRing({ score, color, label }) {
   const r = 28;
@@ -142,9 +143,23 @@ export default function DashboardOverview({ setActiveTab }) {
           </div>
           <p style={{ fontSize: '14px', color: '#71717a', margin: 0 }}>{data.summary}</p>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3ECF8E', animation: 'pulse 2s infinite' }} />
-          <span style={{ fontSize: '13px', color: '#3ECF8E', fontWeight: 600 }}>Analysis Complete</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <a
+            href={`${getBackendUrl() || 'http://localhost:3001'}/api/gsc/auth?domain=${encodeURIComponent(domain)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              padding: '6px 14px', background: '#1f1f1f', color: '#fff', border: '1px solid #333',
+              borderRadius: '8px', fontSize: '13px', fontWeight: 600, textDecoration: 'none',
+              display: 'inline-flex', alignItems: 'center', gap: '6px',
+            }}
+          >
+            <Globe2 size={13} color="#4285F4" /> Connect Search Console
+          </a>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3ECF8E', animation: 'pulse 2s infinite' }} />
+            <span style={{ fontSize: '13px', color: '#3ECF8E', fontWeight: 600 }}>Analysis Complete</span>
+          </div>
         </div>
       </div>
 
