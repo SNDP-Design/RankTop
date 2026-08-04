@@ -137,8 +137,8 @@ class GscClientService {
     const token = this.getToken();
     if (!token) throw new Error('Search Console not connected');
 
-    const rawDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '').toLowerCase();
-    const coreDomain = rawDomain.replace(/^www\./, '');
+    const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '').toLowerCase();
+    const coreDomain = cleanDomain.replace(/^www\./, '');
 
     // 0. Auto-detect exact property format from user's verified sites list
     const verifiedSites = await this.getVerifiedSites();
@@ -149,14 +149,14 @@ class GscClientService {
       siteUrl = verifiedSites.find(s => {
         const lower = s.toLowerCase();
         return lower === `sc-domain:${coreDomain}` ||
-               lower.includes(rawDomain) ||
+               lower.includes(cleanDomain) ||
                lower.includes(coreDomain);
       });
     }
 
     if (!siteUrl) {
       // Fallback format
-      siteUrl = rawDomain.startsWith('http') ? rawDomain : `https://${rawDomain}/`;
+      siteUrl = cleanDomain.startsWith('http') ? cleanDomain : `https://${cleanDomain}/`;
     }
 
     const endDate = new Date().toISOString().slice(0, 10);
