@@ -31,12 +31,37 @@ export default function CmsIntegrations() {
         <div>
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-sm font-semibold mb-2 border border-[#3ECF8E]/20">
             <Share2 className="w-4 h-4" />
-            <span>Direct CMS Auto-Publishing Suite</span>
+            <span>Direct CMS & Analytics Integration Suite</span>
           </div>
-          <h1 className="text-2xl font-bold text-white font-sans">CMS Connections & Webhooks</h1>
-          <p className="text-sm text-zinc-400 mt-1">Publish generated articles automatically into your CMS with formatted headings, images, and schema markup.</p>
+          <h1 className="text-2xl font-bold text-white font-sans">CMS & Google Search Console Connections</h1>
+          <p className="text-sm text-zinc-400 mt-1">Connect your CMS and Search Console to publish articles automatically and track live keyword position rankings.</p>
         </div>
       </div>
+
+      {/* Google Search Console Feature Integration */}
+      <div className="bg-[#171717] rounded-2xl border border-[#4285F4]/30 p-6 space-y-4 bg-gradient-to-br from-[#171717] to-[#121212]">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-[#4285F4]/10 text-[#4285F4] flex items-center justify-center border border-[#4285F4]/30 font-bold">
+              <Globe className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-white font-sans">Google Search Console Integration</h3>
+              <p className="text-sm text-zinc-400 mt-0.5">Authorizes RankTop to pull live clicks, impressions, and exact Google keyword positions.</p>
+            </div>
+          </div>
+
+          <a
+            href="http://localhost:3001/api/gsc/auth?domain=www.xgrowth.uno"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-6 py-3 rounded-xl font-bold text-sm bg-[#4285F4] hover:bg-[#3367D6] text-white flex items-center gap-2 shadow-lg shadow-[#4285F4]/20 transition-all text-decoration-none"
+          >
+            <ExternalLink className="w-4 h-4" /> Connect Search Console (www.xgrowth.uno)
+          </a>
+        </div>
+      </div>
+
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
         {integrations.map((cms) => (
