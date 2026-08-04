@@ -273,10 +273,16 @@ export default function DashboardOverview({ setActiveTab }) {
   const handleConnectGsc = async () => {
     try {
       setGscLoading(true);
+      setGscError(null);
       await gscService.connect();
       setGscConnected(true);
+      if (domain && domain !== 'your website') {
+        const res = await gscService.fetchGscAnalytics(domain);
+        setGscData(res);
+      }
     } catch (err) {
-      alert('Google Search Console Login failed: ' + err.message);
+      console.error('[GSC Login Error]', err);
+      setGscError(err.message || 'Google Search Console login failed.');
     } finally {
       setGscLoading(false);
     }

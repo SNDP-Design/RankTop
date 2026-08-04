@@ -39,6 +39,18 @@ class GscClientService {
   }
 
   /**
+   * Promise wrapper for 1-click Google Sign-in Popup
+   */
+  connect() {
+    return new Promise((resolve, reject) => {
+      this.connectGsc(
+        (token) => resolve(token),
+        (err) => reject(new Error(typeof err === 'string' ? err : err?.message || 'Google login failed'))
+      );
+    });
+  }
+
+  /**
    * Initializes 1-click Google Sign-in Popup
    */
   async connectGsc(onSuccess, onError) {
