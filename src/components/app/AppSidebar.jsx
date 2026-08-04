@@ -28,10 +28,9 @@ const NAV_GROUPS = [
     ],
   },
   {
-    label: 'AUTONOMOUS SWARM & GEO',
+    label: 'AUTONOMOUS SWARM',
     items: [
       { id: 'swarm', text: 'AI Swarm', Icon: Bot },
-      { id: 'geo',   text: 'LLM Visibility', Icon: ShieldCheck },
     ],
   },
 ];

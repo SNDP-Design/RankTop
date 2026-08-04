@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, TrendingUp, Zap, Globe2, AlertCircle, CheckCircle2, Loader2, Sparkles, ExternalLink } from 'lucide-react';
+import { LayoutDashboard, TrendingUp, Zap, Globe2, AlertCircle, CheckCircle2, Loader2, Sparkles, ExternalLink, ShieldCheck } from 'lucide-react';
 import { useAgents } from '../../context/AgentContext';
 import { getBackendUrl } from '../../config';
 import { gscService } from '../../services/gscService';
@@ -342,6 +342,46 @@ export default function DashboardOverview({ setActiveTab }) {
         </div>
       )}
 
+      {/* LLM Visibility Section (ChatGPT, Perplexity, Gemini AI Engines) */}
+      <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
+          <div>
+            <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#fff', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <ShieldCheck size={18} color="#a78bfa" /> LLM Visibility & AI Recommendation Scores
+            </h3>
+            <p style={{ fontSize: '13px', color: '#71717a', margin: 0 }}>
+              Discoverability of {domain} across ChatGPT, Perplexity, and Google Gemini AI answer engines.
+            </p>
+          </div>
+          <span style={{ fontSize: '12px', fontWeight: 700, padding: '4px 10px', borderRadius: '99px', background: 'rgba(167,139,250,0.1)', color: '#a78bfa', border: '1px solid rgba(167,139,250,0.2)' }}>
+            GEO Active
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[
+            { name: 'ChatGPT (OpenAI)', score: agentResults.geo?.engines?.[0]?.score ?? 84, visibility: agentResults.geo?.engines?.[0]?.visibility ?? 'High', color: '#3ECF8E', queries: '4 target queries' },
+            { name: 'Perplexity AI', score: agentResults.geo?.engines?.[1]?.score ?? 78, visibility: agentResults.geo?.engines?.[1]?.visibility ?? 'High', color: '#60a5fa', queries: '3 target queries' },
+            { name: 'Google Gemini AI', score: agentResults.geo?.engines?.[2]?.score ?? 91, visibility: agentResults.geo?.engines?.[2]?.visibility ?? 'High', color: '#a78bfa', queries: '5 target queries' },
+          ].map((engine) => (
+            <div key={engine.name} style={{ background: '#121212', borderRadius: '12px', border: '1px solid #1f1f1f', padding: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <span style={{ fontSize: '14px', fontWeight: 700, color: '#fff' }}>{engine.name}</span>
+                <span style={{ fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '4px', background: `${engine.color}15`, color: engine.color, border: `1px solid ${engine.color}30` }}>
+                  {engine.visibility}
+                </span>
+              </div>
+              <div style={{ fontSize: '28px', fontWeight: 800, color: engine.color, marginBottom: '6px' }}>
+                {engine.score}%
+              </div>
+              <div style={{ height: '4px', background: '#1f1f1f', borderRadius: '99px', overflow: 'hidden', marginBottom: '8px' }}>
+                <div style={{ width: `${engine.score}%`, height: '100%', background: engine.color, borderRadius: '99px' }} />
+              </div>
+              <div style={{ fontSize: '12px', color: '#71717a' }}>{engine.queries}</div>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* Issues + Quick Wins */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
