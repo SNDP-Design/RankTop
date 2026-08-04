@@ -28,41 +28,77 @@ function ScoreRing({ score, color, label }) {
 function AgentEmptyState({ setActiveTab }) {
   const { setSettingsOpen, hasApiKey, isAnyRunning } = useAgents();
   return (
-    <div style={{
-      background: '#171717', border: '1px solid #262626', borderRadius: '16px',
-      padding: '48px 32px', textAlign: 'center',
-    }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       <div style={{
-        width: '56px', height: '56px', borderRadius: '16px',
-        background: 'rgba(62,207,142,0.1)', border: '1px solid rgba(62,207,142,0.2)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px',
+        background: '#171717', border: '1px solid #262626', borderRadius: '16px',
+        padding: '36px 28px', textAlign: 'center',
       }}>
-        <LayoutDashboard size={24} color="#3ECF8E" />
-      </div>
-      <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#fff', margin: '0 0 8px' }}>
-        Master SEO, AEO & GEO Dashboard
-      </h2>
-      <p style={{ fontSize: '14px', color: '#71717a', margin: '0 0 24px', maxWidth: '420px', marginInline: 'auto' }}>
-        {!hasApiKey()
-          ? 'Add your Gemini API key and enter your website URL to activate all AI agents.'
-          : isAnyRunning
-          ? 'Agents are running — results will populate here shortly.'
-          : 'Enter your website URL in the top bar and press Enter to run all 7 AI agents.'
-        }
-      </p>
-      <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-        {!hasApiKey() && (
-          <button
-            onClick={() => setSettingsOpen(true)}
-            style={{
-              padding: '10px 20px', background: '#3ECF8E', color: '#000',
-              borderRadius: '10px', border: 'none', cursor: 'pointer',
-              fontSize: '14px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px',
-            }}
-          >
-            <Sparkles size={15} /> Add Gemini API Key
-          </button>
-        )}
+        <div style={{
+          width: '56px', height: '56px', borderRadius: '16px',
+          background: 'rgba(62,207,142,0.1)', border: '1px solid rgba(62,207,142,0.2)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px',
+        }}>
+          <LayoutDashboard size={24} color="#3ECF8E" />
+        </div>
+        <h2 style={{ fontSize: '22px', fontWeight: 800, color: '#fff', margin: '0 0 8px' }}>
+          Welcome to RankTop Autonomous AI Platform
+        </h2>
+        <p style={{ fontSize: '14px', color: '#a1a1aa', margin: '0 0 24px', maxWidth: '560px', marginInline: 'auto', lineHeight: 1.5 }}>
+          {!hasApiKey()
+            ? 'Add your free Gemini API key to activate your 9 autonomous AI agents. Simply type your website URL in the top bar to begin.'
+            : isAnyRunning
+            ? 'Your AI team is analyzing your website and generating recommendations. Results will populate automatically.'
+            : 'Type your website URL in the top search bar above and press Enter to launch your 9 AI agents.'
+          }
+        </p>
+
+        {/* Non-Technical Plain English Explainer */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left max-w-3xl mx-auto mb-6">
+          <div style={{ background: '#121212', border: '1px solid #242424', borderRadius: '12px', padding: '16px' }}>
+            <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#3ECF8E', margin: '0 0 6px' }}>📈 Google SEO</h4>
+            <p style={{ fontSize: '13px', color: '#71717a', margin: 0, lineHeight: 1.4 }}>
+              Helps your website rank on page 1 of Google search results for valuable keywords.
+            </p>
+          </div>
+          <div style={{ background: '#121212', border: '1px solid #242424', borderRadius: '12px', padding: '16px' }}>
+            <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#60a5fa', margin: '0 0 6px' }}>🤖 ChatGPT & AI Answers (AEO)</h4>
+            <p style={{ fontSize: '13px', color: '#71717a', margin: 0, lineHeight: 1.4 }}>
+              Ensures ChatGPT, Perplexity, and Gemini recommend your website when users ask questions.
+            </p>
+          </div>
+          <div style={{ background: '#121212', border: '1px solid #242424', borderRadius: '12px', padding: '16px' }}>
+            <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#f59e0b', margin: '0 0 6px' }}>🌟 Google AI Overviews (GEO)</h4>
+            <p style={{ fontSize: '13px', color: '#71717a', margin: 0, lineHeight: 1.4 }}>
+              Optimizes content so Google's AI Overview snapshot boxes highlight and link to your website.
+            </p>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          {!hasApiKey() ? (
+            <button
+              onClick={() => setSettingsOpen(true)}
+              style={{
+                padding: '10px 22px', background: '#3ECF8E', color: '#000',
+                borderRadius: '10px', border: 'none', cursor: 'pointer',
+                fontSize: '14px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '6px',
+              }}
+            >
+              <Sparkles size={15} /> Add API Key to Start
+            </button>
+          ) : (
+            <button
+              onClick={() => setActiveTab('swarm')}
+              style={{
+                padding: '10px 22px', background: '#3ECF8E', color: '#000',
+                borderRadius: '10px', border: 'none', cursor: 'pointer',
+                fontSize: '14px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '6px',
+              }}
+            >
+              <Sparkles size={15} /> Open AI Swarm Team
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

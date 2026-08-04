@@ -1,35 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { Bot, CheckCircle2, Loader2, AlertCircle, Clock, Zap, TrendingUp, Settings2, Mail, Globe, Power, ExternalLink, Play, ShieldAlert, Check, X, Sliders, Database, Link, Share2 } from 'lucide-react';
+import { Bot, CheckCircle2, Loader2, AlertCircle, Clock, Zap, Settings2, Mail, Globe, Power, ExternalLink, Play, ShieldAlert, Check, X, Sliders, HelpCircle, ArrowRight, Sparkles, Layers, FileText, Search } from 'lucide-react';
 import { useAgents } from '../../context/AgentContext';
 import { backendPost, backendGet, getBackendUrl } from '../../config';
 import { SwarmOrchestrator } from '../../agents/SwarmOrchestrator';
 
+// Beginner-friendly non-technical agent definitions
 const AGENTS = [
-  { id: 'orchestrator', name: 'Swarm Orchestrator Manager', desc: 'Coordinating multi-agent DAG workflow & governance', color: '#3ECF8E' },
-  { id: 'research',     name: 'Research & Keyword Scout',   desc: 'Finding low-KD, high-intent keyword targets',      color: '#60a5fa' },
-  { id: 'competitor',   name: 'Competitor Gap Analyst',     desc: 'Profiling rival domains & missing topic gaps',    color: '#f97316' },
-  { id: 'writer',       name: 'Content Creator & Schema Agent',desc: 'Drafting 2,400+ word articles with H2/H3 BLUF',   color: '#a78bfa' },
-  { id: 'aeo',          name: 'AEO & LLM Citation Specialist',desc: 'Auditing BLUF answer block density for AI Overviews', color: '#10b981' },
-  { id: 'data_citation',name: 'Statistical Data & GEO Injector',desc: 'Injecting verified research stats to boost LLM citations', color: '#06b6d4' },
-  { id: 'entity_graph', name: 'Knowledge Graph & Schema Agent',desc: 'Linking entities to Wikidata & Knowledge Graph IDs', color: '#f59e0b' },
-  { id: 'link_architect',name: 'Topic Cluster & Link Architect',desc: 'Building pillar-cluster link silos & internal anchors', color: '#ec4899' },
-  { id: 'dispatcher',   name: 'CMS Publishing Dispatcher',   desc: 'Pushing payloads to WordPress, Webflow & Ghost APIs', color: '#f43f5e' },
+  { id: 'orchestrator', name: '👑 Swarm Manager Agent',    desc: 'Coordinates all 8 subagents & manages approval gates', color: '#3ECF8E' },
+  { id: 'research',     name: '🔍 Keyword Finder Agent',   desc: 'Discovers high-traffic, low-competition target topics', color: '#60a5fa' },
+  { id: 'competitor',   name: '🕵️‍♂️ Competitor Spy Agent',   desc: 'Finds missing topics that rival websites missed',    color: '#f97316' },
+  { id: 'writer',       name: '✍️ Content Writer Agent',   desc: 'Drafts comprehensive 2,400+ word guides & articles',  color: '#a78bfa' },
+  { id: 'aeo',          name: '🤖 AI Answer Specialist',   desc: 'Optimizes answers for ChatGPT, Gemini & Perplexity',   color: '#10b981' },
+  { id: 'data_citation',name: '📈 Facts & Stats Injector', desc: 'Adds verified research stats to boost AI citation rate',color: '#06b6d4' },
+  { id: 'entity_graph', name: '🕸️ Knowledge Graph Agent', desc: 'Connects your brand topics to Wikidata & Google Graphs',color: '#f59e0b' },
+  { id: 'link_architect',name: '🔗 Topic Link Architect',  desc: 'Creates smart internal links between related posts',   color: '#ec4899' },
+  { id: 'dispatcher',   name: '🚀 WordPress Publisher',   desc: 'Publishes finalized articles directly to your website', color: '#f43f5e' },
 ];
 
 function StatusBadge({ status }) {
   const map = {
-    IDLE:       { label: 'Idle',       bg: '#1f1f1f', border: '#2d2d2d', color: '#71717a' },
-    RUNNING:    { label: 'Working',    bg: 'rgba(62,207,142,0.08)', border: 'rgba(62,207,142,0.25)', color: '#3ECF8E' },
-    RESEARCHING:{ label: 'Researching',bg: 'rgba(96,165,250,0.08)', border: 'rgba(96,165,250,0.25)', color: '#60a5fa' },
-    CRAWLING:   { label: 'Crawling',   bg: 'rgba(249,115,22,0.08)', border: 'rgba(249,115,22,0.25)', color: '#f97316' },
-    DRAFTING:   { label: 'Drafting',   bg: 'rgba(167,139,250,0.08)', border: 'rgba(167,139,250,0.25)', color: '#a78bfa' },
-    AUDITING:   { label: 'Auditing',   bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.25)', color: '#10b981' },
-    INJECTING:  { label: 'Injecting',  bg: 'rgba(6,182,212,0.08)',  border: 'rgba(6,182,212,0.25)',  color: '#06b6d4' },
-    SYNTHESIZING:{label: 'Synthesizing',bg:'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.25)', color: '#f59e0b' },
-    ANALYZING:  { label: 'Analyzing',  bg: 'rgba(236,72,153,0.08)', border: 'rgba(236,72,153,0.25)', color: '#ec4899' },
-    DISPATCHING:{ label: 'Dispatching',bg: 'rgba(244,63,94,0.08)',  border: 'rgba(244,63,94,0.25)',  color: '#f43f5e' },
-    COMPLETED:  { label: 'Completed',  bg: 'rgba(62,207,142,0.08)', border: 'rgba(62,207,142,0.25)', color: '#3ECF8E' },
-    PAUSED:     { label: 'Paused',     bg: 'rgba(239,68,68,0.08)',  border: 'rgba(239,68,68,0.25)',  color: '#ef4444' },
+    IDLE:       { label: 'Ready',       bg: '#1f1f1f', border: '#2d2d2d', color: '#71717a' },
+    RUNNING:    { label: 'Working',     bg: 'rgba(62,207,142,0.08)', border: 'rgba(62,207,142,0.25)', color: '#3ECF8E' },
+    RESEARCHING:{ label: 'Finding Topics',bg:'rgba(96,165,250,0.08)', border: 'rgba(96,165,250,0.25)', color: '#60a5fa' },
+    CRAWLING:   { label: 'Auditing Rivals',bg:'rgba(249,115,22,0.08)', border: 'rgba(249,115,22,0.25)', color: '#f97316' },
+    DRAFTING:   { label: 'Writing Article',bg:'rgba(167,139,250,0.08)', border: 'rgba(167,139,250,0.25)', color: '#a78bfa' },
+    AUDITING:   { label: 'AI Overview Test',bg:'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.25)', color: '#10b981' },
+    INJECTING:  { label: 'Adding Facts', bg: 'rgba(6,182,212,0.08)',  border: 'rgba(6,182,212,0.25)',  color: '#06b6d4' },
+    SYNTHESIZING:{label: 'Building Schema',bg:'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.25)', color: '#f59e0b' },
+    ANALYZING:  { label: 'Mapping Links',bg: 'rgba(236,72,153,0.08)', border: 'rgba(236,72,153,0.25)', color: '#ec4899' },
+    DISPATCHING:{ label: 'Publishing',  bg: 'rgba(244,63,94,0.08)',  border: 'rgba(244,63,94,0.25)',  color: '#f43f5e' },
+    COMPLETED:  { label: 'Done ✓',      bg: 'rgba(62,207,142,0.08)', border: 'rgba(62,207,142,0.25)', color: '#3ECF8E' },
+    PAUSED:     { label: 'Waiting Review',bg:'rgba(239,68,68,0.08)',  border: 'rgba(239,68,68,0.25)',  color: '#ef4444' },
   };
   const s = map[status] ?? map.IDLE;
   return (
@@ -46,7 +47,7 @@ function StatusBadge({ status }) {
 }
 
 export default function SwarmOrchestratorView() {
-  const { websiteUrl, setSettingsOpen, hasApiKey } = useAgents();
+  const { websiteUrl, triggerAllAgents, setSettingsOpen, hasApiKey } = useAgents();
 
   const [backendUrl, setBackendUrl] = useState(getBackendUrl());
   const [email, setEmail] = useState('');
@@ -66,7 +67,6 @@ export default function SwarmOrchestratorView() {
   const [orchestratorInstance] = useState(() => new SwarmOrchestrator((state) => setSwarmState(state)));
 
   const [isLoopActive, setIsLoopActive] = useState(false);
-  const [loopHistory, setLoopHistory] = useState([]);
   const [loadingLoop, setLoadingLoop] = useState(false);
   const [msg, setMsg] = useState(null);
 
@@ -78,15 +78,19 @@ export default function SwarmOrchestratorView() {
       .then((data) => {
         if (data) {
           setIsLoopActive(Boolean(data.active));
-          if (data.history) setLoopHistory(data.history);
           if (data.emailNotifications) setEmail(data.emailNotifications);
         }
       })
       .catch(() => {});
   }, [backendUrl, domain]);
 
-  const handleStartInteractiveSwarm = () => {
-    orchestratorInstance.runFullAutopilotSwarm(domain);
+  const handleStartInteractiveSwarm = (targetDomain = domain) => {
+    orchestratorInstance.runFullAutopilotSwarm(targetDomain);
+  };
+
+  const handleSampleClick = (sampleDomain) => {
+    triggerAllAgents(sampleDomain);
+    handleStartInteractiveSwarm(sampleDomain);
   };
 
   const handleApproveGate = () => {
@@ -104,17 +108,17 @@ export default function SwarmOrchestratorView() {
   const handleSaveBackendUrl = (e) => {
     e.preventDefault();
     localStorage.setItem('RANKTOP_BACKEND_URL', backendUrl.trim());
-    setMsg({ type: 'success', text: 'Backend URL updated!' });
+    setMsg({ type: 'success', text: 'Server connection updated successfully!' });
     setTimeout(() => setMsg(null), 3000);
   };
 
   const handleToggleAutonomy = async () => {
     if (!backendUrl) {
-      setMsg({ type: 'error', text: 'Please configure and save Backend URL first!' });
+      setMsg({ type: 'error', text: 'Please save your Backend Server URL first!' });
       return;
     }
     if (!email.trim()) {
-      setMsg({ type: 'error', text: 'Please provide an email for notifications!' });
+      setMsg({ type: 'error', text: 'Please enter your email address for updates!' });
       return;
     }
 
@@ -123,7 +127,7 @@ export default function SwarmOrchestratorView() {
       if (isLoopActive) {
         await backendPost('/api/agent-loop/stop', { domain });
         setIsLoopActive(false);
-        setMsg({ type: 'success', text: 'Autonomous loop paused.' });
+        setMsg({ type: 'success', text: 'Automated 24/7 loop paused.' });
       } else {
         await backendPost('/api/agent-loop/start', {
           domain,
@@ -133,10 +137,10 @@ export default function SwarmOrchestratorView() {
           wpAppPassword: wpPass.trim(),
         });
         setIsLoopActive(true);
-        setMsg({ type: 'success', text: 'Autonomous loop activated! First run triggered.' });
+        setMsg({ type: 'success', text: '24/7 Autopilot activated! First automated cycle started.' });
       }
     } catch (err) {
-      setMsg({ type: 'error', text: err.message || 'Failed to toggle autonomy.' });
+      setMsg({ type: 'error', text: err.message || 'Failed to toggle autopilot.' });
     } finally {
       setLoadingLoop(false);
       setTimeout(() => setMsg(null), 4000);
@@ -148,29 +152,29 @@ export default function SwarmOrchestratorView() {
   return (
     <div className="w-full space-y-6 font-sans">
 
-      {/* Header */}
+      {/* Beginner Header */}
       <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
         <div>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '99px', background: 'rgba(62,207,142,0.1)', border: '1px solid rgba(62,207,142,0.2)', fontSize: '13px', fontWeight: 700, color: '#3ECF8E', marginBottom: '8px' }}>
-            <Bot size={13} /> Autonomous Swarm Platform
+            <Sparkles size={13} /> Non-Technical AI Swarm Platform
           </div>
-          <h1 style={{ fontSize: '22px', fontWeight: 800, color: '#fff', margin: '0 0 4px' }}>Autonomous Swarm AI Agents (SEO / AEO / GEO)</h1>
-          <p style={{ fontSize: '14px', color: '#71717a', margin: 0 }}>
-            9 specialized AI agents continuously audit, research, draft, optimize, and publish for {domain}.
+          <h1 style={{ fontSize: '22px', fontWeight: 800, color: '#fff', margin: '0 0 4px' }}>Autonomous AI Team for {domain}</h1>
+          <p style={{ fontSize: '14px', color: '#71717a', margin: 0, maxWidth: '640px', lineHeight: 1.5 }}>
+            9 specialized AI agents research target topics, draft articles, optimize for Google & ChatGPT, and publish directly to your website.
           </p>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <button
-            onClick={handleStartInteractiveSwarm}
+            onClick={() => handleStartInteractiveSwarm(domain)}
             disabled={swarmState.status === 'RUNNING' || swarmState.status === 'AWAITING_APPROVAL'}
             style={{
               padding: '10px 20px', background: '#3ECF8E', color: '#000', border: 'none', borderRadius: '10px',
-              fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px',
+              fontSize: '14px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px',
               opacity: (swarmState.status === 'RUNNING' || swarmState.status === 'AWAITING_APPROVAL') ? 0.6 : 1
             }}
           >
-            <Play size={15} /> Launch Swarm Cycle
+            <Play size={15} /> Start AI Swarm Now
           </button>
 
           {!hasApiKey() && (
@@ -178,7 +182,7 @@ export default function SwarmOrchestratorView() {
               onClick={() => setSettingsOpen(true)}
               style={{ padding: '10px 16px', background: '#262626', color: '#3ECF8E', border: '1px solid #333', borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
             >
-              <Zap size={15} /> API Key
+              <Zap size={15} /> Add API Key
             </button>
           )}
         </div>
@@ -198,13 +202,70 @@ export default function SwarmOrchestratorView() {
         </div>
       )}
 
-      {/* Governance Mode & Control Panel */}
+      {/* 3-STEP VISUAL ONBOARDING CARD FOR FIRST-TIME USERS */}
+      <div style={{ background: '#141414', border: '1px solid #262626', borderRadius: '16px', padding: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+          <HelpCircle size={18} color="#3ECF8E" />
+          <h2 style={{ fontSize: '15px', fontWeight: 800, color: '#fff', margin: 0 }}>How RankTop AI Swarm Works in 3 Easy Steps</h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div style={{ background: '#1a1a1a', border: '1px solid #282828', borderRadius: '12px', padding: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+              <span style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#3ECF8E', color: '#000', fontWeight: 800, fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>1</span>
+              <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#fff', margin: 0 }}>Enter Your Website</h3>
+            </div>
+            <p style={{ fontSize: '13px', color: '#a1a1aa', margin: 0, lineHeight: 1.4 }}>
+              Enter any domain name above. The AI reads your business niche and targets high-intent search queries.
+            </p>
+          </div>
+
+          <div style={{ background: '#1a1a1a', border: '1px solid #282828', borderRadius: '12px', padding: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+              <span style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#3ECF8E', color: '#000', fontWeight: 800, fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>2</span>
+              <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#fff', margin: 0 }}>9 AI Agents Work</h3>
+            </div>
+            <p style={{ fontSize: '13px', color: '#a1a1aa', margin: 0, lineHeight: 1.4 }}>
+              Agents research competitors, draft articles, add research stats, and build Google & ChatGPT answer schemas.
+            </p>
+          </div>
+
+          <div style={{ background: '#1a1a1a', border: '1px solid #282828', borderRadius: '12px', padding: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+              <span style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#3ECF8E', color: '#000', fontWeight: 800, fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>3</span>
+              <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#fff', margin: 0 }}>Review & Publish</h3>
+            </div>
+            <p style={{ fontSize: '13px', color: '#a1a1aa', margin: 0, lineHeight: 1.4 }}>
+              Approve articles with 1 click in Human Review Mode, or put it on 24/7 Autopilot to publish automatically.
+            </p>
+          </div>
+        </div>
+
+        {/* 1-Click Quick Demo Sample Buttons */}
+        <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #222', display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '12px', color: '#71717a', fontWeight: 600 }}>Try 1-Click Sample:</span>
+          {['myboutique.com', 'saasstartup.io', 'healthclinic.org'].map((sample) => (
+            <button
+              key={sample}
+              onClick={() => handleSampleClick(sample)}
+              style={{
+                padding: '5px 12px', background: '#222', border: '1px solid #333', borderRadius: '8px',
+                fontSize: '12px', fontWeight: 600, color: '#3ECF8E', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px'
+              }}
+            >
+              <Search size={11} /> {sample}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Human Approval vs Autopilot Governance Switch */}
       <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <Sliders size={18} color="#3ECF8E" />
           <div>
-            <p style={{ fontSize: '14px', fontWeight: 700, color: '#fff', margin: 0 }}>Human-in-the-Loop Governance Control</p>
-            <p style={{ fontSize: '12px', color: '#71717a', margin: 0 }}>Choose how much control the human operator retains during swarm execution.</p>
+            <p style={{ fontSize: '14px', fontWeight: 700, color: '#fff', margin: 0 }}>Publishing Guardrail Control</p>
+            <p style={{ fontSize: '12px', color: '#71717a', margin: 0 }}>Choose if the AI should ask for your approval before publishing content.</p>
           </div>
         </div>
 
@@ -217,7 +278,7 @@ export default function SwarmOrchestratorView() {
               color: swarmState.mode === 'hitl' ? '#000' : '#71717a', transition: 'all 0.15s'
             }}
           >
-            🛡️ HITL Guardrail Mode
+            🛡️ Human Review Mode (Ask Me First)
           </button>
           <button
             onClick={() => handleToggleMode('autopilot')}
@@ -227,12 +288,12 @@ export default function SwarmOrchestratorView() {
               color: swarmState.mode === 'autopilot' ? '#000' : '#71717a', transition: 'all 0.15s'
             }}
           >
-            ⚡ Full Autopilot Mode
+            ⚡ Hands-Free Autopilot Mode
           </button>
         </div>
       </div>
 
-      {/* PENDING HITL APPROVAL GATE CARD */}
+      {/* PENDING HUMAN APPROVAL CARD */}
       {pendingApproval && (
         <div style={{
           background: 'linear-gradient(135deg, rgba(62,207,142,0.08) 0%, rgba(16,185,129,0.02) 100%)',
@@ -243,11 +304,11 @@ export default function SwarmOrchestratorView() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <ShieldAlert size={20} color="#3ECF8E" />
               <span style={{ fontSize: '13px', fontWeight: 800, color: '#3ECF8E', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                Human-in-the-Loop Review Required
+                Human Approval Gate Active
               </span>
             </div>
             <span style={{ fontSize: '12px', background: 'rgba(62,207,142,0.15)', color: '#3ECF8E', padding: '2px 8px', borderRadius: '6px', fontWeight: 700 }}>
-              Gate: {pendingApproval.gate}
+              Action Required
             </span>
           </div>
 
@@ -264,7 +325,7 @@ export default function SwarmOrchestratorView() {
                 fontSize: '14px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px'
               }}
             >
-              <Check size={16} /> Approve & Continue Swarm
+              <Check size={16} /> YES, Approve & Execute Next Step
             </button>
             <button
               onClick={handleRejectGate}
@@ -273,7 +334,7 @@ export default function SwarmOrchestratorView() {
                 fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px'
               }}
             >
-              <X size={16} /> Reject & Pause
+              <X size={16} /> NO, Make Changes First
             </button>
           </div>
         </div>
@@ -314,14 +375,14 @@ export default function SwarmOrchestratorView() {
         })}
       </div>
 
-      {/* Swarm Live Telemetry Log */}
+      {/* Swarm Live Log Activity */}
       {swarmState.logs.length > 0 && (
         <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '20px 24px' }}>
           <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#3ECF8E', margin: '0 0 14px', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Zap size={14} /> Live Swarm Telemetry & Inter-Agent Bus
+            <Zap size={14} /> Live AI Team Activity Log
           </h3>
 
-          <div style={{ maxHeight: '260px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', paddingRight: '4px' }}>
+          <div style={{ maxHeight: '240px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', paddingRight: '4px' }}>
             {swarmState.logs.map((log) => (
               <div key={log.id} style={{ background: '#121212', border: '1px solid #222', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
                 <span style={{ fontSize: '11px', color: '#71717a', fontFamily: 'monospace', flexShrink: 0 }}>{log.timestamp}</span>
@@ -333,12 +394,12 @@ export default function SwarmOrchestratorView() {
         </div>
       )}
 
-      {/* Server & Backend Connection Panel */}
+      {/* Website Integration & Server Connection Panel */}
       <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <Settings2 size={18} color="#3ECF8E" />
-            <h2 style={{ fontSize: '16px', fontWeight: 700, color: '#fff', margin: 0 }}>Continuous Autonomy Engine & Server Integrations</h2>
+            <h2 style={{ fontSize: '16px', fontWeight: 700, color: '#fff', margin: 0 }}>Website Integration & 24/7 Autopilot Settings</h2>
           </div>
           <button
             onClick={handleToggleAutonomy}
@@ -351,7 +412,7 @@ export default function SwarmOrchestratorView() {
             }}
           >
             {loadingLoop ? <Loader2 size={16} className="animate-spin" /> : <Power size={16} />}
-            {isLoopActive ? 'Pause Continuous Loop' : 'Enable 24/7 Continuous Loop'}
+            {isLoopActive ? 'Pause 24/7 Autopilot' : 'Enable 24/7 Autopilot'}
           </button>
         </div>
 
@@ -377,7 +438,7 @@ export default function SwarmOrchestratorView() {
 
             <div>
               <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#a1a1aa', marginBottom: '6px' }}>
-                Email Reports & HITL Notifications Address
+                Your Email Address for Traffic Reports & Review Notifications
               </label>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#121212', border: '1px solid #2d2d2d', borderRadius: '8px', padding: '0 12px' }}>
                 <Mail size={15} color="#71717a" />
@@ -394,7 +455,7 @@ export default function SwarmOrchestratorView() {
 
           <div className="space-y-3" style={{ background: '#121212', border: '1px solid #222', borderRadius: '12px', padding: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 700, color: '#3ECF8E', textTransform: 'uppercase' }}>
-              <Globe size={14} /> Direct CMS Auto-Publishing (WordPress)
+              <Globe size={14} /> Direct WordPress Publishing Integration
             </div>
             <input
               type="text"
@@ -426,4 +487,5 @@ export default function SwarmOrchestratorView() {
     </div>
   );
 }
+
 
