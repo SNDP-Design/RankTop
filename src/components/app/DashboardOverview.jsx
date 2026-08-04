@@ -83,7 +83,7 @@ function AgentEmptyState({ setActiveTab }) {
   );
 }
 
-function DailyGrowthChart({ domain, gscData, onConnectGsc, gscLoading }) {
+function DailyGrowthChart({ domain, gscConnected, gscData, onConnectGsc, gscLoading, gscError }) {
   const [range, setRange] = useState('30d'); // 'today' | '7d' | '30d'
   const [hoverIndex, setHoverIndex] = useState(null);
 
@@ -117,7 +117,7 @@ function DailyGrowthChart({ domain, gscData, onConnectGsc, gscLoading }) {
     return list;
   }, [gscData, daysCount]);
 
-  const hasRealData = Boolean(gscData?.dailyBreakdown && gscData.dailyBreakdown.length > 0);
+  const isConnected = gscConnected || Boolean(gscData?.connected);
   const maxClicks = Math.max(...chartData.map(d => d.clicks), 1);
   const totalClicks = chartData.reduce((acc, d) => acc + d.clicks, 0);
   const totalImpressions = chartData.reduce((acc, d) => acc + d.impressions, 0);
@@ -134,10 +134,22 @@ function DailyGrowthChart({ domain, gscData, onConnectGsc, gscLoading }) {
           <p style={{ fontSize: '13px', color: '#71717a', margin: '4px 0 0' }}>
             Live daily clicks, impression growth, and search position for <span style={{ color: '#3ECF8E', fontWeight: 600 }}>{domain}</span>
           </p>
+          {gscError && (
+            <p style={{ fontSize: '12px', color: '#f87171', margin: '4px 0 0', fontWeight: 600 }}>
+              ⚠️ {gscError}
+            </p>
+          )}
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-          {!hasRealData && (
+          {isConnected ? (
+            <span style={{
+              padding: '6px 14px', background: 'rgba(62,207,142,0.1)', color: '#3ECF8E', border: '1px solid rgba(62,207,142,0.3)',
+              borderRadius: '8px', fontSize: '12px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '6px'
+            }}>
+              <CheckCircle2 size={14} color="#3ECF8E" /> Search Console Connected
+            </span>
+          ) : (
             <button
               onClick={onConnectGsc}
               disabled={gscLoading}
@@ -148,7 +160,7 @@ function DailyGrowthChart({ domain, gscData, onConnectGsc, gscLoading }) {
               }}
             >
               {gscLoading ? <Loader2 size={13} className="animate-spin" /> : <Globe2 size={13} />}
-              Connect Search Console to Sync Live Chart
+              Connect Search Console (Instant Popup)
             </button>
           )}
 
@@ -341,9 +353,11 @@ export default function DashboardOverview({ setActiveTab }) {
       {/* Day-by-Day Organic Growth & Traffic Trend Component */}
       <DailyGrowthChart
         domain={domain}
+        gscConnected={gscConnected}
         gscData={gscData}
         onConnectGsc={handleConnectGsc}
         gscLoading={gscLoading}
+        gscError={gscError}
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
