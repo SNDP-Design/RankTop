@@ -28,25 +28,10 @@ const NAV_GROUPS = [
     ],
   },
   {
-    label: 'SEO ENGINE',
+    label: 'AUTONOMOUS SWARM & GEO',
     items: [
-      { id: 'strategy',    text: 'Keywords',    Icon: Target   },
-      { id: 'studio',      text: 'AI Writer',   Icon: FileText  },
-      { id: 'competitors', text: 'Competitors', Icon: Search    },
-    ],
-  },
-  {
-    label: 'AEO ENGINE',
-    items: [
-      { id: 'aeo',       text: 'AI Overviews', Icon: Cpu    },
-      { id: 'freetools', text: 'Voice & FAQ',  Icon: Wrench },
-    ],
-  },
-  {
-    label: 'GEO ENGINE',
-    items: [
+      { id: 'swarm', text: 'AI Swarm', Icon: Bot },
       { id: 'geo',   text: 'LLM Visibility', Icon: ShieldCheck },
-      { id: 'swarm', text: 'AI Swarm',        Icon: Bot         },
     ],
   },
 ];
