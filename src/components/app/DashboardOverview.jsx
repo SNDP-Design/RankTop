@@ -451,9 +451,27 @@ export default function DashboardOverview({ setActiveTab }) {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[
-            { name: 'ChatGPT (OpenAI)', score: agentResults.geo?.engines?.[0]?.score ?? 84, visibility: agentResults.geo?.engines?.[0]?.visibility ?? 'High', color: '#3ECF8E', queries: '4 target queries' },
-            { name: 'Perplexity AI', score: agentResults.geo?.engines?.[1]?.score ?? 78, visibility: agentResults.geo?.engines?.[1]?.visibility ?? 'High', color: '#60a5fa', queries: '3 target queries' },
-            { name: 'Google Gemini AI', score: agentResults.geo?.engines?.[2]?.score ?? 91, visibility: agentResults.geo?.engines?.[2]?.visibility ?? 'High', color: '#a78bfa', queries: '5 target queries' },
+            {
+              name: 'ChatGPT (OpenAI)',
+              score: agentResults.geo?.engines?.[0]?.score ?? 0,
+              visibility: agentResults.geo?.engines?.[0]?.visibility ?? (agentResults.geo ? 'None' : 'Pending'),
+              color: '#3ECF8E',
+              queries: agentResults.geo?.engines?.[0]?.queriesFound ? `${agentResults.geo.engines[0].queriesFound} target queries` : 'Run Swarm to analyze'
+            },
+            {
+              name: 'Perplexity AI',
+              score: agentResults.geo?.engines?.[1]?.score ?? 0,
+              visibility: agentResults.geo?.engines?.[1]?.visibility ?? (agentResults.geo ? 'None' : 'Pending'),
+              color: '#60a5fa',
+              queries: agentResults.geo?.engines?.[1]?.queriesFound ? `${agentResults.geo.engines[1].queriesFound} target queries` : 'Run Swarm to analyze'
+            },
+            {
+              name: 'Google Gemini AI',
+              score: agentResults.geo?.engines?.[2]?.score ?? 0,
+              visibility: agentResults.geo?.engines?.[2]?.visibility ?? (agentResults.geo ? 'None' : 'Pending'),
+              color: '#a78bfa',
+              queries: agentResults.geo?.engines?.[2]?.queriesFound ? `${agentResults.geo.engines[2].queriesFound} target queries` : 'Run Swarm to analyze'
+            },
           ].map((engine) => (
             <div key={engine.name} style={{ background: '#121212', borderRadius: '12px', border: '1px solid #1f1f1f', padding: '16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
