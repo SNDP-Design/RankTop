@@ -108,8 +108,49 @@ export default function DashboardOverview({ setActiveTab }) {
   const { agentResults, agentStatus, isAnyRunning, websiteUrl } = useAgents();
   const data = agentResults.dashboard;
   const status = agentStatus.dashboard;
-
   const domain = websiteUrl || 'your website';
+
+  const [gscConnected, setGscConnected] = useState(gscService.isConnected());
+  const [gscData, setGscData] = useState(null);
+  const [gscLoading, setGscLoading] = useState(false);
+  const [gscError, setGscError] = useState(null);
+
+  useEffect(() => {
+    if (gscConnected && domain && domain !== 'your website') {
+      loadGscData();
+    }
+  }, [gscConnected, domain]);
+
+  const loadGscData = async () => {
+    try {
+      setGscLoading(true);
+      setGscError(null);
+      const res = await gscService.fetchGscAnalytics(domain);
+      setGscData(res);
+    } catch (err) {
+      console.warn('[GSC Load Warn]', err);
+      setGscError(err.message);
+    } finally {
+      setGscLoading(false);
+    }
+  };
+
+  const handleConnectGsc = () => {
+    setGscLoading(true);
+    gscService.connectGsc(
+      (token) => {
+        setGscConnected(true);
+        setGscLoading(false);
+        if (domain && domain !== 'your website') {
+          loadGscData();
+        }
+      },
+      (err) => {
+        setGscLoading(false);
+        setGscError(err);
+      }
+    );
+  };
 
   if (status === 'idle' || (!data && status !== 'running')) {
     return (
@@ -161,7 +202,6 @@ export default function DashboardOverview({ setActiveTab }) {
   return (
     <div className="w-full space-y-6 font-sans">
 
-      {/* Domain header */}
       <div style={{
         background: '#171717', border: '1px solid #262626', borderRadius: '16px',
         padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px',
@@ -180,18 +220,27 @@ export default function DashboardOverview({ setActiveTab }) {
           <p style={{ fontSize: '14px', color: '#71717a', margin: 0 }}>{data.summary}</p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <a
-            href={`${getBackendUrl() || 'http://localhost:3001'}/api/gsc/auth?domain=${encodeURIComponent(domain)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              padding: '6px 14px', background: '#1f1f1f', color: '#fff', border: '1px solid #333',
-              borderRadius: '8px', fontSize: '13px', fontWeight: 600, textDecoration: 'none',
-              display: 'inline-flex', alignItems: 'center', gap: '6px',
-            }}
-          >
-            <Globe2 size={13} color="#4285F4" /> Connect Search Console
-          </a>
+          {gscConnected ? (
+            <span style={{
+              padding: '6px 14px', background: 'rgba(62,207,142,0.1)', color: '#3ECF8E', border: '1px solid rgba(62,207,142,0.3)',
+              borderRadius: '8px', fontSize: '13px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '6px',
+            }}>
+              <CheckCircle2 size={14} color="#3ECF8E" /> Search Console Connected
+            </span>
+          ) : (
+            <button
+              onClick={handleConnectGsc}
+              disabled={gscLoading}
+              style={{
+                padding: '8px 16px', background: '#4285F4', color: '#fff', border: 'none',
+                borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer',
+                display: 'inline-flex', alignItems: 'center', gap: '6px', boxShadow: '0 4px 12px rgba(66,133,244,0.3)',
+              }}
+            >
+              {gscLoading ? <Loader2 size={14} className="animate-spin" /> : <Globe2 size={14} color="#fff" />}
+              Connect Search Console (Instant Popup)
+            </button>
+          )}
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3ECF8E', animation: 'pulse 2s infinite' }} />
             <span style={{ fontSize: '13px', color: '#3ECF8E', fontWeight: 600 }}>Analysis Complete</span>
@@ -199,10 +248,8 @@ export default function DashboardOverview({ setActiveTab }) {
         </div>
       </div>
 
-      {/* Score Rings + Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        {/* Score Rings */}
         <div style={{
           background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px',
         }}>
@@ -222,10 +269,30 @@ export default function DashboardOverview({ setActiveTab }) {
           display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px',
         }}>
           {[
-            { label: 'Est. Monthly Clicks', value: data.organicClicks ?? '—', icon: TrendingUp, color: '#3ECF8E' },
-            { label: 'Avg. Position', value: data.avgPosition ?? '—', icon: Zap, color: '#60a5fa' },
-            { label: 'Indexed Pages', value: data.indexedPages ?? '—', icon: Globe2, color: '#a78bfa' },
-            { label: 'AI Brand Mention', value: data.brandMentionedInAI ? 'Yes ✓' : 'Not Found', icon: Sparkles, color: data.brandMentionedInAI ? '#3ECF8E' : '#f59e0b' },
+            {
+              label: gscData ? 'Live Google Clicks' : 'Est. Monthly Clicks',
+              value: gscData?.overview?.clicks ?? data.organicClicks ?? '—',
+              icon: TrendingUp,
+              color: '#3ECF8E'
+            },
+            {
+              label: gscData ? 'Live Avg Position' : 'Avg. Position',
+              value: gscData?.overview?.avgPosition ?? data.avgPosition ?? '—',
+              icon: Zap,
+              color: '#60a5fa'
+            },
+            {
+              label: gscData ? 'Live Impressions' : 'Indexed Pages',
+              value: gscData?.overview?.impressions ?? data.indexedPages ?? '—',
+              icon: Globe2,
+              color: '#a78bfa'
+            },
+            {
+              label: 'AI Brand Mention',
+              value: data.brandMentionedInAI ? 'Yes ✓' : 'Not Found',
+              icon: Sparkles,
+              color: data.brandMentionedInAI ? '#3ECF8E' : '#f59e0b'
+            },
           ].map(({ label, value, icon: Icon, color }) => (
             <div key={label} style={{
               background: '#121212', borderRadius: '12px', border: '1px solid #1f1f1f',
@@ -240,6 +307,40 @@ export default function DashboardOverview({ setActiveTab }) {
           ))}
         </div>
       </div>
+
+      {/* Live Google Search Console Top Queries */}
+      {gscData && gscData.topQueries && gscData.topQueries.length > 0 && (
+        <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px' }}>
+          <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#fff', margin: '0 0 16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Globe2 size={16} color="#4285F4" /> Live Google Search Console Ranking Queries ({gscData.domain})
+          </h3>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', textAlign: 'left' }}>
+              <thead>
+                <tr style={{ borderBottom: '1px solid #262626', color: '#71717a' }}>
+                  <th style={{ padding: '8px 12px' }}>Search Query</th>
+                  <th style={{ padding: '8px 12px' }}>Clicks</th>
+                  <th style={{ padding: '8px 12px' }}>Impressions</th>
+                  <th style={{ padding: '8px 12px' }}>CTR</th>
+                  <th style={{ padding: '8px 12px' }}>Avg Position</th>
+                </tr>
+              </thead>
+              <tbody>
+                {gscData.topQueries.map((q, i) => (
+                  <tr key={i} style={{ borderBottom: '1px solid #1a1a1a', color: '#e4e4e7' }}>
+                    <td style={{ padding: '10px 12px', fontWeight: 600, color: '#3ECF8E' }}>{q.query}</td>
+                    <td style={{ padding: '10px 12px' }}>{q.clicks}</td>
+                    <td style={{ padding: '10px 12px' }}>{q.impressions}</td>
+                    <td style={{ padding: '10px 12px' }}>{q.ctr}</td>
+                    <td style={{ padding: '10px 12px', fontWeight: 700, color: '#60a5fa' }}>#{q.position}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
 
       {/* Issues + Quick Wins */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

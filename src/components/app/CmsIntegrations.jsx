@@ -1,14 +1,32 @@
 import React, { useState } from 'react';
-import { Share2, CheckCircle2, RefreshCw, Key, Globe, ExternalLink, Zap } from 'lucide-react';
+import { Share2, CheckCircle2, RefreshCw, Key, Globe, ExternalLink, Zap, Loader2 } from 'lucide-react';
 import { getBackendUrl } from '../../config';
+import { gscService } from '../../services/gscService';
 
 export default function CmsIntegrations() {
+  const [gscConnected, setGscConnected] = useState(gscService.isConnected());
+  const [gscLoading, setGscLoading] = useState(false);
+
   const [integrations, setIntegrations] = useState([
     { id: 'wp', name: 'WordPress REST API', status: 'Ready to Connect', endpoint: 'https://yourdomain.com/wp-json/wp/v2/posts', auth: 'Not Configured', mode: 'Disabled' },
     { id: 'webflow', name: 'Webflow Collection Webhook', status: 'Ready to Connect', endpoint: 'https://api.webflow.com/collections/...', auth: 'Not Configured', mode: 'Disabled' },
     { id: 'shopify', name: 'Shopify Blog API', status: 'Ready to Connect', endpoint: 'https://yourdomain.myshopify.com/admin/api', auth: 'Not Configured', mode: 'Disabled' },
     { id: 'ghost', name: 'Ghost Admin API', status: 'Ready to Connect', endpoint: 'https://yourdomain.ghost.io/ghost/api/admin', auth: 'Not Configured', mode: 'Disabled' },
   ]);
+
+  const handleConnectGsc = () => {
+    setGscLoading(true);
+    gscService.connectGsc(
+      () => {
+        setGscConnected(true);
+        setGscLoading(false);
+      },
+      (err) => {
+        setGscLoading(false);
+        console.error('[GSC GIS Error]', err);
+      }
+    );
+  };
 
   const toggleStatus = (id) => {
     setIntegrations(integrations.map(item => {
@@ -23,8 +41,6 @@ export default function CmsIntegrations() {
       return item;
     }));
   };
-
-  const backendUrl = getBackendUrl() || 'https://ranktop-backend.onrender.com';
 
   return (
     <div className="w-full space-y-6 font-sans">
@@ -54,16 +70,26 @@ export default function CmsIntegrations() {
             </div>
           </div>
 
-          <a
-            href={`${backendUrl}/api/gsc/auth?domain=www.xgrowth.uno`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-6 py-3 rounded-xl font-bold text-sm bg-[#4285F4] hover:bg-[#3367D6] text-white flex items-center gap-2 shadow-lg shadow-[#4285F4]/20 transition-all text-decoration-none"
-          >
-            <ExternalLink className="w-4 h-4" /> Connect Search Console (www.xgrowth.uno)
-          </a>
+          {gscConnected ? (
+            <button
+              onClick={() => { gscService.disconnectGsc(); setGscConnected(false); }}
+              className="px-6 py-3 rounded-xl font-bold text-sm bg-[#121212] text-[#3ECF8E] border border-[#3ECF8E]/30 flex items-center gap-2"
+            >
+              <CheckCircle2 className="w-4 h-4 text-[#3ECF8E]" /> Search Console Connected (Disconnect)
+            </button>
+          ) : (
+            <button
+              onClick={handleConnectGsc}
+              disabled={gscLoading}
+              className="px-6 py-3 rounded-xl font-bold text-sm bg-[#4285F4] hover:bg-[#3367D6] text-white flex items-center gap-2 shadow-lg shadow-[#4285F4]/20 transition-all cursor-pointer border-none"
+            >
+              {gscLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Globe className="w-4 h-4" />}
+              Connect Search Console (Instant Popup)
+            </button>
+          )}
         </div>
       </div>
+
 
 
 
