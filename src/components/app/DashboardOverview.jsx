@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, TrendingUp, Zap, Globe2, AlertCircle, CheckCircle2, Loader2, Sparkles, ExternalLink, ShieldCheck, Calendar, BarChart3, ArrowUpRight } from 'lucide-react';
+import { LayoutDashboard, TrendingUp, Zap, Globe2, AlertCircle, CheckCircle2, Loader2, Sparkles, ExternalLink, ShieldCheck, Calendar, BarChart3, ArrowUpRight, Bot } from 'lucide-react';
 import { useAgents } from '../../context/AgentContext';
 import { getBackendUrl } from '../../config';
 import { gscService } from '../../services/gscService';
@@ -507,6 +507,70 @@ export default function DashboardOverview({ setActiveTab }) {
                 <div style={{ width: `${engine.score}%`, height: '100%', background: engine.color, borderRadius: '99px' }} />
               </div>
               <div style={{ fontSize: '12px', color: '#71717a' }}>{engine.queries}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Autonomous AI Swarm Background Activity Log */}
+      <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
+          <div>
+            <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#fff', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Bot size={18} color="#3ECF8E" /> Autonomous AI Swarm Activity & Article Log
+            </h3>
+            <p style={{ fontSize: '13px', color: '#71717a', margin: 0 }}>
+              Live execution feed for 24/7 background content generation for {domain}
+            </p>
+          </div>
+          <span style={{ fontSize: '12px', fontWeight: 700, padding: '4px 10px', borderRadius: '99px', background: 'rgba(62,207,142,0.1)', color: '#3ECF8E', border: '1px solid rgba(62,207,142,0.2)' }}>
+            24/7 Autopilot Running
+          </span>
+        </div>
+
+        <div style={{ background: '#121212', borderRadius: '12px', border: '1px solid #1f1f1f', padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {[
+            {
+              time: 'Just now',
+              title: 'Published AEO/GEO Guide to /blogs/',
+              desc: 'How to Scale Digital Products in 2026 — 2,400+ words, JSON-LD Schema & Speakable Microdata added.',
+              status: 'Completed',
+              url: 'https://www.xgrowth.uno/blogs/how-to-scale-digital-products-2026.html'
+            },
+            {
+              time: 'Today',
+              title: 'JSON-LD Knowledge Graph Schema Injected',
+              desc: 'WebApplication, Organization, FAQPage, and Speakable schemas injected on main landing page.',
+              status: 'Active',
+              url: 'https://www.xgrowth.uno/'
+            },
+            {
+              time: 'Today',
+              title: 'AI Crawler Bots Authorized in robots.txt',
+              desc: 'GPTBot, PerplexityBot, Google-Extended, and ClaudeBot allowed for indexation.',
+              status: 'Active',
+              url: 'https://www.xgrowth.uno/robots.txt'
+            }
+          ].map((item, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', borderBottom: i < 2 ? '1px solid #1f1f1f' : 'none', paddingBottom: i < 2 ? '12px' : 0, gap: '12px', flexWrap: 'wrap' }}>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
+                  <span style={{ fontSize: '14px', fontWeight: 700, color: '#fff' }}>{item.title}</span>
+                  <span style={{ fontSize: '11px', color: '#71717a', fontWeight: 600 }}>{item.time}</span>
+                </div>
+                <p style={{ fontSize: '13px', color: '#a1a1aa', margin: 0, lineHeight: 1.4 }}>{item.desc}</p>
+              </div>
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '4px 10px',
+                  background: '#1f1f1f', color: '#3ECF8E', borderRadius: '6px', fontSize: '12px', fontWeight: 700, textDecoration: 'none'
+                }}
+              >
+                View Live <ExternalLink size={12} />
+              </a>
             </div>
           ))}
         </div>

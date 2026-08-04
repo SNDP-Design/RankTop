@@ -27,12 +27,6 @@ const NAV_GROUPS = [
       { id: 'dashboard', text: 'Master Dashboard', Icon: LayoutDashboard },
     ],
   },
-  {
-    label: 'AUTONOMOUS SWARM',
-    items: [
-      { id: 'swarm', text: 'AI Swarm', Icon: Bot },
-    ],
-  },
 ];
 
 export default function AppSidebar({ activeTab, setActiveTab }) {
