@@ -3,10 +3,16 @@ import { Sparkles, Globe, Search, Check, Settings } from 'lucide-react';
 import { useAgents } from '../context/AgentContext';
 
 export default function Navbar() {
-  const { triggerAllAgents, isAnyRunning, agentStatus, setSettingsOpen, hasApiKey } = useAgents();
-  const [inputUrl, setInputUrl] = useState('');
+  const { triggerAllAgents, isAnyRunning, agentStatus, setSettingsOpen, hasApiKey, websiteUrl } = useAgents();
+  const [inputUrl, setInputUrl] = useState(websiteUrl || '');
   const [submitted, setSubmitted] = useState(false);
   const [apiActive, setApiActive] = useState(false);
+
+  useEffect(() => {
+    if (websiteUrl && !inputUrl) {
+      setInputUrl(websiteUrl);
+    }
+  }, [websiteUrl]);
 
   // Check API key status on mount and when modal closes
   useEffect(() => {
@@ -31,6 +37,8 @@ export default function Navbar() {
 
   const runningCount = Object.values(agentStatus).filter((s) => s === 'running').length;
   const doneCount = Object.values(agentStatus).filter((s) => s === 'done').length;
+
+  const currentDomain = (websiteUrl || inputUrl).replace(/^https?:\/\//, '').replace(/\/$/, '');
 
   return (
     <header
@@ -69,16 +77,27 @@ export default function Navbar() {
         {/* Right: URL input + Settings */}
         <div className="flex items-center gap-2">
           <form onSubmit={handleSubmit} className="flex items-center gap-2">
-            <div className="flex items-center gap-2 bg-[#171717] border border-[#262626] rounded-xl px-3 py-1.5 text-sm w-64 sm:w-80 focus-within:border-zinc-500 transition-all">
+            <div className="relative flex items-center gap-2 bg-[#171717] border border-[#262626] rounded-xl px-3 py-1.5 text-sm w-72 sm:w-96 focus-within:border-zinc-500 transition-all">
               <Globe className="w-4 h-4 text-zinc-500 shrink-0" aria-hidden="true" />
               <input
                 type="text"
                 value={inputUrl}
                 onChange={(e) => setInputUrl(e.target.value)}
-                placeholder="Enter your website URL"
+                placeholder="Enter website URL (e.g. xgrowth.uno)"
                 aria-label="Website URL — triggers all AI agents"
-                className="bg-transparent text-zinc-300 placeholder-zinc-500 text-sm focus:outline-none w-full font-sans font-medium"
+                className="bg-transparent text-zinc-300 placeholder-zinc-500 text-sm focus:outline-none w-full font-sans font-medium pr-1"
               />
+              
+              {/* Light Dim Gray Website URL Badge in Top Right Corner of Field */}
+              {currentDomain && (
+                <span
+                  title={`Active Target Website: ${currentDomain}`}
+                  className="text-[11px] text-[#71717a] font-mono tracking-tight shrink-0 bg-[#222] border border-[#333] px-2 py-0.5 rounded-md font-semibold select-none max-w-[120px] truncate"
+                >
+                  {currentDomain}
+                </span>
+              )}
+
               {submitted && (
                 <Check className="w-3.5 h-3.5 text-[#3ECF8E] shrink-0" />
               )}
