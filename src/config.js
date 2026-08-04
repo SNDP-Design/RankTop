@@ -3,7 +3,8 @@
 // Example: 'https://ranktop-backend.onrender.com'
 // Leave as empty string to use Gemini directly from the browser (no backend).
 
-const BACKEND_URL = localStorage.getItem('RANKTOP_BACKEND_URL') || '';
+const DEFAULT_RENDER_BACKEND = 'https://ranktop-backend.onrender.com';
+const BACKEND_URL = localStorage.getItem('RANKTOP_BACKEND_URL') || DEFAULT_RENDER_BACKEND;
 
 export function getBackendUrl() {
   return BACKEND_URL;
