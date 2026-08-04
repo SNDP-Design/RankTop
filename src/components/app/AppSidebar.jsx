@@ -33,7 +33,6 @@ const NAV_GROUPS = [
       { id: 'strategy',    text: 'Keywords',    Icon: Target   },
       { id: 'studio',      text: 'AI Writer',   Icon: FileText  },
       { id: 'competitors', text: 'Competitors', Icon: Search    },
-      { id: 'cms',         text: 'CMS Publish', Icon: Share2    },
     ],
   },
   {
