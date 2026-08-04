@@ -202,62 +202,7 @@ export default function SwarmOrchestratorView() {
         </div>
       )}
 
-      {/* 3-STEP VISUAL ONBOARDING CARD FOR FIRST-TIME USERS */}
-      <div style={{ background: '#141414', border: '1px solid #262626', borderRadius: '16px', padding: '24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-          <HelpCircle size={18} color="#3ECF8E" />
-          <h2 style={{ fontSize: '15px', fontWeight: 800, color: '#fff', margin: 0 }}>How RankTop AI Swarm Works in 3 Easy Steps</h2>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div style={{ background: '#1a1a1a', border: '1px solid #282828', borderRadius: '12px', padding: '16px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <span style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#3ECF8E', color: '#000', fontWeight: 800, fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>1</span>
-              <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#fff', margin: 0 }}>Enter Your Website</h3>
-            </div>
-            <p style={{ fontSize: '13px', color: '#a1a1aa', margin: 0, lineHeight: 1.4 }}>
-              Enter any domain name above. The AI reads your business niche and targets high-intent search queries.
-            </p>
-          </div>
-
-          <div style={{ background: '#1a1a1a', border: '1px solid #282828', borderRadius: '12px', padding: '16px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <span style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#3ECF8E', color: '#000', fontWeight: 800, fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>2</span>
-              <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#fff', margin: 0 }}>9 AI Agents Work</h3>
-            </div>
-            <p style={{ fontSize: '13px', color: '#a1a1aa', margin: 0, lineHeight: 1.4 }}>
-              Agents research competitors, draft articles, add research stats, and build Google & ChatGPT answer schemas.
-            </p>
-          </div>
-
-          <div style={{ background: '#1a1a1a', border: '1px solid #282828', borderRadius: '12px', padding: '16px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <span style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#3ECF8E', color: '#000', fontWeight: 800, fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>3</span>
-              <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#fff', margin: 0 }}>Review & Publish</h3>
-            </div>
-            <p style={{ fontSize: '13px', color: '#a1a1aa', margin: 0, lineHeight: 1.4 }}>
-              Approve articles with 1 click in Human Review Mode, or put it on 24/7 Autopilot to publish automatically.
-            </p>
-          </div>
-        </div>
-
-        {/* 1-Click Quick Demo Sample Buttons */}
-        <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #222', display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '12px', color: '#71717a', fontWeight: 600 }}>Try 1-Click Sample:</span>
-          {['myboutique.com', 'saasstartup.io', 'healthclinic.org'].map((sample) => (
-            <button
-              key={sample}
-              onClick={() => handleSampleClick(sample)}
-              style={{
-                padding: '5px 12px', background: '#222', border: '1px solid #333', borderRadius: '8px',
-                fontSize: '12px', fontWeight: 600, color: '#3ECF8E', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px'
-              }}
-            >
-              <Search size={11} /> {sample}
-            </button>
-          ))}
-        </div>
-      </div>
 
       {/* Human Approval vs Autopilot Governance Switch */}
       <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>

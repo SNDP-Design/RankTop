@@ -53,28 +53,6 @@ function AgentEmptyState({ setActiveTab }) {
           }
         </p>
 
-        {/* Non-Technical Plain English Explainer */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left max-w-3xl mx-auto mb-6">
-          <div style={{ background: '#121212', border: '1px solid #242424', borderRadius: '12px', padding: '16px' }}>
-            <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#3ECF8E', margin: '0 0 6px' }}>📈 Google SEO</h4>
-            <p style={{ fontSize: '13px', color: '#71717a', margin: 0, lineHeight: 1.4 }}>
-              Helps your website rank on page 1 of Google search results for valuable keywords.
-            </p>
-          </div>
-          <div style={{ background: '#121212', border: '1px solid #242424', borderRadius: '12px', padding: '16px' }}>
-            <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#60a5fa', margin: '0 0 6px' }}>🤖 ChatGPT & AI Answers (AEO)</h4>
-            <p style={{ fontSize: '13px', color: '#71717a', margin: 0, lineHeight: 1.4 }}>
-              Ensures ChatGPT, Perplexity, and Gemini recommend your website when users ask questions.
-            </p>
-          </div>
-          <div style={{ background: '#121212', border: '1px solid #242424', borderRadius: '12px', padding: '16px' }}>
-            <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#f59e0b', margin: '0 0 6px' }}>🌟 Google AI Overviews (GEO)</h4>
-            <p style={{ fontSize: '13px', color: '#71717a', margin: 0, lineHeight: 1.4 }}>
-              Optimizes content so Google's AI Overview snapshot boxes highlight and link to your website.
-            </p>
-          </div>
-        </div>
-
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
           {!hasApiKey() ? (
             <button
@@ -202,52 +180,6 @@ export default function DashboardOverview({ setActiveTab }) {
 
   return (
     <div className="w-full space-y-6 font-sans">
-
-      <div style={{
-        background: '#171717', border: '1px solid #262626', borderRadius: '16px',
-        padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px',
-      }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <span style={{
-              display: 'inline-flex', alignItems: 'center', gap: '6px',
-              padding: '4px 10px', borderRadius: '99px',
-              background: 'rgba(62,207,142,0.1)', border: '1px solid rgba(62,207,142,0.2)',
-              fontSize: '13px', fontWeight: 700, color: '#3ECF8E',
-            }}>
-              <Globe2 size={12} /> {domain}
-            </span>
-          </div>
-          <p style={{ fontSize: '14px', color: '#71717a', margin: 0 }}>{data.summary}</p>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          {gscConnected ? (
-            <span style={{
-              padding: '6px 14px', background: 'rgba(62,207,142,0.1)', color: '#3ECF8E', border: '1px solid rgba(62,207,142,0.3)',
-              borderRadius: '8px', fontSize: '13px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '6px',
-            }}>
-              <CheckCircle2 size={14} color="#3ECF8E" /> Search Console Connected
-            </span>
-          ) : (
-            <button
-              onClick={handleConnectGsc}
-              disabled={gscLoading}
-              style={{
-                padding: '8px 16px', background: '#4285F4', color: '#fff', border: 'none',
-                borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer',
-                display: 'inline-flex', alignItems: 'center', gap: '6px', boxShadow: '0 4px 12px rgba(66,133,244,0.3)',
-              }}
-            >
-              {gscLoading ? <Loader2 size={14} className="animate-spin" /> : <Globe2 size={14} color="#fff" />}
-              Connect Search Console (Instant Popup)
-            </button>
-          )}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3ECF8E', animation: 'pulse 2s infinite' }} />
-            <span style={{ fontSize: '13px', color: '#3ECF8E', fontWeight: 600 }}>Analysis Complete</span>
-          </div>
-        </div>
-      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -380,38 +312,6 @@ export default function DashboardOverview({ setActiveTab }) {
               <div style={{ fontSize: '12px', color: '#71717a' }}>{engine.queries}</div>
             </div>
           ))}
-        </div>
-      </div>
-
-      {/* Issues + Quick Wins */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px' }}>
-          <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#ef4444', margin: '0 0 16px', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <AlertCircle size={14} /> Top Issues
-          </h3>
-          <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {(data.topIssues ?? []).map((issue, i) => (
-              <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontSize: '14px', color: '#d4d4d8' }}>
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#ef4444', marginTop: '6px', flexShrink: 0 }} />
-                {issue}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px' }}>
-          <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#3ECF8E', margin: '0 0 16px', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <CheckCircle2 size={14} /> Quick Wins
-          </h3>
-          <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {(data.quickWins ?? []).map((win, i) => (
-              <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontSize: '14px', color: '#d4d4d8' }}>
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#3ECF8E', marginTop: '6px', flexShrink: 0 }} />
-                {win}
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
 
