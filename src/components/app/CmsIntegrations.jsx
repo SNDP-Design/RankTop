@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Share2, CheckCircle2, RefreshCw, Key, Globe, ExternalLink, Zap } from 'lucide-react';
+import { getBackendUrl } from '../../config';
 
 export default function CmsIntegrations() {
   const [integrations, setIntegrations] = useState([
@@ -22,6 +23,8 @@ export default function CmsIntegrations() {
       return item;
     }));
   };
+
+  const backendUrl = getBackendUrl() || 'https://ranktop-backend.onrender.com';
 
   return (
     <div className="w-full space-y-6 font-sans">
@@ -52,7 +55,7 @@ export default function CmsIntegrations() {
           </div>
 
           <a
-            href="http://localhost:3001/api/gsc/auth?domain=www.xgrowth.uno"
+            href={`${backendUrl}/api/gsc/auth?domain=www.xgrowth.uno`}
             target="_blank"
             rel="noopener noreferrer"
             className="px-6 py-3 rounded-xl font-bold text-sm bg-[#4285F4] hover:bg-[#3367D6] text-white flex items-center gap-2 shadow-lg shadow-[#4285F4]/20 transition-all text-decoration-none"
@@ -61,6 +64,7 @@ export default function CmsIntegrations() {
           </a>
         </div>
       </div>
+
 
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">

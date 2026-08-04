@@ -17,6 +17,43 @@ router.get('/auth', (req, res) => {
   const { domain } = req.query;
   if (!domain) return res.status(400).json({ error: 'domain is required' });
 
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+
+  if (!clientId || clientId.includes('xxxx') || !clientSecret || clientSecret.includes('xxxx')) {
+    return res.status(400).send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Google Search Console Setup — RankTop</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f0f0f; color: #fff; padding: 40px 20px; }
+          .card { max-width: 580px; margin: 0 auto; background: #171717; border: 1px solid #262626; border-radius: 16px; padding: 32px; box-shadow: 0 16px 40px rgba(0,0,0,0.5); }
+          h2 { color: #f59e0b; margin-top: 0; font-size: 20px; }
+          p { color: #a1a1aa; font-size: 14px; line-height: 1.6; }
+          ol { color: #d4d4d8; font-size: 14px; line-height: 1.8; padding-left: 20px; }
+          code { background: #222; color: #3ECF8E; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 13px; }
+          .btn { display: inline-block; background: #3ECF8E; color: #000; font-weight: 700; padding: 10px 18px; border-radius: 10px; text-decoration: none; margin-top: 16px; font-size: 14px; }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <h2>⚠️ Google OAuth Client ID Required</h2>
+          <p>The Google error <code>Missing required parameter: client_id</code> occurs because your <code>GOOGLE_CLIENT_ID</code> has not been added to <code>backend/.env</code> yet.</p>
+          <p><strong>To connect live Google Search Console data:</strong></p>
+          <ol>
+            <li>Go to <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color: #3ECF8E;">Google Cloud Console Credentials</a>.</li>
+            <li>Create an <strong>OAuth 2.0 Client ID</strong> (Application type: <em>Web Application</em>).</li>
+            <li>Set Authorized Redirect URI: <code>http://localhost:3001/api/gsc/callback</code></li>
+            <li>Add your <code>GOOGLE_CLIENT_ID</code> and <code>GOOGLE_CLIENT_SECRET</code> to <code>backend/.env</code>.</li>
+          </ol>
+          <a href="http://localhost:5173" class="btn">← Back to RankTop Dashboard</a>
+        </div>
+      </body>
+      </html>
+    `);
+  }
+
   const oauth2Client = getOAuth2Client();
   req.session.gscDomain = domain;
 
@@ -32,6 +69,7 @@ router.get('/auth', (req, res) => {
 
   res.redirect(authUrl);
 });
+
 
 // GET /api/gsc/callback — Google redirects here after user consents
 router.get('/callback', async (req, res) => {
