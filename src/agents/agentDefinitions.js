@@ -39,6 +39,30 @@ export const AGENT_ROLES = {
     color: 'from-emerald-500 to-teal-600',
     description: 'Optimizes BLUF formatting and evaluates LLM citation probability for Google AI Overviews.'
   },
+  DATA_CITATION: {
+    id: 'data_citation',
+    name: 'Statistical Data & GEO Injector',
+    model: 'Gemini 3.1 Pro Preview',
+    avatar: '📈',
+    color: 'from-cyan-500 to-blue-600',
+    description: 'Injects verified stats, quotes, and research citations to maximize LLM response retrieval rate.'
+  },
+  ENTITY_GRAPH: {
+    id: 'entity_graph',
+    name: 'Knowledge Graph & Schema Agent',
+    model: 'Gemini 3.6 Flash',
+    avatar: '🕸️',
+    color: 'from-amber-500 to-orange-600',
+    description: 'Links entities to Wikidata/Google Knowledge Graph IDs for semantic authority.'
+  },
+  LINK_ARCHITECT: {
+    id: 'link_architect',
+    name: 'Topic Cluster & Internal Link Architect',
+    model: 'Gemini 3.6 Flash',
+    avatar: '🔗',
+    color: 'from-fuchsia-500 to-pink-600',
+    description: 'Constructs pillar-cluster link silos and contextual internal anchor text.'
+  },
   DISPATCHER: {
     id: 'dispatcher',
     name: 'CMS Publishing Dispatcher',
@@ -48,3 +72,4 @@ export const AGENT_ROLES = {
     description: 'Dispatches finalized payloads directly to WordPress, Webflow, Shopify, and Ghost REST APIs.'
   }
 };
+

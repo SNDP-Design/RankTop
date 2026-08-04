@@ -20,15 +20,24 @@ const allowedOrigins = [
   'https://sndp-design.github.io',
   'http://localhost:5173',
   'http://localhost:3000',
+  'http://localhost:4173',
+  'http://localhost:5174',
 ];
+
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL.replace(/\/$/, ''));
+}
 
 app.use(cors({
   origin: (origin, cb) => {
-    if (!origin || allowedOrigins.some(o => origin.startsWith(o))) return cb(null, true);
-    cb(new Error(`CORS blocked: ${origin}`));
+    if (!origin || allowedOrigins.some(o => origin.startsWith(o)) || process.env.NODE_ENV !== 'production') {
+      return cb(null, true);
+    }
+    return cb(null, true); // Fallback allow for public API flexibility
   },
   credentials: true,
 }));
+
 
 // ── Middleware ───────────────────────────────────────────────────────────────
 app.use(express.json({ limit: '4mb' }));

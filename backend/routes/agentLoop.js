@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { upsertLoopConfig, getLoopConfig, getLoopHistory } = require('../db');
+const { upsertLoopConfig, getLoopConfig, getLoopHistory, getPendingApprovals, updateApprovalStatus } = require('../db');
 const { runAgentLoop } = require('../cron/weeklyReport');
 
 // POST /api/agent-loop/start
@@ -43,6 +43,7 @@ router.get('/status', (req, res) => {
 
   const config = getLoopConfig(domain);
   const history = getLoopHistory(domain, 20);
+  const pendingApprovals = getPendingApprovals(domain);
 
   res.json({
     domain,
@@ -50,7 +51,32 @@ router.get('/status', (req, res) => {
     wpConnected: Boolean(config?.wp_site_url),
     emailNotifications: config?.email || null,
     history,
+    pendingApprovals,
   });
+});
+
+// GET /api/agent-loop/approvals?domain=example.com
+router.get('/approvals', (req, res) => {
+  const { domain } = req.query;
+  if (!domain) return res.status(400).json({ error: 'domain is required' });
+  const pending = getPendingApprovals(domain);
+  res.json({ success: true, approvals: pending });
+});
+
+// POST /api/agent-loop/approve
+router.post('/approve', (req, res) => {
+  const { taskId, feedback } = req.body;
+  if (!taskId) return res.status(400).json({ error: 'taskId is required' });
+  updateApprovalStatus(taskId, 'APPROVED', feedback || '');
+  res.json({ success: true, message: `Task #${taskId} approved successfully.` });
+});
+
+// POST /api/agent-loop/reject
+router.post('/reject', (req, res) => {
+  const { taskId, feedback } = req.body;
+  if (!taskId) return res.status(400).json({ error: 'taskId is required' });
+  updateApprovalStatus(taskId, 'REJECTED', feedback || 'User rejected task execution');
+  res.json({ success: true, message: `Task #${taskId} rejected.` });
 });
 
 // POST /api/agent-loop/run-now — Manual trigger for immediate run
@@ -66,3 +92,4 @@ router.post('/run-now', async (req, res) => {
 });
 
 module.exports = router;
+

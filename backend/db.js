@@ -64,6 +64,19 @@ async function initDB() {
       active       INTEGER DEFAULT 0,
       created_at   TEXT DEFAULT (datetime('now'))
     );
+
+    -- HITL Approval Queue
+    CREATE TABLE IF NOT EXISTS approval_queue (
+      id            INTEGER PRIMARY KEY AUTOINCREMENT,
+      domain        TEXT NOT NULL,
+      gate          TEXT NOT NULL,       -- 'STRATEGY_GATE' | 'PUBLISH_GATE'
+      title         TEXT NOT NULL,
+      description   TEXT,
+      payload       TEXT,                -- JSON payload
+      status        TEXT DEFAULT 'PENDING', -- 'PENDING' | 'APPROVED' | 'REJECTED'
+      feedback      TEXT,
+      created_at    TEXT DEFAULT (datetime('now'))
+    );
   `);
 }
 
@@ -174,10 +187,32 @@ function getActiveLoopDomains() {
   return db.prepare('SELECT * FROM agent_loop_config WHERE active = 1').all();
 }
 
+function createApprovalTask(domain, gate, title, description, payload) {
+  const db = getDB();
+  const info = db.prepare(`
+    INSERT INTO approval_queue (domain, gate, title, description, payload, status)
+    VALUES (?, ?, ?, ?, ?, 'PENDING')
+  `).run(domain, gate, title, description, JSON.stringify(payload));
+  return info.lastInsertRowid;
+}
+
+function getPendingApprovals(domain) {
+  const db = getDB();
+  const rows = db.prepare('SELECT * FROM approval_queue WHERE domain = ? AND status = "PENDING" ORDER BY created_at DESC').all(domain);
+  return rows.map(r => ({ ...r, payload: JSON.parse(r.payload || '{}') }));
+}
+
+function updateApprovalStatus(id, status, feedback = '') {
+  const db = getDB();
+  db.prepare('UPDATE approval_queue SET status = ?, feedback = ? WHERE id = ?').run(status, feedback, id);
+}
+
 module.exports = {
   initDB, getDB,
   upsertWebsite, getWebsite, getAllWebsites,
   upsertSchedule, deleteSchedule, getActiveSchedules,
   saveGscTokens, getGscTokens,
   logLoopRun, getLoopHistory, upsertLoopConfig, getLoopConfig, getActiveLoopDomains,
+  createApprovalTask, getPendingApprovals, updateApprovalStatus,
 };
+

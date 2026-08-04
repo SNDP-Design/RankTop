@@ -1,31 +1,43 @@
 import { AGENT_ROLES } from './agentDefinitions';
-import { geminiService } from '../services/geminiService';
 
 export class SwarmOrchestrator {
   constructor(onUpdate) {
     this.onUpdate = onUpdate; // State listener callback
-    this.status = 'IDLE'; // 'IDLE' | 'RUNNING' | 'COMPLETED' | 'PAUSED'
+    this.status = 'IDLE'; // 'IDLE' | 'RUNNING' | 'AWAITING_APPROVAL' | 'COMPLETED' | 'PAUSED'
+    this.mode = 'hitl'; // 'hitl' (Human-In-The-Loop) | 'autopilot' (Full Autopilot)
     this.currentStepIndex = 0;
     this.logs = [];
+    this.pendingApproval = null; // { id, gate, title, description, payload, resolve, reject }
     
-    // Initial agent states
+    // 9 Specialized Swarm Agents
     this.agents = {
-      orchestrator: { ...AGENT_ROLES.ORCHESTRATOR, state: 'IDLE', activeTask: 'Standing by for goal input' },
-      research: { ...AGENT_ROLES.RESEARCH, state: 'IDLE', activeTask: 'Ready for domain research' },
-      competitor: { ...AGENT_ROLES.COMPETITOR, state: 'IDLE', activeTask: 'Ready for competitor crawl' },
-      writer: { ...AGENT_ROLES.WRITER, state: 'IDLE', activeTask: 'Ready for drafting' },
-      aeo: { ...AGENT_ROLES.AEO, state: 'IDLE', activeTask: 'Ready for AEO inspection' },
-      dispatcher: { ...AGENT_ROLES.DISPATCHER, state: 'IDLE', activeTask: 'Ready for CMS payload dispatch' },
+      orchestrator: { ...AGENT_ROLES.ORCHESTRATOR, state: 'IDLE', activeTask: 'Standing by for strategic goal' },
+      research:     { ...AGENT_ROLES.RESEARCH,     state: 'IDLE', activeTask: 'Ready for domain & keyword research' },
+      competitor:   { ...AGENT_ROLES.COMPETITOR,   state: 'IDLE', activeTask: 'Ready for rival gap audit' },
+      writer:       { ...AGENT_ROLES.WRITER,       state: 'IDLE', activeTask: 'Ready for draft creation' },
+      aeo:          { ...AGENT_ROLES.AEO,          state: 'IDLE', activeTask: 'Ready for AI Overview citation inspection' },
+      data_citation:{ ...AGENT_ROLES.DATA_CITATION,state: 'IDLE', activeTask: 'Ready for GEO stat & citation injection' },
+      entity_graph: { ...AGENT_ROLES.ENTITY_GRAPH, state: 'IDLE', activeTask: 'Ready for Knowledge Graph JSON-LD synthesis' },
+      link_architect:{ ...AGENT_ROLES.LINK_ARCHITECT,state:'IDLE', activeTask: 'Ready for pillar-cluster link topology mapping' },
+      dispatcher:   { ...AGENT_ROLES.DISPATCHER,   state: 'IDLE', activeTask: 'Ready for multi-channel CMS dispatch' },
     };
+  }
+
+  setMode(mode) {
+    this.mode = mode; // 'hitl' | 'autopilot'
+    this.addLog('orchestrator', 'orchestrator', `Swarm execution mode switched to ${mode.toUpperCase()} mode.`, 'system');
+    this.notify();
   }
 
   notify() {
     if (this.onUpdate) {
       this.onUpdate({
         status: this.status,
+        mode: this.mode,
         currentStepIndex: this.currentStepIndex,
         agents: { ...this.agents },
-        logs: [...this.logs]
+        logs: [...this.logs],
+        pendingApproval: this.pendingApproval,
       });
     }
   }
@@ -57,62 +69,164 @@ export class SwarmOrchestrator {
     }
   }
 
+  async waitForApproval(gate, title, description, payload) {
+    if (this.mode === 'autopilot') {
+      this.addLog('orchestrator', 'orchestrator', `[Autopilot] Bypassed HITL Gate: "${title}". Executing autonomously.`, 'system');
+      return { approved: true, payload };
+    }
+
+    this.status = 'AWAITING_APPROVAL';
+    return new Promise((resolve) => {
+      this.pendingApproval = {
+        id: `gate-${Date.now()}`,
+        gate,
+        title,
+        description,
+        payload,
+        resolve: (userPayload) => {
+          this.pendingApproval = null;
+          this.status = 'RUNNING';
+          this.addLog('orchestrator', 'orchestrator', `HITL Gate Approved by User: "${title}". Swarm resuming...`, 'success');
+          this.notify();
+          resolve({ approved: true, payload: userPayload || payload });
+        },
+        reject: (reason) => {
+          this.pendingApproval = null;
+          this.status = 'PAUSED';
+          this.addLog('orchestrator', 'orchestrator', `HITL Gate Rejected by User: ${reason || 'User requested pause'}`, 'warning');
+          this.notify();
+          resolve({ approved: false, reason });
+        }
+      };
+      this.notify();
+    });
+  }
+
+  approvePendingTask(modifiedPayload) {
+    if (this.pendingApproval) {
+      this.pendingApproval.resolve(modifiedPayload);
+    }
+  }
+
+  rejectPendingTask(reason) {
+    if (this.pendingApproval) {
+      this.pendingApproval.reject(reason);
+    }
+  }
+
   async runFullAutopilotSwarm(targetDomain = 'mywebsite.com') {
     this.status = 'RUNNING';
     this.logs = [];
+    this.pendingApproval = null;
+    this.currentStepIndex = 1;
     this.notify();
 
-    // STEP 1: Orchestrator Goal Planning
-    this.setAgentState('orchestrator', 'THINKING', `Planning autonomous SEO swarm for ${targetDomain}`);
-    this.addLog('orchestrator', 'research', `Initializing Swarm. Target Domain: ${targetDomain}. Delegating keyword research & competitor analysis.`, 'system');
+    // PHASE 1: Swarm Initialization & Goal Mapping
+    this.setAgentState('orchestrator', 'THINKING', `Mapping 9-agent autonomous DAG for ${targetDomain}`);
+    this.addLog('orchestrator', 'research', `Initializing Swarm DAG. Domain: ${targetDomain}. Spawning research, competitor & link agents.`, 'system');
+    await new Promise(r => setTimeout(r, 1000));
+
+    // PHASE 2: Multi-Agent Intelligence Gathering (Parallel Execution)
+    this.setAgentState('orchestrator', 'WORKING', 'Delegated task DAG to Research, Competitor & Link Architect agents');
+    this.setAgentState('research', 'RESEARCHING', 'Extracting high-intent, low-KD topic clusters (KD ≤ 22)');
+    this.setAgentState('competitor', 'CRAWLING', 'Profiling rival domain gaps & keyword vulnerabilities');
+    this.setAgentState('link_architect', 'ANALYZING', 'Mapping site graph & cluster link topology');
+
+    this.addLog('research', 'orchestrator', 'Found 18 low-KD opportunities. Primary target: "best ai overview & geo optimization tools".', 'data');
     await new Promise(r => setTimeout(r, 1200));
 
-    // STEP 2: Research & Competitor Agents in parallel
-    this.setAgentState('orchestrator', 'WORKING', 'Delegated tasks to Research & Competitor subagents');
-    this.setAgentState('research', 'RESEARCHING', 'Extracting high-intent topic clusters (KD ≤ 20)');
-    this.setAgentState('competitor', 'CRAWLING', 'Analyzing competitor missed keyword gaps');
+    this.addLog('competitor', 'orchestrator', 'Competitor audit done. Identified 4 high-authority missing content gaps.', 'data');
+    this.addLog('link_architect', 'orchestrator', 'Cluster link map generated. Recommended parent silo: "/resources/ai-seo-guides".', 'data');
+    await new Promise(r => setTimeout(r, 1000));
 
-    this.addLog('research', 'orchestrator', 'Found 14 low-KD keyword opportunities. Top target: "best ai overview simulator tool".', 'data');
+    this.setAgentState('research', 'COMPLETED', 'Keyword matrix attached');
+    this.setAgentState('competitor', 'COMPLETED', 'Gap audit complete');
+    this.setAgentState('link_architect', 'COMPLETED', 'Link silo topology configured');
+
+    // HITL GATE 1: Strategy & Target Approval
+    this.currentStepIndex = 2;
+    const gate1Result = await this.waitForApproval(
+      'STRATEGY_GATE',
+      'Approve Target Keyword & Topic Cluster Blueprint',
+      `Target: "Best AI Overview & GEO Optimization Tools" | Target Domain: ${targetDomain} | KD: 18 | Est. Search Intent: High Commercial`,
+      {
+        targetKeyword: 'Best AI Overview & GEO Optimization Tools',
+        secondaryKeywords: ['GEO citation strategy', 'AEO answer engine optimization', 'Google AI overview score'],
+        targetSilo: '/resources/ai-seo-guides',
+        estimatedWordCount: 2400
+      }
+    );
+
+    if (!gate1Result.approved) {
+      this.addLog('orchestrator', 'orchestrator', 'Swarm execution halted at Gate 1.', 'warning');
+      return;
+    }
+
+    // PHASE 3: Content Generation & Knowledge Graph Synthesis
+    this.currentStepIndex = 3;
+    this.setAgentState('orchestrator', 'WORKING', 'Delegating Content Creator & Entity Graph agents');
+    this.setAgentState('writer', 'DRAFTING', 'Generating 2,400-word article with H2/H3 BLUF formatting');
+    this.setAgentState('entity_graph', 'SYNTHESIZING', 'Building JSON-LD schema linked to Wikidata & Knowledge Graph IDs');
+
+    this.addLog('orchestrator', 'writer', `Drafting topic: "${gate1Result.payload.targetKeyword}". Include Speakable & FAQPage schema.`, 'task');
+    await new Promise(r => setTimeout(r, 1500));
+
+    this.addLog('writer', 'entity_graph', 'Draft complete. Handing payload to Entity Graph & GEO agents for optimization.', 'handover');
+    this.setAgentState('writer', 'COMPLETED', 'Draft ready');
+
+    this.addLog('entity_graph', 'data_citation', 'Wikidata & schema links built. Handing to Statistical Data Injector.', 'handover');
+    this.setAgentState('entity_graph', 'COMPLETED', 'JSON-LD Knowledge Graph schema attached');
+
+    // PHASE 4: Statistical Injection & AEO Inspection
+    this.currentStepIndex = 4;
+    this.setAgentState('data_citation', 'INJECTING', 'Injecting authoritative research stats & 4 citations for GEO score');
+    this.setAgentState('aeo', 'AUDITING', 'Testing BLUF answer block density & LLM citation score');
+
     await new Promise(r => setTimeout(r, 1400));
 
-    this.addLog('competitor', 'orchestrator', 'Competitor gap audit complete. Identified 3 high-authority rival vulnerabilities.', 'data');
-    await new Promise(r => setTimeout(r, 1200));
+    this.addLog('data_citation', 'aeo', 'Added 5 verified metrics (+38% GEO retrieval lift score).', 'data');
+    this.setAgentState('data_citation', 'COMPLETED', 'GEO statistical citations injected');
 
-    this.setAgentState('research', 'COMPLETED', 'Keyword strategy matrix compiled');
-    this.setAgentState('competitor', 'COMPLETED', 'Competitor gap report attached');
+    this.addLog('aeo', 'dispatcher', 'AEO & GEO Audit passed: 98% LLM Citation Score (Perplexity, SearchGPT & Claude).', 'success');
+    this.setAgentState('aeo', 'COMPLETED', '98% AEO/GEO Score Verified');
 
-    // STEP 3: Content Writer Agent
-    this.setAgentState('orchestrator', 'WORKING', 'Delegating article drafting & JSON-LD schema generation');
-    this.setAgentState('writer', 'DRAFTING', 'Generating 2,200-word article with H2/H3 hierarchy and Speakable schema');
+    // HITL GATE 2: CMS Dispatch & Final Publishing Review
+    this.currentStepIndex = 5;
+    const gate2Result = await this.waitForApproval(
+      'PUBLISH_GATE',
+      'Approve Article Payload & Direct CMS Dispatch',
+      `Article Title: "Best AI Overview & GEO Optimization Tools: The 2026 Strategy Guide"\nWord Count: 2,420 words | AEO Citation Score: 98% | Schema: FAQPage + Speakable + Wikidata JSON-LD`,
+      {
+        title: 'Best AI Overview & GEO Optimization Tools: The 2026 Strategy Guide',
+        wordCount: 2420,
+        aeoScore: 98,
+        cmsStatus: 'publish',
+        targetDomain
+      }
+    );
 
-    this.addLog('orchestrator', 'writer', 'Topic: "The Ultimate Guide to AI Overview Simulators". Requirements: Include JSON-LD & featured graphic prompt.', 'task');
-    await new Promise(r => setTimeout(r, 1600));
+    if (!gate2Result.approved) {
+      this.addLog('orchestrator', 'orchestrator', 'Swarm execution halted at Gate 2.', 'warning');
+      return;
+    }
 
-    this.addLog('writer', 'aeo', 'Article draft complete. Requesting AEO & LLM Citation score evaluation.', 'handover');
-    this.setAgentState('writer', 'COMPLETED', 'Draft & JSON-LD schema ready');
-
-    // STEP 4: AEO & LLM Citation Agent
-    this.setAgentState('aeo', 'AUDITING', 'Testing BLUF answer density & Google AI Overview citation score');
+    // PHASE 5: CMS Payload Dispatch & Campaign Completion
+    this.currentStepIndex = 6;
+    this.setAgentState('dispatcher', 'DISPATCHING', 'Pushing final payload to CMS REST API with JSON-LD schema');
     await new Promise(r => setTimeout(r, 1400));
 
-    this.addLog('aeo', 'dispatcher', 'AEO Inspection passed: 96% Citation Probability Score. Content optimized for Perplexity & Claude.', 'success');
-    this.setAgentState('aeo', 'COMPLETED', '96% AEO Score Verified');
-
-    // STEP 5: CMS Dispatcher Agent
-    this.setAgentState('dispatcher', 'DISPATCHING', 'Formatting payload & pushing via WordPress REST API');
-    await new Promise(r => setTimeout(r, 1400));
-
-    this.addLog('dispatcher', 'orchestrator', 'Article successfully published to WordPress (Draft Mode ID: #POST-9402).', 'success');
+    this.addLog('dispatcher', 'orchestrator', `Article successfully published to ${targetDomain} (Post ID: #POST-9840).`, 'success');
     this.setAgentState('dispatcher', 'COMPLETED', 'Published to CMS');
 
-    // STEP 6: Swarm Completion
-    this.setAgentState('orchestrator', 'COMPLETED', 'Autonomous SEO Swarm Cycle Finished Successfully');
+    // Swarm Completion
+    this.setAgentState('orchestrator', 'COMPLETED', '9-Agent Autonomous Swarm Cycle Completed Successfully');
     this.status = 'COMPLETED';
     this.notify();
   }
 
   stopSwarm() {
     this.status = 'IDLE';
+    this.pendingApproval = null;
     Object.keys(this.agents).forEach(id => {
       this.agents[id].state = 'IDLE';
       this.agents[id].activeTask = 'Standing by';
@@ -120,3 +234,4 @@ export class SwarmOrchestrator {
     this.notify();
   }
 }
+
