@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Sparkles, Copy, Check, Share2 } from 'lucide-react';
+import { FileText, Sparkles, Copy, Check, Share2, Download } from 'lucide-react';
 import { geminiService } from '../../services/geminiService';
 import { useAgents } from '../../context/AgentContext';
 
@@ -159,20 +159,28 @@ By structuring direct answer blocks and embedding speakable schema, your brand s
           <div className="flex items-center justify-between flex-wrap gap-2">
             <h3 className="text-sm font-bold text-white font-sans uppercase tracking-wider">Article Preview & Schema Output</h3>
             {generatedArticle && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <button
                   onClick={handleCopyText}
                   className="px-3.5 py-1.5 bg-[#262626] hover:bg-[#333] text-white border border-[#333] rounded-lg text-sm font-bold flex items-center gap-1.5 shadow transition-all"
                 >
                   {copied ? <Check className="w-4 h-4 text-[#3ECF8E]" /> : <Copy className="w-4 h-4" />}
-                  <span>{copied ? 'Copied' : 'Copy'}</span>
+                  <span>{copied ? 'Copied Text' : 'Copy Text'}</span>
                 </button>
                 <button
-                  onClick={() => alert('To publish automatically, configure your WordPress credentials in the AI Swarm tab!')}
-                  className="px-3.5 py-1.5 bg-[#3ECF8E] hover:bg-[#34D399] text-black rounded-lg text-sm font-bold flex items-center gap-1.5 shadow transition-all"
+                  onClick={() => {
+                    const blob = new Blob([generatedArticle], { type: 'text/html' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${targetKeyword.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.html`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                  className="px-3.5 py-1.5 bg-[#121212] hover:bg-[#1f1f1f] text-[#3ECF8E] border border-[#3ECF8E]/30 rounded-lg text-sm font-bold flex items-center gap-1.5 shadow transition-all"
                 >
-                  <Share2 className="w-4 h-4 text-black" />
-                  <span>Publish to WordPress</span>
+                  <Download className="w-4 h-4 text-[#3ECF8E]" />
+                  <span>Download .HTML File</span>
                 </button>
               </div>
             )}
