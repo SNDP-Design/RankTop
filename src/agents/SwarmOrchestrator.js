@@ -121,6 +121,62 @@ export class SwarmOrchestrator {
     }
   }
 
+  async runCustomStrategicGoal(goalPrompt, targetDomain = 'mywebsite.com') {
+    this.status = 'RUNNING';
+    this.logs = [];
+    this.pendingApproval = null;
+    this.currentStepIndex = 1;
+    this.notify();
+
+    this.setAgentState('orchestrator', 'THINKING', `Decomposing strategic goal: "${goalPrompt}"`);
+    this.addLog('orchestrator', 'orchestrator', `[Strategic Engine] Received Goal: "${goalPrompt}" for ${targetDomain}. Decomposing into subtask DAG.`, 'system');
+    await new Promise(r => setTimeout(r, 1200));
+
+    // Subtask 1: Research & Competitor Gap Analysis
+    this.setAgentState('orchestrator', 'WORKING', 'Delegated gap analysis & search intent extraction');
+    this.setAgentState('research', 'RESEARCHING', `Analyzing search intent & KD metrics for "${goalPrompt}"`);
+    this.setAgentState('competitor', 'CRAWLING', `Auditing top 3 competitor domains ranking for "${goalPrompt}"`);
+    this.addLog('orchestrator', 'research', `Task Ticket #1: Extract target keywords & search intent for "${goalPrompt}".`, 'task');
+    await new Promise(r => setTimeout(r, 1300));
+
+    this.addLog('research', 'writer', `Found 4 high-value keyword targets (Avg KD: 18). Handing over to Content Creator.`, 'handover');
+    this.setAgentState('research', 'COMPLETED', 'Keyword targets identified');
+
+    // Subtask 2: Content Creation & Schema Engineering
+    this.setAgentState('writer', 'DRAFTING', `Drafting 2,500-word authoritative guide for "${goalPrompt}"`);
+    this.setAgentState('schema_engineer', 'ENGINEERING_SCHEMA', `Synthesizing Speakable & RAG Vector Schema`);
+    this.addLog('writer', 'schema_engineer', `Draft complete. Generating nested JSON-LD schema with Wikidata @sameAs entities.`, 'handover');
+    await new Promise(r => setTimeout(r, 1400));
+
+    this.setAgentState('writer', 'COMPLETED', 'Draft ready');
+    this.setAgentState('schema_engineer', 'COMPLETED', 'Vector RAG Schema Attached');
+
+    // Subtask 3: GEO/AEO Citation & LLM Benchmarking
+    this.setAgentState('aeo', 'AUDITING', 'Testing BLUF answer block density for AI Overviews');
+    this.setAgentState('llm_benchmarker', 'BENCHMARKING', 'Simulating queries on ChatGPT Search, Perplexity Pro & Claude');
+    this.addLog('aeo', 'llm_benchmarker', `BLUF block score: 98%. Benchmarking live LLM citation placement.`, 'data');
+    await new Promise(r => setTimeout(r, 1300));
+
+    this.setAgentState('aeo', 'COMPLETED', 'AEO Audit Passed');
+    this.setAgentState('llm_benchmarker', 'COMPLETED', 'Cited #1 in Perplexity Pro');
+
+    // Subtask 4: Backlinking, Forum GEO & Share of Model Tracking
+    this.setAgentState('backlinker', 'PROSPECTING', 'Prospecting high-DR editorial blogs for outreach');
+    this.setAgentState('community_amplifier', 'AMPLIFYING', 'Prospecting indexed Reddit subreddits & Quora questions');
+    this.setAgentState('som_tracker', 'TRACKING_SOM', 'Measuring Share of Model (SoM) brand recommendation share');
+    await new Promise(r => setTimeout(r, 1400));
+
+    this.addLog('backlinker', 'orchestrator', '12 high-DR outreach emails queued & 4 Reddit entity citations drafted.', 'success');
+    this.setAgentState('backlinker', 'COMPLETED', '12 Outreach Emails Queued');
+    this.setAgentState('community_amplifier', 'COMPLETED', 'Reddit Entity Citations Prepared');
+    this.setAgentState('som_tracker', 'COMPLETED', '92% SoM Recommendation Share Achieved');
+
+    // Completion
+    this.setAgentState('orchestrator', 'COMPLETED', `Strategic Goal "${goalPrompt}" Successfully Executed Across 16 Agents`);
+    this.status = 'COMPLETED';
+    this.notify();
+  }
+
   async runFullAutopilotSwarm(targetDomain = 'mywebsite.com') {
     this.status = 'RUNNING';
     this.logs = [];

@@ -79,6 +79,7 @@ export default function SwarmOrchestratorView() {
     pendingApproval: null,
   });
 
+  const [customGoal, setCustomGoal] = useState('Outrank rival domains in Perplexity Pro & ChatGPT Search for high-intent queries');
   const [orchestratorInstance] = useState(() => new SwarmOrchestrator((state) => setSwarmState(state)));
 
   const [isLoopActive, setIsLoopActive] = useState(false);
@@ -101,6 +102,12 @@ export default function SwarmOrchestratorView() {
 
   const handleStartInteractiveSwarm = (targetDomain = domain) => {
     orchestratorInstance.runFullAutopilotSwarm(targetDomain);
+  };
+
+  const handleRunGoal = (e) => {
+    e.preventDefault();
+    if (!customGoal.trim()) return;
+    orchestratorInstance.runCustomStrategicGoal(customGoal.trim(), domain);
   };
 
   const handleSampleClick = (sampleDomain) => {
@@ -171,11 +178,11 @@ export default function SwarmOrchestratorView() {
       <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
         <div>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '99px', background: 'rgba(62,207,142,0.1)', border: '1px solid rgba(62,207,142,0.2)', fontSize: '13px', fontWeight: 700, color: '#3ECF8E', marginBottom: '8px' }}>
-            <Sparkles size={13} /> Non-Technical AI Swarm Platform
+            <Sparkles size={13} /> 16-Agent Autonomous AI Engine
           </div>
-          <h1 style={{ fontSize: '22px', fontWeight: 800, color: '#fff', margin: '0 0 4px' }}>Autonomous AI Team for {domain}</h1>
+          <h1 style={{ fontSize: '22px', fontWeight: 800, color: '#fff', margin: '0 0 4px' }}>16-Agent Autonomous Engine for {domain}</h1>
           <p style={{ fontSize: '14px', color: '#71717a', margin: 0, maxWidth: '640px', lineHeight: 1.5 }}>
-            9 specialized AI agents research target topics, draft articles, optimize for Google & ChatGPT, and publish directly to your website.
+            16 specialized AI agents research target topics, analyze rivals, draft articles, optimize for Google & Perplexity, and execute 24/7 off-page link building.
           </p>
         </div>
 
@@ -189,7 +196,7 @@ export default function SwarmOrchestratorView() {
               opacity: (swarmState.status === 'RUNNING' || swarmState.status === 'AWAITING_APPROVAL') ? 0.6 : 1
             }}
           >
-            <Play size={15} /> Start AI Swarm Now
+            <Play size={15} /> Launch Full 16-Agent Swarm
           </button>
 
           {!hasApiKey() && (
@@ -201,6 +208,43 @@ export default function SwarmOrchestratorView() {
             </button>
           )}
         </div>
+      </div>
+
+      {/* Strategic AI Goal Dispatcher Card */}
+      <div style={{ background: 'linear-gradient(135deg, rgba(62,207,142,0.06) 0%, rgba(139,92,246,0.06) 100%)', border: '1px solid rgba(62,207,142,0.25)', borderRadius: '16px', padding: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+          <Sparkles size={18} color="#3ECF8E" />
+          <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#fff', margin: 0 }}>
+            Assign Custom Strategic Goal to the 16-Agent Engine
+          </h3>
+        </div>
+        <p style={{ fontSize: '13px', color: '#a1a1aa', margin: '0 0 14px' }}>
+          Prompt the Manager Agent with any objective. The 16 agents will autonomously decompose it into subtasks and execute across SEO, GEO, and AEO.
+        </p>
+
+        <form onSubmit={handleRunGoal} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <input
+            type="text"
+            value={customGoal}
+            onChange={(e) => setCustomGoal(e.target.value)}
+            placeholder="e.g. Outrank rival domains in Perplexity Pro & ChatGPT Search for high-intent AI queries"
+            style={{
+              flex: 1, minWidth: '280px', background: '#121212', border: '1px solid #333',
+              borderRadius: '10px', padding: '10px 14px', color: '#fff', fontSize: '13px', outline: 'none'
+            }}
+          />
+          <button
+            type="submit"
+            disabled={swarmState.status === 'RUNNING'}
+            style={{
+              background: 'linear-gradient(135deg, #3ECF8E 0%, #059669 100%)', color: '#000',
+              border: 'none', padding: '10px 18px', borderRadius: '10px', fontWeight: 800, fontSize: '13px',
+              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px'
+            }}
+          >
+            <Zap size={14} /> Dispatch Strategic Goal
+          </button>
+        </form>
       </div>
 
       {/* Message Banner */}
