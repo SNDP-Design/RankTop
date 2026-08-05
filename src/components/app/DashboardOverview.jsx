@@ -578,8 +578,8 @@ export default function DashboardOverview({ setActiveTab }) {
 
           </div>
 
-          {/* Ultra-Premium Interactive Bar Graph (30D vs 7D) & Agent Impact Chart */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: '20px' }}>
+          {/* Ultra-Premium Interactive Bar Graph (30D vs 7D) & Agent Impact Chart (2/3 vs 1/3 Split) */}
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px' }}>
             
             {/* Dynamic SVG Bar Graph (30 Bars in 30D / 7 Bars in 7D) */}
             <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
