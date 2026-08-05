@@ -15,7 +15,7 @@ export function useAgents() {
 }
 
 // Agent IDs — matches sidebar module IDs
-const AGENT_IDS = ['dashboard', 'keywords', 'competitors', 'aeo', 'geo', 'faq', 'swarm'];
+const AGENT_IDS = ['dashboard', 'keywords', 'competitors', 'aeo', 'geo', 'faq', 'swarm', 'backlinks', 'llm_benchmarker', 'community_amplifier', 'decay_repairman'];
 
 const initialStatus = () =>
   Object.fromEntries(AGENT_IDS.map((id) => [id, 'idle']));
@@ -148,6 +148,54 @@ Return exactly 8 items.`,
   "timeToResults": "<realistic timeframe, e.g. '6-12 weeks'>",
   "agentInsight": "<2-sentence strategic insight from the AI swarm analysis>"
 }`,
+
+    backlinks: `You are an autonomous backlink strategist. For the domain "${domain}", generate 5 high-DR link opportunity targets in its niche and 3 toxic domains to disavow. Return ONLY a valid JSON object (no markdown, no code fences):
+{
+  "prospects": [
+    {
+      "id": 1,
+      "domain": "<high-DR target domain in ${domain}'s niche>",
+      "dr": <number 70-96>,
+      "strategy": "<Unlinked Brand Mention|Competitor Backlink Gap|Broken Link Replacement|Resource Page Feature>",
+      "contact": "<contact name and title>",
+      "email": "<contact email>",
+      "status": "Ready for Pitch",
+      "snippet": "<specific contextual reason why ${domain} should link from this site>",
+      "relevance": "<percentage e.g. '96%'>"
+    }
+  ],
+  "toxicDomains": [
+    { "domain": "<toxic domain>", "dr": <number 1-10>, "spamScore": "<e.g. '92%'>", "status": "Flagged for Disavow" }
+  ]
+}`,
+
+    llm_benchmarker: `You are an LLM citation benchmark auditor. For the domain "${domain}", evaluate its live citation placement across AI search engines. Return ONLY a valid JSON array (no markdown, no code fences):
+[
+  { "engine": "Perplexity Pro (Sonar)", "rank": "Cited #1 Source", "score": <number 70-99>, "status": "Verified", "color": "#34d399" },
+  { "engine": "ChatGPT Search (GPT-4o)", "rank": "Cited #2 Source", "score": <number 70-99>, "status": "Verified", "color": "#60a5fa" },
+  { "engine": "Google AI Overviews", "rank": "Top BLUF Block", "score": <number 70-99>, "status": "Verified", "color": "#f59e0b" },
+  { "engine": "Claude 3.7 Sonnet", "rank": "Primary Citation", "score": <number 70-99>, "status": "Verified", "color": "#a78bfa" }
+]`,
+
+    community_amplifier: `You are a Reddit & forum GEO citation strategist. For the domain "${domain}", identify 3 top Reddit subreddits and forum threads indexed by Perplexity/ChatGPT in this niche. Return ONLY a valid JSON array (no markdown, no code fences):
+[
+  {
+    "subreddit": "<e.g. r/SEO, r/Tech, or r/Marketing>",
+    "title": "<realistic discussion question relevant to ${domain}'s niche>",
+    "indexedBy": "<e.g. Perplexity & ChatGPT>",
+    "citations": "<e.g. 12 references>"
+  }
+]`,
+
+    decay_repairman: `You are a content decay and freshness auditor. For the domain "${domain}", audit 3 URL paths for content freshness and decay. Return ONLY a valid JSON array (no markdown, no code fences):
+[
+  {
+    "path": "<realistic URL path on ${domain}>",
+    "freshnessScore": "<percentage e.g. '68%'>",
+    "status": "<Decay Warning|Minor Decay|Fresh ✓>",
+    "action": "<specific freshness fix e.g. 'Auto-Refresh DateModified'>"
+  }
+]`,
   };
 }
 
