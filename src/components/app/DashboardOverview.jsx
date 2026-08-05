@@ -283,7 +283,7 @@ export default function DashboardOverview({ setActiveTab }) {
           </div>
 
           {/* DEDICATED 3-COLUMN SINGLE ROW: INTERACTIVE 30-DAY SEO, AEO & GEO BAR GRAPH CARDS */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
             
             {/* Column 1: Traditional SEO 30-Day Improvement Bar Graph Card */}
             <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', gap: '14px', position: 'relative' }}>
@@ -578,11 +578,11 @@ export default function DashboardOverview({ setActiveTab }) {
 
           </div>
 
-          {/* Ultra-Premium Interactive Bar Graph (30D vs 7D) & Agent Impact Chart (2/3 vs 1/3 Split) */}
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px' }}>
+          {/* Ultra-Premium Interactive Bar Graph (30D vs 7D) & Agent Impact Chart (2/3 vs 1/3 Perfectly Aligned Split) */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
             
-            {/* Dynamic SVG Bar Graph (30 Bars in 30D / 7 Bars in 7D) */}
-            <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {/* Dynamic SVG Bar Graph (30 Bars in 30D / 7 Bars in 7D) - Spans 2 Columns */}
+            <div style={{ gridColumn: 'span 2', background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <BarChart3 size={20} color="#3ECF8E" />
@@ -780,7 +780,7 @@ export default function DashboardOverview({ setActiveTab }) {
           </div>
 
           {/* OUTCOME CARDS SECTION */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
             
             {/* Outcome Card 1: 24-Hour Autonomous Agent Execution Stream */}
             <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
