@@ -14,8 +14,24 @@ export function useAgents() {
   return ctx;
 }
 
-// Agent IDs — matches sidebar module IDs
-const AGENT_IDS = ['dashboard', 'keywords', 'competitors', 'aeo', 'geo', 'faq', 'swarm', 'backlinks', 'llm_benchmarker', 'community_amplifier', 'decay_repairman'];
+const AGENT_IDS = [
+  'dashboard', 
+  'keywords', 
+  'competitors', 
+  'aeo', 
+  'geo', 
+  'faq', 
+  'swarm', 
+  'backlinks', 
+  'llm_benchmarker', 
+  'community_amplifier', 
+  'decay_repairman',
+  'content_creator',
+  'data_citation',
+  'som_tracker',
+  'silo_architect',
+  'schema_engineer'
+];
 
 const initialStatus = () =>
   Object.fromEntries(AGENT_IDS.map((id) => [id, 'idle']));
@@ -196,6 +212,21 @@ Return exactly 8 items.`,
     "action": "<specific freshness fix e.g. 'Auto-Refresh DateModified'>"
   }
 ]`,
+
+    content_creator: `You are an AI content creator and schema synthesizer for ${domain}. Return ONLY a valid JSON object:
+{ "articleTitle": "Complete Guide for ${domain}", "wordCount": 2400, "status": "Drafted" }`,
+
+    data_citation: `You are a statistical data and GEO fact injector for ${domain}. Return ONLY a valid JSON object:
+{ "injectionsCount": 14, "factSources": ["Statista", "Gartner"], "status": "Injected" }`,
+
+    som_tracker: `You are a Share of Model (SoM) brand recommendation tracker for ${domain}. Return ONLY a valid JSON object:
+{ "somScore": 88, "topPlatform": "Perplexity Pro", "status": "Tracked" }`,
+
+    silo_architect: `You are an autonomous sitemap topic silo interlinker for ${domain}. Return ONLY a valid JSON object:
+{ "silosCreated": 4, "internalLinks": 18, "status": "Siloed" }`,
+
+    schema_engineer: `You are a deep RAG multi-entity vector JSON-LD schema synthesizer for ${domain}. Return ONLY a valid JSON object:
+{ "schemaTypes": ["Organization", "WebSite", "FAQPage"], "vectorRagStatus": "Synthesized" }`
   };
 }
 
