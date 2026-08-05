@@ -102,6 +102,30 @@ export const AGENT_ROLES = {
     avatar: '⚡',
     color: 'from-amber-400 to-rose-600',
     description: 'Audits traffic velocity, fixes content decay, and auto-injects updated statistics & dateModified schema.'
+  },
+  SOM_TRACKER: {
+    id: 'som_tracker',
+    name: 'Share of Model & Brand Recommendation Agent',
+    model: 'Gemini 3.6 Flash',
+    avatar: '🏆',
+    color: 'from-yellow-400 to-amber-600',
+    description: 'Tracks Share of Model (SoM) across LLMs when buyers ask commercial recommendations.'
+  },
+  SILO_ARCHITECT: {
+    id: 'silo_architect',
+    name: 'Autonomous Topic Silo & Interlinker',
+    model: 'Gemini 3.6 Flash',
+    avatar: '🏰',
+    color: 'from-teal-400 to-emerald-600',
+    description: 'Detects orphaned pages and injects contextual internal anchor links to form tight topic silos.'
+  },
+  SCHEMA_ENGINEER: {
+    id: 'schema_engineer',
+    name: 'Deep RAG & Multi-Entity Schema Synthesizer',
+    model: 'Gemini 3.1 Pro Preview',
+    avatar: '📜',
+    color: 'from-blue-400 to-indigo-700',
+    description: 'Synthesizes nested JSON-LD schema (Speakable, FAQPage, Wikidata @sameAs) engineered for LLM RAG indexing.'
   }
 };
 

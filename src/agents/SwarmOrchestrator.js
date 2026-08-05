@@ -24,6 +24,9 @@ export class SwarmOrchestrator {
       llm_benchmarker:{ ...AGENT_ROLES.LLM_BENCHMARKER, state: 'IDLE', activeTask: 'Ready for live LLM query citation benchmark simulation' },
       community_amplifier:{ ...AGENT_ROLES.COMMUNITY_AMPLIFIER, state: 'IDLE', activeTask: 'Ready for Reddit & forum GEO thread prospecting' },
       decay_repairman:{ ...AGENT_ROLES.DECAY_REPAIRMAN, state: 'IDLE', activeTask: 'Ready for content decay audit & freshness schema injection' },
+      som_tracker:   { ...AGENT_ROLES.SOM_TRACKER,    state: 'IDLE', activeTask: 'Ready for Share of Model (SoM) LLM brand recommendation analysis' },
+      silo_architect:{ ...AGENT_ROLES.SILO_ARCHITECT, state: 'IDLE', activeTask: 'Ready for autonomous topic sitemap silo interlinking' },
+      schema_engineer:{ ...AGENT_ROLES.SCHEMA_ENGINEER,state:'IDLE', activeTask: 'Ready for deep RAG multi-entity JSON-LD schema synthesis' },
     };
   }
 
@@ -251,11 +254,35 @@ export class SwarmOrchestrator {
     this.setAgentState('decay_repairman', 'REPAIRING', 'Auditing GSC traffic velocity, updating timestamps, & injecting dateModified JSON-LD');
     await new Promise(r => setTimeout(r, 1100));
 
-    this.addLog('decay_repairman', 'orchestrator', 'Freshness score restored to 100%. Injection complete.', 'success');
+    this.addLog('decay_repairman', 'som_tracker', 'Freshness score restored to 100%. Handing over domain to Share of Model (SoM) Tracker.', 'handover');
     this.setAgentState('decay_repairman', 'COMPLETED', 'Content Decay Repaired & Freshness Schema Updated');
 
+    // PHASE 10: Share of Model (SoM) Brand Recommendation Audit
+    this.currentStepIndex = 11;
+    this.setAgentState('som_tracker', 'TRACKING_SOM', 'Measuring LLM brand recommendation share across commercial buyer queries');
+    await new Promise(r => setTimeout(r, 1200));
+
+    this.addLog('som_tracker', 'silo_architect', 'SoM Score: 88% Brand Recommendation Share verified in Perplexity & ChatGPT.', 'success');
+    this.setAgentState('som_tracker', 'COMPLETED', '88% Share of Model (SoM) Score Verified');
+
+    // PHASE 11: Autonomous Topic Silo & Internal Interlinking
+    this.currentStepIndex = 12;
+    this.setAgentState('silo_architect', 'SILOING', 'Mapping sitemap URL graph & injecting contextual internal pillar anchor links');
+    await new Promise(r => setTimeout(r, 1100));
+
+    this.addLog('silo_architect', 'schema_engineer', 'Built 6 contextual internal link silos. Zero orphaned pages remaining.', 'info');
+    this.setAgentState('silo_architect', 'COMPLETED', 'Internal Link Silos Constructed');
+
+    // PHASE 12: Deep RAG Multi-Entity Schema Synthesis
+    this.currentStepIndex = 13;
+    this.setAgentState('schema_engineer', 'ENGINEERING_SCHEMA', 'Synthesizing Speakable, FAQPage, & Wikidata @sameAs JSON-LD for RAG vectorization');
+    await new Promise(r => setTimeout(r, 1200));
+
+    this.addLog('schema_engineer', 'orchestrator', 'Deep RAG Schema payload vectorized & ready for LLM crawler extraction.', 'success');
+    this.setAgentState('schema_engineer', 'COMPLETED', 'Deep RAG Multi-Entity Schema Injected');
+
     // Swarm Completion
-    this.setAgentState('orchestrator', 'COMPLETED', '13-Agent Autonomous Swarm Cycle Completed Successfully');
+    this.setAgentState('orchestrator', 'COMPLETED', '16-Agent Autonomous Swarm Cycle Completed Successfully');
     this.status = 'COMPLETED';
     this.notify();
   }

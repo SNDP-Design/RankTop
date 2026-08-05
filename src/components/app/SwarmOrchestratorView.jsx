@@ -19,6 +19,9 @@ const AGENTS = [
   { id: 'llm_benchmarker',name: '📡 Live LLM Citation Agent', desc: 'Simulates ChatGPT, Perplexity & Gemini query citation rank', color: '#34d399' },
   { id: 'community_amplifier',name: '💬 Reddit & Forum GEO Agent', desc: 'Finds Reddit/Quora threads cited in LLM search cards', color: '#f97316' },
   { id: 'decay_repairman',name: '⚡ Content Freshness Agent', desc: 'Fixes content decay & auto-updates dateModified schema', color: '#f43f5e' },
+  { id: 'som_tracker',   name: '🏆 Share of Model (SoM) Agent', desc: 'Tracks LLM recommendation share across commercial buyer queries', color: '#f59e0b' },
+  { id: 'silo_architect',name: '🏰 Autonomous Silo Agent', desc: 'Builds tight topic silos & injects contextual internal anchor links', color: '#10b981' },
+  { id: 'schema_engineer',name: '📜 Deep RAG Schema Agent', desc: 'Synthesizes nested JSON-LD schema engineered for RAG vectorization', color: '#6366f1' },
 ];
 
 function StatusBadge({ status }) {
@@ -38,13 +41,16 @@ function StatusBadge({ status }) {
     BENCHMARKING:{label: 'Testing LLM Citation',bg:'rgba(52,211,153,0.08)', border:'rgba(52,211,153,0.25)', color: '#34d399' },
     AMPLIFYING: { label: 'Reddit GEO Post',bg:'rgba(249,115,22,0.08)', border:'rgba(249,115,22,0.25)', color: '#f97316' },
     REPAIRING:  { label: 'Freshness Repair',bg:'rgba(244,63,94,0.08)', border:'rgba(244,63,94,0.25)', color: '#f43f5e' },
+    TRACKING_SOM:{label: 'Tracking SoM Share',bg:'rgba(245,158,11,0.08)', border:'rgba(245,158,11,0.25)', color: '#f59e0b' },
+    SILOING:    { label: 'Interlinking Silos',bg:'rgba(16,185,129,0.08)', border:'rgba(16,185,129,0.25)', color: '#10b981' },
+    ENGINEERING_SCHEMA:{label:'Vector RAG Schema',bg:'rgba(99,102,241,0.08)', border:'rgba(99,102,241,0.25)', color: '#6366f1' },
     COMPLETED:  { label: 'Done ✓',      bg: 'rgba(62,207,142,0.08)', border: 'rgba(62,207,142,0.25)', color: '#3ECF8E' },
     PAUSED:     { label: 'Waiting Review',bg:'rgba(239,68,68,0.08)',  border: 'rgba(239,68,68,0.25)',  color: '#ef4444' },
   };
   const s = map[status] ?? map.IDLE;
   return (
     <span style={{ padding: '3px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, background: s.bg, border: `1px solid ${s.border}`, color: s.color, display: 'flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap' }}>
-      {['RUNNING','RESEARCHING','CRAWLING','DRAFTING','AUDITING','INJECTING','SYNTHESIZING','ANALYZING','DISPATCHING','PROSPECTING','OUTREACHING','BENCHMARKING','AMPLIFYING','REPAIRING'].includes(status) && (
+      {['RUNNING','RESEARCHING','CRAWLING','DRAFTING','AUDITING','INJECTING','SYNTHESIZING','ANALYZING','DISPATCHING','PROSPECTING','OUTREACHING','BENCHMARKING','AMPLIFYING','REPAIRING','TRACKING_SOM','SILOING','ENGINEERING_SCHEMA'].includes(status) && (
         <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: s.color, animation: 'pulse 1s infinite', flexShrink: 0 }} />
       )}
       {status === 'COMPLETED' && <CheckCircle2 size={11} />}
