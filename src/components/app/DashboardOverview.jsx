@@ -275,6 +275,7 @@ export default function DashboardOverview({ setActiveTab }) {
                 <span>16-Agent Total Outputs</span>
                 <Bot size={18} color="#a78bfa" />
               </div>
+              <div style={{ fontSize: '32px', fontWeight: 900, color: '#fff', marginTop: '6px' }}>{telemetry.totalOutputsCount} Actions</div>
               <div style={{ fontSize: '14px', color: '#a78bfa', marginTop: '4px', fontWeight: 700 }}>
                 100% Autonomous Autopilot Execution
               </div>
