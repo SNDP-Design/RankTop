@@ -288,13 +288,13 @@ export default function DashboardOverview({ setActiveTab }) {
           {/* Dynamic SVG 30-Day Rank Progression Curve & Agent Impact Bar Chart */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '20px' }}>
             
-            {/* Dynamic SVG 30-Day Rank Lift Chart */}
+            {/* Dynamic SVG 30-Day Rank Lift Bar Graph */}
             <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <BarChart3 size={18} color="#3ECF8E" />
                   <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#fff', margin: 0 }}>
-                    30-Day Rank Progression Curve for {domain}
+                    30-Day Rank Progression Bar Graph for {domain}
                   </h3>
                 </div>
                 <div style={{ display: 'flex', gap: '6px' }}>
@@ -315,52 +315,68 @@ export default function DashboardOverview({ setActiveTab }) {
                 </div>
               </div>
 
-              {/* Programmatically Generated Dynamic SVG Line & Polygon Graph (NO STATIC IMAGE) */}
+              {/* Programmatically Generated Dynamic SVG Bar Graph */}
               <div style={{ height: '220px', width: '100%', position: 'relative', marginTop: '10px' }}>
                 <svg width="100%" height="100%" viewBox="0 0 500 200" preserveAspectRatio="none">
                   <defs>
-                    <linearGradient id="rankGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#3ECF8E" stopOpacity="0.35" />
-                      <stop offset="100%" stopColor="#3ECF8E" stopOpacity="0.0" />
+                    <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#3ECF8E" stopOpacity="1" />
+                      <stop offset="100%" stopColor="#059669" stopOpacity="0.25" />
+                    </linearGradient>
+                    <linearGradient id="barGradToday" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
+                      <stop offset="30%" stopColor="#3ECF8E" stopOpacity="1" />
+                      <stop offset="100%" stopColor="#059669" stopOpacity="0.6" />
                     </linearGradient>
                   </defs>
 
-                  {/* Dynamic Grid Lines */}
+                  {/* Horizontal Grid Lines */}
                   <line x1="0" y1="40" x2="500" y2="40" stroke="#222" strokeDasharray="4 4" />
                   <line x1="0" y1="90" x2="500" y2="90" stroke="#222" strokeDasharray="4 4" />
                   <line x1="0" y1="140" x2="500" y2="140" stroke="#222" strokeDasharray="4 4" />
 
-                  {/* Dynamic Fill Polygon generated programmatically */}
-                  <polygon
-                    points={telemetry.polygonPoints}
-                    fill="url(#rankGrad)"
-                  />
+                  {/* 8 Rounded Vertical SVG Bars */}
+                  {telemetry.steps.map((st, idx) => {
+                    const barWidth = 36;
+                    // Higher rank (e.g. #4 vs #18) yields a taller bar
+                    const barHeight = Math.max(25, 200 - st.y);
+                    const barY = 200 - barHeight;
+                    const isLast = idx === telemetry.steps.length - 1;
+                    const xPos = (idx * 62) + 12;
 
-                  {/* Dynamic Curve Line generated programmatically */}
-                  <polyline
-                    fill="none"
-                    stroke="#3ECF8E"
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                    points={telemetry.polylinePoints}
-                  />
+                    return (
+                      <g key={idx}>
+                        {/* Bar Rectangle */}
+                        <rect
+                          x={xPos}
+                          y={barY}
+                          width={barWidth}
+                          height={barHeight}
+                          rx="8"
+                          fill={isLast ? 'url(#barGradToday)' : 'url(#barGrad)'}
+                          stroke={isLast ? '#3ECF8E' : 'none'}
+                          strokeWidth={isLast ? 2 : 0}
+                          style={{ transition: 'all 0.3s ease' }}
+                        />
 
-                  {/* Dynamic SVG Data Point Circles */}
-                  {telemetry.steps.map((st, idx) => (
-                    <circle
-                      key={idx}
-                      cx={st.x}
-                      cy={st.y}
-                      r={idx === telemetry.steps.length - 1 ? 7 : 4}
-                      fill={idx === telemetry.steps.length - 1 ? '#ffffff' : '#3ECF8E'}
-                      stroke={idx === telemetry.steps.length - 1 ? '#3ECF8E' : 'none'}
-                      strokeWidth={idx === telemetry.steps.length - 1 ? 3 : 0}
-                    />
-                  ))}
+                        {/* Top Indicator Cap / Value */}
+                        <text
+                          x={xPos + barWidth / 2}
+                          y={barY - 8}
+                          textAnchor="middle"
+                          fontSize="11"
+                          fontWeight="800"
+                          fill={isLast ? '#3ECF8E' : '#a1a1aa'}
+                        >
+                          #{st.rank}
+                        </text>
+                      </g>
+                    );
+                  })}
                 </svg>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#71717a', fontWeight: 600 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#71717a', fontWeight: 600, marginTop: '8px' }}>
                 <span>Day 1 (Rank #{telemetry.startRank})</span>
                 <span>Day 10</span>
                 <span>Day 20</span>
