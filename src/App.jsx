@@ -60,7 +60,7 @@ function WorkspaceShell() {
           role="main"
           aria-label="Master Dashboard Canvas"
           style={{ flex: 1, overflowY: 'auto', background: '#0F0F0F', minHeight: 0 }}
-          className="p-6 md:p-8 pb-24 focus-visible:outline-none font-sans w-full max-w-7xl mx-auto"
+          className="p-6 md:p-8 pb-24 focus-visible:outline-none font-sans w-full min-w-full"
         >
           <div className="w-full space-y-6">
             <DashboardOverview setActiveTab={openAppWithTab} />
