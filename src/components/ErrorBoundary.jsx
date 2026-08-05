@@ -27,11 +27,11 @@ export class ErrorBoundary extends React.Component {
               </div>
               <div>
                 <h2 className="text-lg font-bold text-white font-sans">RankTop Workspace Diagnostic Error</h2>
-                <p className="text-xs text-zinc-400">Caught runtime error during rendering:</p>
+                <p className="text-sm text-zinc-400">Caught runtime error during rendering:</p>
               </div>
             </div>
 
-            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] text-xs font-mono text-rose-300 overflow-x-auto whitespace-pre-wrap max-h-60">
+            <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] text-sm font-mono text-rose-300 overflow-x-auto whitespace-pre-wrap max-h-60">
               {this.state.error?.toString() || 'Unknown Error'}
               {'\n\n'}
               {this.state.errorInfo?.componentStack || ''}
@@ -42,13 +42,13 @@ export class ErrorBoundary extends React.Component {
                 onClick={() => {
                   this.setState({ hasError: false, error: null, errorInfo: null });
                 }}
-                className="px-4 py-2 bg-[#262626] hover:bg-[#333] text-zinc-300 font-semibold text-xs rounded-xl border border-[#333]"
+                className="px-4 py-2 bg-[#262626] hover:bg-[#333] text-zinc-300 font-semibold text-sm rounded-xl border border-[#333]"
               >
                 Reset State
               </button>
               <button
                 onClick={() => window.location.reload()}
-                className="px-5 py-2 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-xs rounded-xl shadow inline-flex items-center gap-1.5"
+                className="px-5 py-2 bg-[#3ECF8E] hover:bg-[#34D399] text-black font-bold text-sm rounded-xl shadow inline-flex items-center gap-1.5"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
                 <span>Reload Page</span>

@@ -49,13 +49,13 @@ function StatusBadge({ status }) {
   };
   const s = map[status] ?? map.IDLE;
   return (
-    <span style={{ padding: '3px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, background: s.bg, border: `1px solid ${s.border}`, color: s.color, display: 'flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap' }}>
+    <span style={{ padding: '4px 12px', borderRadius: '6px', fontSize: '14px', fontWeight: 700, background: s.bg, border: `1px solid ${s.border}`, color: s.color, display: 'flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap' }}>
       {['RUNNING','RESEARCHING','CRAWLING','DRAFTING','AUDITING','INJECTING','SYNTHESIZING','ANALYZING','DISPATCHING','PROSPECTING','OUTREACHING','BENCHMARKING','AMPLIFYING','REPAIRING','TRACKING_SOM','SILOING','ENGINEERING_SCHEMA'].includes(status) && (
         <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: s.color, animation: 'pulse 1s infinite', flexShrink: 0 }} />
       )}
-      {status === 'COMPLETED' && <CheckCircle2 size={11} />}
-      {status === 'PAUSED' && <AlertCircle size={11} />}
-      {status === 'IDLE' && <Clock size={11} />}
+      {status === 'COMPLETED' && <CheckCircle2 size={13} />}
+      {status === 'PAUSED' && <AlertCircle size={13} />}
+      {status === 'IDLE' && <Clock size={13} />}
       {s.label}
     </span>
   );

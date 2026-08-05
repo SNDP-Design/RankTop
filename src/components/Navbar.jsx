@@ -57,7 +57,7 @@ export default function Navbar() {
             <span className="font-extrabold text-xl tracking-tight text-white font-sans">
               RankTop
             </span>
-            <span className="text-[#3ECF8E] text-xs font-bold bg-[#3ECF8E]/10 px-2 py-0.5 rounded border border-[#3ECF8E]/20">
+            <span className="text-[#3ECF8E] text-sm font-bold bg-[#3ECF8E]/10 px-2 py-0.5 rounded border border-[#3ECF8E]/20">
               .ai
             </span>
           </div>
@@ -92,7 +92,7 @@ export default function Navbar() {
               {currentDomain && (
                 <span
                   title={`Active Target Website: ${currentDomain}`}
-                  className="text-[11px] text-[#71717a] font-mono tracking-tight shrink-0 bg-[#222] border border-[#333] px-2 py-0.5 rounded-md font-semibold select-none max-w-[120px] truncate"
+                  className="text-sm text-[#71717a] font-mono tracking-tight shrink-0 bg-[#222] border border-[#333] px-2 py-0.5 rounded-md font-semibold select-none max-w-[140px] truncate"
                 >
                   {currentDomain}
                 </span>

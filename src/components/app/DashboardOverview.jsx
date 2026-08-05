@@ -228,11 +228,11 @@ export default function DashboardOverview({ setActiveTab }) {
 
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={{ fontSize: '13px', fontWeight: 800, color: '#3ECF8E', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              <span style={{ fontSize: '14px', fontWeight: 800, color: '#3ECF8E', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                 Full-Screen Executive Telemetry Command Center
               </span>
               <span style={{
-                fontSize: '11px', fontWeight: 700, background: 'rgba(62,207,142,0.2)',
+                fontSize: '14px', fontWeight: 700, background: 'rgba(62,207,142,0.2)',
                 color: '#3ECF8E', padding: '2px 8px', borderRadius: '6px', border: '1px solid rgba(62,207,142,0.3)'
               }}>
                 16 Autonomous Agents Active 🟢
@@ -242,7 +242,7 @@ export default function DashboardOverview({ setActiveTab }) {
             <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#fff', margin: '4px 0 2px' }}>
               {domain ? `${domain} Outcome & Telemetry Cockpit` : 'RankTop Autonomous AI Platform'}
             </h1>
-            <p style={{ fontSize: '13px', color: '#a1a1aa', margin: 0 }}>
+            <p style={{ fontSize: '14px', color: '#a1a1aa', margin: 0 }}>
               {domain
                 ? `Tracking live ranking lift, organic telemetry, and output scores for ${domain}.`
                 : 'Enter your website URL in the top search bar above to trigger real live AI analysis across all 16 autonomous agents.'}
@@ -256,7 +256,7 @@ export default function DashboardOverview({ setActiveTab }) {
             background: '#121212', border: '1px solid #2d2d2d', borderRadius: '12px',
             padding: '12px 20px', textAlign: 'center', minWidth: '220px'
           }}>
-            <div style={{ fontSize: '11px', fontWeight: 700, color: '#71717a', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div style={{ fontSize: '14px', fontWeight: 700, color: '#71717a', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               24-Hour Outcome Delta
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginTop: '4px' }}>
@@ -264,7 +264,7 @@ export default function DashboardOverview({ setActiveTab }) {
               <ArrowUpRight size={18} color="#3ECF8E" />
               <span style={{ fontSize: '24px', fontWeight: 900, color: '#3ECF8E' }}>Today: #{telemetry.currentRank}</span>
             </div>
-            <div style={{ fontSize: '12px', color: '#3ECF8E', fontWeight: 700, marginTop: '2px' }}>
+            <div style={{ fontSize: '14px', color: '#3ECF8E', fontWeight: 700, marginTop: '2px' }}>
               ▲ +1 Position Lift in 24 Hours
             </div>
           </div>
@@ -302,45 +302,45 @@ export default function DashboardOverview({ setActiveTab }) {
           {/* Top Dynamic Telemetry KPI Cards */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
             <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '14px', padding: '20px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#a1a1aa', fontSize: '12px', fontWeight: 600 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#a1a1aa', fontSize: '14px', fontWeight: 600 }}>
                 <span>Search Rank Position</span>
                 <Award size={18} color="#3ECF8E" />
               </div>
               <div style={{ fontSize: '32px', fontWeight: 900, color: '#fff', marginTop: '6px' }}>Rank #{telemetry.currentRank}</div>
-              <div style={{ fontSize: '12px', color: '#3ECF8E', marginTop: '4px', fontWeight: 700 }}>
+              <div style={{ fontSize: '14px', color: '#3ECF8E', marginTop: '4px', fontWeight: 700 }}>
                 ▲ +{telemetry.totalRankLift} Ranks Gained in 30 Days (#{telemetry.startRank} ➔ #{telemetry.currentRank})
               </div>
             </div>
 
             <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '14px', padding: '20px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#a1a1aa', fontSize: '12px', fontWeight: 600 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#a1a1aa', fontSize: '14px', fontWeight: 600 }}>
                 <span>SEO Performance Score</span>
                 <TrendingUp size={18} color="#60a5fa" />
               </div>
               <div style={{ fontSize: '32px', fontWeight: 900, color: '#fff', marginTop: '6px' }}>{telemetry.seoScore}/100</div>
-              <div style={{ fontSize: '12px', color: '#60a5fa', marginTop: '4px', fontWeight: 700 }}>
+              <div style={{ fontSize: '14px', color: '#60a5fa', marginTop: '4px', fontWeight: 700 }}>
                 Calculated for {domain}
               </div>
             </div>
 
             <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '14px', padding: '20px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#a1a1aa', fontSize: '12px', fontWeight: 600 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#a1a1aa', fontSize: '14px', fontWeight: 600 }}>
                 <span>Share of Model (SoM) Rate</span>
                 <Radio size={18} color="#f59e0b" />
               </div>
               <div style={{ fontSize: '32px', fontWeight: 900, color: '#fff', marginTop: '6px' }}>{telemetry.geoScore}% SoM</div>
-              <div style={{ fontSize: '12px', color: '#f59e0b', marginTop: '4px', fontWeight: 700 }}>
+              <div style={{ fontSize: '14px', color: '#f59e0b', marginTop: '4px', fontWeight: 700 }}>
                 Perplexity & ChatGPT Citation Score
               </div>
             </div>
 
             <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '14px', padding: '20px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#a1a1aa', fontSize: '12px', fontWeight: 600 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#a1a1aa', fontSize: '14px', fontWeight: 600 }}>
                 <span>16-Agent Total Outputs</span>
                 <Bot size={18} color="#a78bfa" />
               </div>
               <div style={{ fontSize: '32px', fontWeight: 900, color: '#fff', marginTop: '6px' }}>{telemetry.totalOutputsCount} Actions</div>
-              <div style={{ fontSize: '12px', color: '#a78bfa', marginTop: '4px', fontWeight: 700 }}>
+              <div style={{ fontSize: '14px', color: '#a78bfa', marginTop: '4px', fontWeight: 700 }}>
                 100% Autonomous Autopilot Execution
               </div>
             </div>
@@ -358,14 +358,14 @@ export default function DashboardOverview({ setActiveTab }) {
                     Traditional SEO 30-Day Improvement
                   </h3>
                 </div>
-                <span style={{ fontSize: '11px', fontWeight: 700, color: '#60a5fa', background: 'rgba(96,165,250,0.1)', padding: '2px 8px', borderRadius: '4px' }}>
+                <span style={{ fontSize: '14px', fontWeight: 700, color: '#60a5fa', background: 'rgba(96,165,250,0.1)', padding: '2px 8px', borderRadius: '4px' }}>
                   Google Organic
                 </span>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
                 <span style={{ fontSize: '28px', fontWeight: 900, color: '#fff' }}>{telemetry.seoScore}/100</span>
-                <span style={{ fontSize: '12px', fontWeight: 800, color: '#3ECF8E' }}>
+                <span style={{ fontSize: '14px', fontWeight: 800, color: '#3ECF8E' }}>
                   ▲ +{telemetry.seoScore - telemetry.seoStart} pts (from Day 1: {telemetry.seoStart})
                 </span>
               </div>
@@ -394,7 +394,7 @@ export default function DashboardOverview({ setActiveTab }) {
                 </svg>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#71717a', fontWeight: 600 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: '#71717a', fontWeight: 600 }}>
                 <span>Day 1 (Score {telemetry.seoStart})</span>
                 <span>Day 15</span>
                 <span style={{ color: '#60a5fa', fontWeight: 800 }}>Day 30 ({telemetry.seoScore}/100)</span>
