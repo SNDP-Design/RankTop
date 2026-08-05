@@ -85,18 +85,8 @@ export default function Navbar() {
                 onChange={(e) => setInputUrl(e.target.value)}
                 placeholder="Enter website URL (e.g. xgrowth.uno)"
                 aria-label="Website URL — triggers all AI agents"
-                className="bg-transparent text-zinc-300 placeholder-zinc-500 text-sm focus:outline-none w-full font-sans font-medium pr-1"
+                className="bg-transparent text-[#71717a] placeholder-zinc-500 text-sm focus:text-zinc-200 focus:outline-none w-full font-mono font-semibold"
               />
-              
-              {/* Light Dim Gray Website URL Badge in Top Right Corner of Field */}
-              {currentDomain && (
-                <span
-                  title={`Active Target Website: ${currentDomain}`}
-                  className="text-sm text-[#71717a] font-mono tracking-tight shrink-0 bg-[#222] border border-[#333] px-2 py-0.5 rounded-md font-semibold select-none max-w-[140px] truncate"
-                >
-                  {currentDomain}
-                </span>
-              )}
 
               {submitted && (
                 <Check className="w-3.5 h-3.5 text-[#3ECF8E] shrink-0" />
