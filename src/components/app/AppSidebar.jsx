@@ -8,23 +8,33 @@ import {
   Share2, 
   Wrench, 
   ShieldCheck,
-  Bot
+  Bot,
+  Magnet
 } from 'lucide-react';
 
 // ─── Universal Sidebar Navigation ────────────────────────────────────────────
-// Mounted ONCE in App.jsx and shared across ALL 9 workspace modules.
-// CSS Strategy:
-//   - position: fixed → sidebar is fully detached from document flow.
-//     Scrolling the right content pane CANNOT drag the sidebar.
-//   - overflow: hidden → zero internal scroll bars, ever.
-//   - DOM-level wheel + touchmove preventDefault → belt & braces.
+// Mounted ONCE in App.jsx and shared across ALL 10 workspace modules.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const NAV_GROUPS = [
   {
     label: 'WORKSPACE',
     items: [
-      { id: 'dashboard', text: 'Master Dashboard', Icon: LayoutDashboard },
+      { id: 'dashboard',   text: 'Master Dashboard',       Icon: LayoutDashboard },
+      { id: 'swarm',       text: 'Autonomous AI Swarm',     Icon: Bot },
+      { id: 'backlinks',   text: 'Backlink & Outreach Hub',Icon: Magnet },
+    ],
+  },
+  {
+    label: 'OPTIMIZATION & TOOLS',
+    items: [
+      { id: 'strategy',    text: 'Keyword Strategy',       Icon: Target },
+      { id: 'studio',      text: 'AI Article Writer',      Icon: FileText },
+      { id: 'aeo',         text: 'AEO & Voice Inspector',  Icon: Cpu },
+      { id: 'geo',         text: 'LLM Search Visibility',  Icon: Search },
+      { id: 'competitors', text: 'Competitor Spy',         Icon: Share2 },
+      { id: 'cms',         text: 'CMS Auto-Publishing',    Icon: Wrench },
+      { id: 'freetools',   text: 'Free SEO & AI Tools',    Icon: ShieldCheck },
     ],
   },
 ];

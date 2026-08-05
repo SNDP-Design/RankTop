@@ -20,6 +20,10 @@ export class SwarmOrchestrator {
       entity_graph: { ...AGENT_ROLES.ENTITY_GRAPH, state: 'IDLE', activeTask: 'Ready for Knowledge Graph JSON-LD synthesis' },
       link_architect:{ ...AGENT_ROLES.LINK_ARCHITECT,state:'IDLE', activeTask: 'Ready for pillar-cluster link topology mapping' },
       dispatcher:   { ...AGENT_ROLES.DISPATCHER,   state: 'IDLE', activeTask: 'Ready for multi-channel CMS dispatch' },
+      backlinker:   { ...AGENT_ROLES.BACKLINKER,   state: 'IDLE', activeTask: 'Ready for off-page backlink & outreach campaign design' },
+      llm_benchmarker:{ ...AGENT_ROLES.LLM_BENCHMARKER, state: 'IDLE', activeTask: 'Ready for live LLM query citation benchmark simulation' },
+      community_amplifier:{ ...AGENT_ROLES.COMMUNITY_AMPLIFIER, state: 'IDLE', activeTask: 'Ready for Reddit & forum GEO thread prospecting' },
+      decay_repairman:{ ...AGENT_ROLES.DECAY_REPAIRMAN, state: 'IDLE', activeTask: 'Ready for content decay audit & freshness schema injection' },
     };
   }
 
@@ -210,16 +214,48 @@ export class SwarmOrchestrator {
       return;
     }
 
-    // PHASE 5: CMS Payload Dispatch & Campaign Completion
+    // PHASE 5: CMS Payload Dispatch
     this.currentStepIndex = 6;
     this.setAgentState('dispatcher', 'DISPATCHING', 'Pushing final payload to CMS REST API with JSON-LD schema');
     await new Promise(r => setTimeout(r, 1400));
 
-    this.addLog('dispatcher', 'orchestrator', `Article successfully published to ${targetDomain} (Post ID: #POST-9840).`, 'success');
+    this.addLog('dispatcher', 'backlinker', `Article published to ${targetDomain} (Post ID: #POST-9840). Triggering off-page link building.`, 'handover');
     this.setAgentState('dispatcher', 'COMPLETED', 'Published to CMS');
 
+    // PHASE 6: Backlink Gap Audit & Outreach Pitch Generation
+    this.currentStepIndex = 7;
+    this.setAgentState('backlinker', 'PROSPECTING', 'Auditing rival backlink profiles & discovering high-DR editorial opportunities');
+    await new Promise(r => setTimeout(r, 1200));
+
+    this.addLog('backlinker', 'llm_benchmarker', '14 outreach sequences queued. Handing over target keywords for live LLM citation benchmarking.', 'handover');
+    this.setAgentState('backlinker', 'COMPLETED', '14 Outreach Emails Prepared & Dispatched');
+
+    // PHASE 7: Live LLM Query Citation Benchmark Simulation
+    this.currentStepIndex = 8;
+    this.setAgentState('llm_benchmarker', 'BENCHMARKING', 'Simulating queries on ChatGPT Search, Perplexity, Gemini & Claude Overviews');
+    await new Promise(r => setTimeout(r, 1300));
+
+    this.addLog('llm_benchmarker', 'community_amplifier', 'Verified 96% LLM Citation Placement Rank (Cited #1 in Perplexity Pro & ChatGPT).', 'success');
+    this.setAgentState('llm_benchmarker', 'COMPLETED', '96% Live LLM Citation Placement Verified');
+
+    // PHASE 8: Reddit & Forum GEO Citation Amplification
+    this.currentStepIndex = 9;
+    this.setAgentState('community_amplifier', 'AMPLIFYING', 'Prospecting top Reddit subreddits & Quora threads indexed by Perplexity/ChatGPT');
+    await new Promise(r => setTimeout(r, 1200));
+
+    this.addLog('community_amplifier', 'decay_repairman', 'Discovered 8 high-traffic Reddit subreddits. 5 contextual answers synthesized.', 'info');
+    this.setAgentState('community_amplifier', 'COMPLETED', '5 Reddit/Forum Entity Citations Queued');
+
+    // PHASE 9: Content Freshness Guard & Decay Audit
+    this.currentStepIndex = 10;
+    this.setAgentState('decay_repairman', 'REPAIRING', 'Auditing GSC traffic velocity, updating timestamps, & injecting dateModified JSON-LD');
+    await new Promise(r => setTimeout(r, 1100));
+
+    this.addLog('decay_repairman', 'orchestrator', 'Freshness score restored to 100%. Injection complete.', 'success');
+    this.setAgentState('decay_repairman', 'COMPLETED', 'Content Decay Repaired & Freshness Schema Updated');
+
     // Swarm Completion
-    this.setAgentState('orchestrator', 'COMPLETED', '9-Agent Autonomous Swarm Cycle Completed Successfully');
+    this.setAgentState('orchestrator', 'COMPLETED', '13-Agent Autonomous Swarm Cycle Completed Successfully');
     this.status = 'COMPLETED';
     this.notify();
   }

@@ -15,6 +15,7 @@ import LlmGeoOptimization from './components/app/LlmGeoOptimization';
 import CompetitorSpy from './components/app/CompetitorSpy';
 import CmsIntegrations from './components/app/CmsIntegrations';
 import FreeToolsApp from './components/app/FreeToolsApp';
+import BacklinkOutreach from './components/app/BacklinkOutreach';
 
 function WorkspaceShell() {
   const [activeAppTab, setActiveAppTab] = useState('dashboard');
@@ -30,6 +31,7 @@ function WorkspaceShell() {
   const renderActiveModule = () => {
     switch (activeAppTab) {
       case 'swarm':      return <SwarmOrchestratorView />;
+      case 'backlinks':  return <BacklinkOutreach />;
       case 'strategy':   return <KeywordStrategy onGenerateArticle={(kw) => openAppWithTab('studio', kw)} />;
       case 'studio':     return <AiBlogStudio initialKeyword={studioKeyword} />;
       case 'aeo':        return <AeoSimulatorApp />;

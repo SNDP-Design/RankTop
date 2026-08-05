@@ -6,7 +6,7 @@ import { SwarmOrchestrator } from '../../agents/SwarmOrchestrator';
 
 // Beginner-friendly non-technical agent definitions
 const AGENTS = [
-  { id: 'orchestrator', name: '👑 Swarm Manager Agent',    desc: 'Coordinates all 8 subagents & manages approval gates', color: '#3ECF8E' },
+  { id: 'orchestrator', name: '👑 Swarm Manager Agent',    desc: 'Coordinates all subagents & manages approval gates', color: '#3ECF8E' },
   { id: 'research',     name: '🔍 Keyword Finder Agent',   desc: 'Discovers high-traffic, low-competition target topics', color: '#60a5fa' },
   { id: 'competitor',   name: '🕵️‍♂️ Competitor Spy Agent',   desc: 'Finds missing topics that rival websites missed',    color: '#f97316' },
   { id: 'writer',       name: '✍️ Content Writer Agent',   desc: 'Drafts comprehensive 2,400+ word guides & articles',  color: '#a78bfa' },
@@ -15,6 +15,10 @@ const AGENTS = [
   { id: 'entity_graph', name: '🕸️ Knowledge Graph Agent', desc: 'Connects your brand topics to Wikidata & Google Graphs',color: '#f59e0b' },
   { id: 'link_architect',name: '🔗 Topic Link Architect',  desc: 'Creates smart internal links between related posts',   color: '#ec4899' },
   { id: 'dispatcher',   name: '🚀 WordPress Publisher',   desc: 'Publishes finalized articles directly to your website', color: '#f43f5e' },
+  { id: 'backlinker',   name: '🧲 Backlink & Outreach Agent', desc: 'Prospects high-DR blogs & crafts personalized outreach pitches', color: '#8b5cf6' },
+  { id: 'llm_benchmarker',name: '📡 Live LLM Citation Agent', desc: 'Simulates ChatGPT, Perplexity & Gemini query citation rank', color: '#34d399' },
+  { id: 'community_amplifier',name: '💬 Reddit & Forum GEO Agent', desc: 'Finds Reddit/Quora threads cited in LLM search cards', color: '#f97316' },
+  { id: 'decay_repairman',name: '⚡ Content Freshness Agent', desc: 'Fixes content decay & auto-updates dateModified schema', color: '#f43f5e' },
 ];
 
 function StatusBadge({ status }) {
@@ -29,13 +33,18 @@ function StatusBadge({ status }) {
     SYNTHESIZING:{label: 'Building Schema',bg:'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.25)', color: '#f59e0b' },
     ANALYZING:  { label: 'Mapping Links',bg: 'rgba(236,72,153,0.08)', border: 'rgba(236,72,153,0.25)', color: '#ec4899' },
     DISPATCHING:{ label: 'Publishing',  bg: 'rgba(244,63,94,0.08)',  border: 'rgba(244,63,94,0.25)',  color: '#f43f5e' },
+    PROSPECTING:{ label: 'Finding Links',bg: 'rgba(139,92,246,0.08)', border: 'rgba(139,92,246,0.25)', color: '#8b5cf6' },
+    OUTREACHING:{ label: 'Drafting Emails',bg:'rgba(168,85,247,0.08)', border: 'rgba(168,85,247,0.25)', color: '#a855f7' },
+    BENCHMARKING:{label: 'Testing LLM Citation',bg:'rgba(52,211,153,0.08)', border:'rgba(52,211,153,0.25)', color: '#34d399' },
+    AMPLIFYING: { label: 'Reddit GEO Post',bg:'rgba(249,115,22,0.08)', border:'rgba(249,115,22,0.25)', color: '#f97316' },
+    REPAIRING:  { label: 'Freshness Repair',bg:'rgba(244,63,94,0.08)', border:'rgba(244,63,94,0.25)', color: '#f43f5e' },
     COMPLETED:  { label: 'Done ✓',      bg: 'rgba(62,207,142,0.08)', border: 'rgba(62,207,142,0.25)', color: '#3ECF8E' },
     PAUSED:     { label: 'Waiting Review',bg:'rgba(239,68,68,0.08)',  border: 'rgba(239,68,68,0.25)',  color: '#ef4444' },
   };
   const s = map[status] ?? map.IDLE;
   return (
     <span style={{ padding: '3px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, background: s.bg, border: `1px solid ${s.border}`, color: s.color, display: 'flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap' }}>
-      {['RUNNING','RESEARCHING','CRAWLING','DRAFTING','AUDITING','INJECTING','SYNTHESIZING','ANALYZING','DISPATCHING'].includes(status) && (
+      {['RUNNING','RESEARCHING','CRAWLING','DRAFTING','AUDITING','INJECTING','SYNTHESIZING','ANALYZING','DISPATCHING','PROSPECTING','OUTREACHING','BENCHMARKING','AMPLIFYING','REPAIRING'].includes(status) && (
         <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: s.color, animation: 'pulse 1s infinite', flexShrink: 0 }} />
       )}
       {status === 'COMPLETED' && <CheckCircle2 size={11} />}

@@ -70,6 +70,38 @@ export const AGENT_ROLES = {
     avatar: '🚀',
     color: 'from-rose-500 to-pink-600',
     description: 'Dispatches finalized payloads directly to WordPress, Webflow, Shopify, and Ghost REST APIs.'
+  },
+  BACKLINKER: {
+    id: 'backlinker',
+    name: 'Backlink & Off-Page Outreach Agent',
+    model: 'Gemini 3.6 Flash',
+    avatar: '🧲',
+    color: 'from-violet-500 to-indigo-700',
+    description: 'Prospects high-DR link opportunities, converts unlinked brand mentions, and crafts personalized outreach campaigns.'
+  },
+  LLM_BENCHMARKER: {
+    id: 'llm_benchmarker',
+    name: 'Live LLM Citation & Benchmark Agent',
+    model: 'Gemini 3.6 Flash',
+    avatar: '📡',
+    color: 'from-emerald-400 to-cyan-600',
+    description: 'Simulates live LLM search queries (ChatGPT, Perplexity, Gemini, Claude) to measure and maximize citation rank.'
+  },
+  COMMUNITY_AMPLIFIER: {
+    id: 'community_amplifier',
+    name: 'Reddit & Forum GEO Citation Agent',
+    model: 'Gemini 3.5 Flash',
+    avatar: '💬',
+    color: 'from-orange-500 to-amber-600',
+    description: 'Discovers Reddit & Quora threads indexed in LLM search answers and crafts authentic entity citations.'
+  },
+  DECAY_REPAIRMAN: {
+    id: 'decay_repairman',
+    name: 'Content Decay & Freshness Repair Agent',
+    model: 'Gemini 3.6 Flash',
+    avatar: '⚡',
+    color: 'from-amber-400 to-rose-600',
+    description: 'Audits traffic velocity, fixes content decay, and auto-injects updated statistics & dateModified schema.'
   }
 };
 
