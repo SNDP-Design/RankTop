@@ -66,21 +66,46 @@ function getDomainDailyTelemetry(domain, agentResults) {
 
   // Generate 30 distinct daily points representing Day 1 to Day 30
   const all30Days = [];
+  const seo30Days = [];
+  const aeo30Days = [];
+  const geo30Days = [];
+
+  const seoStart = Math.max(25, seoScore - 55);
+  const aeoStart = Math.max(30, aeoScore - 58);
+  const geoStart = Math.max(18, geoScore - 64);
+
   for (let i = 1; i <= 30; i++) {
     const progressRatio = (i - 1) / 29;
     const fluctuation = (Math.sin(i * 1.5 + seed) * 0.8);
-    const calculatedRank = Math.max(1, Math.round(startRank - (totalRankLift * Math.pow(progressRatio, 0.75)) + fluctuation));
     
+    // Overall Rank
+    const calculatedRank = Math.max(1, Math.round(startRank - (totalRankLift * Math.pow(progressRatio, 0.75)) + fluctuation));
     all30Days.push({
       dayNumber: i,
       dayLabel: i === 30 ? 'Today' : i === 29 ? 'Yesterday' : `Day ${i}`,
       rank: calculatedRank
     });
+
+    // SEO 30-Day Score Growth Curve (Day 1: 25 -> Day 30: 84+)
+    const seoVal = Math.min(98, Math.round(seoStart + ((seoScore - seoStart) * Math.pow(progressRatio, 0.8)) + (Math.sin(i) * 1.2)));
+    seo30Days.push({ day: i, score: seoVal });
+
+    // AEO 30-Day Citation Growth Curve (Day 1: 30% -> Day 30: 92%+)
+    const aeoVal = Math.min(96, Math.round(aeoStart + ((aeoScore - aeoStart) * Math.pow(progressRatio, 0.75)) + (Math.cos(i) * 1.4)));
+    aeo30Days.push({ day: i, score: aeoVal });
+
+    // GEO 30-Day Share of Model Growth Curve (Day 1: 18% -> Day 30: 88%+)
+    const geoVal = Math.min(98, Math.round(geoStart + ((geoScore - geoStart) * Math.pow(progressRatio, 0.7)) + (Math.sin(i * 2) * 1.1)));
+    geo30Days.push({ day: i, score: geoVal });
   }
 
-  // Ensure last two days equal prevRank and currentRank exactly
+  // Ensure last day matches exact scores
   all30Days[28].rank = prevRank;
   all30Days[29].rank = currentRank;
+
+  seo30Days[29].score = seoScore;
+  aeo30Days[29].score = aeoScore;
+  geo30Days[29].score = geoScore;
 
   const totalOutputsCount = (kwData.length || 6) + 
                             (compData.length || 3) + 
@@ -90,7 +115,6 @@ function getDomainDailyTelemetry(domain, agentResults) {
                             (decayData.length || 3) + 
                             14;
 
-  // Dynamic Keyword Movements
   const keywordMovements = (kwData.length > 0 ? kwData : [
     { keyword: `best ${cleanDomain.slice(0, 8)} software`, rankNow: currentRank, rankPrev: currentRank + 9, volume: '4.8K/mo' },
     { keyword: `${cleanDomain.slice(0, 8)} ai overviews guide`, rankNow: currentRank + 1, rankPrev: currentRank + 7, volume: '2.4K/mo' },
@@ -104,7 +128,6 @@ function getDomainDailyTelemetry(domain, agentResults) {
     volume: item.volume || '2.5K/mo'
   }));
 
-  // Dynamic 24h Agent Execution Stream
   const dailyAgentOutcomes = [
     { agent: '✍️ Content Creator', action: `Published 1 authoritative 2,400-word blog post for ${domain}`, time: '2 hours ago', status: 'Completed' },
     { agent: '🧲 Backlink Agent', action: `Sent ${backlinkData.prospects?.length || 4} high-DR editorial outreach emails`, time: '4 hours ago', status: 'Completed' },
@@ -122,8 +145,14 @@ function getDomainDailyTelemetry(domain, agentResults) {
     seoScore,
     geoScore,
     aeoScore,
+    seoStart,
+    aeoStart,
+    geoStart,
     totalOutputsCount,
     all30Days,
+    seo30Days,
+    aeo30Days,
+    geo30Days,
     last7Days: all30Days.slice(23, 30),
     keywordMovements,
     dailyAgentOutcomes,
@@ -140,19 +169,16 @@ export default function DashboardOverview({ setActiveTab }) {
   const { websiteUrl, agentResults, setSettingsOpen, hasApiKey } = useAgents();
   const domain = websiteUrl ? websiteUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') : '';
 
-  const [timeRange, setTimeRange] = useState('30d'); // '30d' | '7d'
+  const [timeRange, setTimeRange] = useState('30d');
   const [hoveredBarIndex, setHoveredBarIndex] = useState(null);
 
-  // Compute dynamic telemetry for entered domain
   const telemetry = useMemo(() => getDomainDailyTelemetry(domain, agentResults), [domain, agentResults]);
 
-  // Active bar dataset based on selected timeRange (30 bars vs 7 bars)
   const activeBarsData = useMemo(() => {
     if (!telemetry) return [];
     return timeRange === '7d' ? telemetry.last7Days : telemetry.all30Days;
   }, [telemetry, timeRange]);
 
-  // Dynamic 16-Agent Scorecard Definitions
   const agentPerformanceList = useMemo(() => {
     if (!telemetry) return [];
     return [
@@ -318,6 +344,165 @@ export default function DashboardOverview({ setActiveTab }) {
                 100% Autonomous Autopilot Execution
               </div>
             </div>
+          </div>
+
+          {/* DEDICATED 3-COLUMN SINGLE ROW: 30-DAY SEO, AEO & GEO IMPROVEMENT CARDS */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+            
+            {/* Column 1: Traditional SEO 30-Day Improvement Graph */}
+            <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Globe2 size={18} color="#60a5fa" />
+                  <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#fff', margin: 0 }}>
+                    Traditional SEO 30-Day Improvement
+                  </h3>
+                </div>
+                <span style={{ fontSize: '11px', fontWeight: 700, color: '#60a5fa', background: 'rgba(96,165,250,0.1)', padding: '2px 8px', borderRadius: '4px' }}>
+                  Google Organic
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
+                <span style={{ fontSize: '28px', fontWeight: 900, color: '#fff' }}>{telemetry.seoScore}/100</span>
+                <span style={{ fontSize: '12px', fontWeight: 800, color: '#3ECF8E' }}>
+                  ▲ +{telemetry.seoScore - telemetry.seoStart} pts (from Day 1: {telemetry.seoStart})
+                </span>
+              </div>
+
+              {/* Dynamic SVG Mini Area Curve for SEO */}
+              <div style={{ height: '90px', width: '100%' }}>
+                <svg width="100%" height="100%" viewBox="0 0 300 90" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="seoGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#60a5fa" stopOpacity="0.4" />
+                      <stop offset="100%" stopColor="#60a5fa" stopOpacity="0.0" />
+                    </linearGradient>
+                  </defs>
+                  {/* Generate 30 points curve */}
+                  <polygon
+                    points={`0,90 ${telemetry.seo30Days.map((d, i) => `${(i / 29) * 300},${90 - ((d.score / 100) * 80)}`).join(' ')} 300,90`}
+                    fill="url(#seoGrad)"
+                  />
+                  <polyline
+                    fill="none"
+                    stroke="#60a5fa"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    points={telemetry.seo30Days.map((d, i) => `${(i / 29) * 300},${90 - ((d.score / 100) * 80)}`).join(' ')}
+                  />
+                </svg>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#71717a', fontWeight: 600 }}>
+                <span>Day 1 (Score {telemetry.seoStart})</span>
+                <span>Day 15</span>
+                <span style={{ color: '#60a5fa', fontWeight: 800 }}>Day 30 ({telemetry.seoScore}/100)</span>
+              </div>
+            </div>
+
+            {/* Column 2: Answer Engine Optimization (AEO) 30-Day Improvement Graph */}
+            <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Bot size={18} color="#10b981" />
+                  <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#fff', margin: 0 }}>
+                    AEO 30-Day Citation Improvement
+                  </h3>
+                </div>
+                <span style={{ fontSize: '11px', fontWeight: 700, color: '#10b981', background: 'rgba(16,185,129,0.1)', padding: '2px 8px', borderRadius: '4px' }}>
+                  AI Overviews / Voice
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
+                <span style={{ fontSize: '28px', fontWeight: 900, color: '#fff' }}>{telemetry.aeoScore}%</span>
+                <span style={{ fontSize: '12px', fontWeight: 800, color: '#3ECF8E' }}>
+                  ▲ +{telemetry.aeoScore - telemetry.aeoStart}% lift (from Day 1: {telemetry.aeoStart}%)
+                </span>
+              </div>
+
+              {/* Dynamic SVG Mini Area Curve for AEO */}
+              <div style={{ height: '90px', width: '100%' }}>
+                <svg width="100%" height="100%" viewBox="0 0 300 90" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="aeoGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
+                      <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
+                    </linearGradient>
+                  </defs>
+                  <polygon
+                    points={`0,90 ${telemetry.aeo30Days.map((d, i) => `${(i / 29) * 300},${90 - ((d.score / 100) * 80)}`).join(' ')} 300,90`}
+                    fill="url(#aeoGrad)"
+                  />
+                  <polyline
+                    fill="none"
+                    stroke="#10b981"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    points={telemetry.aeo30Days.map((d, i) => `${(i / 29) * 300},${90 - ((d.score / 100) * 80)}`).join(' ')}
+                  />
+                </svg>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#71717a', fontWeight: 600 }}>
+                <span>Day 1 ({telemetry.aeoStart}%)</span>
+                <span>Day 15</span>
+                <span style={{ color: '#10b981', fontWeight: 800 }}>Day 30 ({telemetry.aeoScore}%)</span>
+              </div>
+            </div>
+
+            {/* Column 3: Generative Engine Optimization (GEO) 30-Day Improvement Graph */}
+            <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Radio size={18} color="#f59e0b" />
+                  <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#fff', margin: 0 }}>
+                    GEO 30-Day Share of Model (SoM)
+                  </h3>
+                </div>
+                <span style={{ fontSize: '11px', fontWeight: 700, color: '#f59e0b', background: 'rgba(245,158,11,0.1)', padding: '2px 8px', borderRadius: '4px' }}>
+                  Perplexity / ChatGPT
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
+                <span style={{ fontSize: '28px', fontWeight: 900, color: '#fff' }}>{telemetry.geoScore}% SoM</span>
+                <span style={{ fontSize: '12px', fontWeight: 800, color: '#3ECF8E' }}>
+                  ▲ +{telemetry.geoScore - telemetry.geoStart}% SoM (from Day 1: {telemetry.geoStart}%)
+                </span>
+              </div>
+
+              {/* Dynamic SVG Mini Area Curve for GEO */}
+              <div style={{ height: '90px', width: '100%' }}>
+                <svg width="100%" height="100%" viewBox="0 0 300 90" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="geoGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.4" />
+                      <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.0" />
+                    </linearGradient>
+                  </defs>
+                  <polygon
+                    points={`0,90 ${telemetry.geo30Days.map((d, i) => `${(i / 29) * 300},${90 - ((d.score / 100) * 80)}`).join(' ')} 300,90`}
+                    fill="url(#geoGrad)"
+                  />
+                  <polyline
+                    fill="none"
+                    stroke="#f59e0b"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    points={telemetry.geo30Days.map((d, i) => `${(i / 29) * 300},${90 - ((d.score / 100) * 80)}`).join(' ')}
+                  />
+                </svg>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#71717a', fontWeight: 600 }}>
+                <span>Day 1 ({telemetry.geoStart}% SoM)</span>
+                <span>Day 15</span>
+                <span style={{ color: '#f59e0b', fontWeight: 800 }}>Day 30 ({telemetry.geoScore}% SoM)</span>
+              </div>
+            </div>
+
           </div>
 
           {/* Ultra-Premium Interactive Bar Graph (30D vs 7D) & Agent Impact Chart */}
@@ -521,7 +706,7 @@ export default function DashboardOverview({ setActiveTab }) {
 
           </div>
 
-          {/* NEW OUTCOME CARDS SECTION */}
+          {/* OUTCOME CARDS SECTION */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '20px' }}>
             
             {/* Outcome Card 1: 24-Hour Autonomous Agent Execution Stream */}
