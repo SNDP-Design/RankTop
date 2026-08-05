@@ -410,14 +410,14 @@ export default function DashboardOverview({ setActiveTab }) {
                     AEO 30-Day Citation Improvement
                   </h3>
                 </div>
-                <span style={{ fontSize: '11px', fontWeight: 700, color: '#10b981', background: 'rgba(16,185,129,0.1)', padding: '2px 8px', borderRadius: '4px' }}>
+                <span style={{ fontSize: '14px', fontWeight: 700, color: '#10b981', background: 'rgba(16,185,129,0.1)', padding: '2px 8px', borderRadius: '4px' }}>
                   AI Overviews / Voice
                 </span>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
                 <span style={{ fontSize: '28px', fontWeight: 900, color: '#fff' }}>{telemetry.aeoScore}%</span>
-                <span style={{ fontSize: '12px', fontWeight: 800, color: '#3ECF8E' }}>
+                <span style={{ fontSize: '14px', fontWeight: 800, color: '#3ECF8E' }}>
                   ▲ +{telemetry.aeoScore - telemetry.aeoStart}% lift (from Day 1: {telemetry.aeoStart}%)
                 </span>
               </div>
@@ -445,7 +445,7 @@ export default function DashboardOverview({ setActiveTab }) {
                 </svg>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#71717a', fontWeight: 600 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: '#71717a', fontWeight: 600 }}>
                 <span>Day 1 ({telemetry.aeoStart}%)</span>
                 <span>Day 15</span>
                 <span style={{ color: '#10b981', fontWeight: 800 }}>Day 30 ({telemetry.aeoScore}%)</span>
@@ -461,14 +461,14 @@ export default function DashboardOverview({ setActiveTab }) {
                     GEO 30-Day Share of Model (SoM)
                   </h3>
                 </div>
-                <span style={{ fontSize: '11px', fontWeight: 700, color: '#f59e0b', background: 'rgba(245,158,11,0.1)', padding: '2px 8px', borderRadius: '4px' }}>
+                <span style={{ fontSize: '14px', fontWeight: 700, color: '#f59e0b', background: 'rgba(245,158,11,0.1)', padding: '2px 8px', borderRadius: '4px' }}>
                   Perplexity / ChatGPT
                 </span>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
                 <span style={{ fontSize: '28px', fontWeight: 900, color: '#fff' }}>{telemetry.geoScore}% SoM</span>
-                <span style={{ fontSize: '12px', fontWeight: 800, color: '#3ECF8E' }}>
+                <span style={{ fontSize: '14px', fontWeight: 800, color: '#3ECF8E' }}>
                   ▲ +{telemetry.geoScore - telemetry.geoStart}% SoM (from Day 1: {telemetry.geoStart}%)
                 </span>
               </div>
@@ -496,7 +496,7 @@ export default function DashboardOverview({ setActiveTab }) {
                 </svg>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#71717a', fontWeight: 600 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: '#71717a', fontWeight: 600 }}>
                 <span>Day 1 ({telemetry.geoStart}% SoM)</span>
                 <span>Day 15</span>
                 <span style={{ color: '#f59e0b', fontWeight: 800 }}>Day 30 ({telemetry.geoScore}% SoM)</span>
@@ -523,7 +523,7 @@ export default function DashboardOverview({ setActiveTab }) {
                   <button
                     onClick={() => setTimeRange('7d')}
                     style={{
-                      fontSize: '12px', fontWeight: 800, padding: '4px 14px', borderRadius: '6px', border: 'none',
+                      fontSize: '14px', fontWeight: 800, padding: '4px 14px', borderRadius: '6px', border: 'none',
                       background: timeRange === '7d' ? '#3ECF8E' : 'transparent',
                       color: timeRange === '7d' ? '#000000' : '#a1a1aa', cursor: 'pointer', transition: 'all 0.2s ease'
                     }}
@@ -533,7 +533,7 @@ export default function DashboardOverview({ setActiveTab }) {
                   <button
                     onClick={() => setTimeRange('30d')}
                     style={{
-                      fontSize: '12px', fontWeight: 800, padding: '4px 14px', borderRadius: '6px', border: 'none',
+                      fontSize: '14px', fontWeight: 800, padding: '4px 14px', borderRadius: '6px', border: 'none',
                       background: timeRange === '30d' ? '#3ECF8E' : 'transparent',
                       color: timeRange === '30d' ? '#000000' : '#a1a1aa', cursor: 'pointer', transition: 'all 0.2s ease'
                     }}
@@ -614,7 +614,7 @@ export default function DashboardOverview({ setActiveTab }) {
                             x={xPos + barWidth / 2}
                             y={yPos - 8}
                             textAnchor="middle"
-                            fontSize={totalBars === 30 ? '10' : '12'}
+                            fontSize="14"
                             fontWeight="800"
                             fill={isToday ? '#3ECF8E' : isHovered ? '#60a5fa' : '#a1a1aa'}
                           >
@@ -637,7 +637,7 @@ export default function DashboardOverview({ setActiveTab }) {
                     border: '1px solid #3ECF8E',
                     padding: '6px 14px',
                     borderRadius: '8px',
-                    fontSize: '12px',
+                    fontSize: '14px',
                     fontWeight: 700,
                     color: '#fff',
                     boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
@@ -653,7 +653,7 @@ export default function DashboardOverview({ setActiveTab }) {
               </div>
 
               {/* Dynamic X-Axis Date Labels */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#71717a', fontWeight: 600, paddingInline: '8px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: '#71717a', fontWeight: 600, paddingInline: '8px' }}>
                 {timeRange === '30d' ? (
                   <>
                     <span>Day 1 (Rank #{telemetry.startRank})</span>
@@ -692,7 +692,7 @@ export default function DashboardOverview({ setActiveTab }) {
                   { agent: '🏆 Share of Model (SoM) Agent', percent: 14, color: '#f59e0b' },
                 ].map((item, idx) => (
                   <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: 600 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', fontWeight: 600 }}>
                       <span style={{ color: '#d4d4d8' }}>{item.agent}</span>
                       <span style={{ color: item.color, fontWeight: 800 }}>{item.percent}% Impact</span>
                     </div>
@@ -718,7 +718,7 @@ export default function DashboardOverview({ setActiveTab }) {
                     24-Hour Agent Output Stream
                   </h3>
                 </div>
-                <span style={{ fontSize: '11px', fontWeight: 700, color: '#3ECF8E', background: 'rgba(62,207,142,0.1)', padding: '2px 8px', borderRadius: '4px' }}>
+                <span style={{ fontSize: '14px', fontWeight: 700, color: '#3ECF8E', background: 'rgba(62,207,142,0.1)', padding: '2px 8px', borderRadius: '4px' }}>
                   Live Executions
                 </span>
               </div>
@@ -727,10 +727,10 @@ export default function DashboardOverview({ setActiveTab }) {
                 {telemetry.dailyAgentOutcomes.map((out, idx) => (
                   <div key={idx} style={{ background: '#121212', border: '1px solid #222', borderRadius: '10px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span style={{ fontSize: '12px', fontWeight: 800, color: '#fff' }}>{out.agent}</span>
-                      <span style={{ fontSize: '10px', color: '#71717a' }}>{out.time}</span>
+                      <span style={{ fontSize: '14px', fontWeight: 800, color: '#fff' }}>{out.agent}</span>
+                      <span style={{ fontSize: '14px', color: '#71717a' }}>{out.time}</span>
                     </div>
-                    <p style={{ fontSize: '12px', color: '#a1a1aa', margin: 0, lineHeight: 1.4 }}>
+                    <p style={{ fontSize: '14px', color: '#a1a1aa', margin: 0, lineHeight: 1.4 }}>
                       {out.action}
                     </p>
                   </div>
@@ -747,7 +747,7 @@ export default function DashboardOverview({ setActiveTab }) {
                     Keyword Rank Movement Radar
                   </h3>
                 </div>
-                <span style={{ fontSize: '11px', fontWeight: 700, color: '#3ECF8E', background: 'rgba(62,207,142,0.1)', padding: '2px 8px', borderRadius: '4px' }}>
+                <span style={{ fontSize: '14px', fontWeight: 700, color: '#3ECF8E', background: 'rgba(62,207,142,0.1)', padding: '2px 8px', borderRadius: '4px' }}>
                   30-Day Wins
                 </span>
               </div>
@@ -756,15 +756,15 @@ export default function DashboardOverview({ setActiveTab }) {
                 {telemetry.keywordMovements.map((kw, idx) => (
                   <div key={idx} style={{ background: '#121212', border: '1px solid #222', borderRadius: '10px', padding: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div>
-                      <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff' }}>{kw.keyword}</div>
-                      <div style={{ fontSize: '11px', color: '#71717a' }}>Volume: {kw.volume}</div>
+                      <div style={{ fontSize: '14px', fontWeight: 700, color: '#fff' }}>{kw.keyword}</div>
+                      <div style={{ fontSize: '14px', color: '#71717a' }}>Volume: {kw.volume}</div>
                     </div>
 
                     <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: '12px', fontWeight: 800, color: '#3ECF8E', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <div style={{ fontSize: '14px', fontWeight: 800, color: '#3ECF8E', display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <ArrowUpRight size={14} /> Rank #{kw.rankNow}
                       </div>
-                      <div style={{ fontSize: '10px', color: '#71717a' }}>Was Rank #{kw.rankPrev}</div>
+                      <div style={{ fontSize: '14px', color: '#71717a' }}>Was Rank #{kw.rankPrev}</div>
                     </div>
                   </div>
                 ))}
@@ -780,7 +780,7 @@ export default function DashboardOverview({ setActiveTab }) {
                     LLM Engine Citation Rate
                   </h3>
                 </div>
-                <span style={{ fontSize: '11px', fontWeight: 700, color: '#f59e0b', background: 'rgba(245,158,11,0.1)', padding: '2px 8px', borderRadius: '4px' }}>
+                <span style={{ fontSize: '14px', fontWeight: 700, color: '#f59e0b', background: 'rgba(245,158,11,0.1)', padding: '2px 8px', borderRadius: '4px' }}>
                   AEO & GEO
                 </span>
               </div>
@@ -793,9 +793,9 @@ export default function DashboardOverview({ setActiveTab }) {
                   { engine: 'Claude 3.7 Sonnet', rank: 'Primary Citation', score: 92, color: '#a78bfa' },
                 ].map((item, idx) => (
                   <div key={idx} style={{ background: '#121212', border: '1px solid #222', borderRadius: '10px', padding: '12px' }}>
-                    <div style={{ fontSize: '12px', fontWeight: 700, color: '#fff' }}>{item.engine}</div>
+                    <div style={{ fontSize: '14px', fontWeight: 700, color: '#fff' }}>{item.engine}</div>
                     <div style={{ fontSize: '20px', fontWeight: 900, color: item.color, margin: '4px 0 2px' }}>{item.score}%</div>
-                    <div style={{ fontSize: '10px', color: '#71717a' }}>{item.rank}</div>
+                    <div style={{ fontSize: '14px', color: '#71717a' }}>{item.rank}</div>
                   </div>
                 ))}
               </div>
@@ -812,15 +812,15 @@ export default function DashboardOverview({ setActiveTab }) {
                   16-Agent Autonomous Performance Scorecard for {domain}
                 </h3>
               </div>
-              <span style={{ fontSize: '12px', fontWeight: 700, color: '#3ECF8E', background: 'rgba(62,207,142,0.1)', padding: '4px 12px', borderRadius: '8px', border: '1px solid rgba(62,207,142,0.2)' }}>
+              <span style={{ fontSize: '14px', fontWeight: 700, color: '#3ECF8E', background: 'rgba(62,207,142,0.1)', padding: '4px 12px', borderRadius: '8px', border: '1px solid rgba(62,207,142,0.2)' }}>
                 All 16 Agents Operating Autonomously
               </span>
             </div>
 
             <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '13px' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '14px' }}>
                 <thead>
-                  <tr style={{ background: '#121212', borderBottom: '1px solid #262626', color: '#71717a', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  <tr style={{ background: '#121212', borderBottom: '1px solid #262626', color: '#71717a', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     <th style={{ padding: '14px 24px' }}>Autonomous AI Agent</th>
                     <th style={{ padding: '14px 20px' }}>Category</th>
                     <th style={{ padding: '14px 20px' }}>Domain Output Volume</th>
@@ -845,7 +845,7 @@ export default function DashboardOverview({ setActiveTab }) {
                         {ag.impact}
                       </td>
                       <td style={{ padding: '14px 24px' }}>
-                        <span style={{ fontSize: '12px', fontWeight: 700, color: '#3ECF8E', background: 'rgba(62,207,142,0.08)', padding: '3px 10px', borderRadius: '6px', border: '1px solid rgba(62,207,142,0.2)' }}>
+                        <span style={{ fontSize: '14px', fontWeight: 700, color: '#3ECF8E', background: 'rgba(62,207,142,0.08)', padding: '3px 10px', borderRadius: '6px', border: '1px solid rgba(62,207,142,0.2)' }}>
                           {ag.status}
                         </span>
                       </td>
