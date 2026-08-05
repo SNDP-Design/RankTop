@@ -171,6 +171,9 @@ export default function DashboardOverview({ setActiveTab }) {
 
   const [timeRange, setTimeRange] = useState('30d');
   const [hoveredBarIndex, setHoveredBarIndex] = useState(null);
+  const [hoveredSeoIndex, setHoveredSeoIndex] = useState(null);
+  const [hoveredAeoIndex, setHoveredAeoIndex] = useState(null);
+  const [hoveredGeoIndex, setHoveredGeoIndex] = useState(null);
 
   const telemetry = useMemo(() => getDomainDailyTelemetry(domain, agentResults), [domain, agentResults]);
 
@@ -339,18 +342,17 @@ export default function DashboardOverview({ setActiveTab }) {
                 <span>16-Agent Total Outputs</span>
                 <Bot size={18} color="#a78bfa" />
               </div>
-              <div style={{ fontSize: '32px', fontWeight: 900, color: '#fff', marginTop: '6px' }}>{telemetry.totalOutputsCount} Actions</div>
               <div style={{ fontSize: '14px', color: '#a78bfa', marginTop: '4px', fontWeight: 700 }}>
                 100% Autonomous Autopilot Execution
               </div>
             </div>
           </div>
 
-          {/* DEDICATED 3-COLUMN SINGLE ROW: 30-DAY SEO, AEO & GEO IMPROVEMENT CARDS */}
+          {/* DEDICATED 3-COLUMN SINGLE ROW: INTERACTIVE 30-DAY SEO, AEO & GEO BAR GRAPH CARDS */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
             
-            {/* Column 1: Traditional SEO 30-Day Improvement Graph */}
-            <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            {/* Column 1: Traditional SEO 30-Day Improvement Bar Graph Card */}
+            <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', gap: '14px', position: 'relative' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Globe2 size={18} color="#60a5fa" />
@@ -370,28 +372,73 @@ export default function DashboardOverview({ setActiveTab }) {
                 </span>
               </div>
 
-              {/* Dynamic SVG Mini Area Curve for SEO */}
-              <div style={{ height: '90px', width: '100%' }}>
-                <svg width="100%" height="100%" viewBox="0 0 300 90" preserveAspectRatio="none">
+              {/* Dynamic 30-Bar Interactive SVG Bar Graph for SEO */}
+              <div style={{ height: '110px', width: '100%', position: 'relative', marginTop: '4px' }}>
+                <svg width="100%" height="100%" viewBox="0 0 300 110" preserveAspectRatio="none">
                   <defs>
-                    <linearGradient id="seoGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#60a5fa" stopOpacity="0.4" />
-                      <stop offset="100%" stopColor="#60a5fa" stopOpacity="0.0" />
+                    <linearGradient id="seoBarGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#60a5fa" stopOpacity="0.95" />
+                      <stop offset="100%" stopColor="#2563eb" stopOpacity="0.3" />
+                    </linearGradient>
+                    <linearGradient id="seoBarHover" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
+                      <stop offset="100%" stopColor="#60a5fa" stopOpacity="0.9" />
                     </linearGradient>
                   </defs>
-                  {/* Generate 30 points curve */}
-                  <polygon
-                    points={`0,90 ${telemetry.seo30Days.map((d, i) => `${(i / 29) * 300},${90 - ((d.score / 100) * 80)}`).join(' ')} 300,90`}
-                    fill="url(#seoGrad)"
-                  />
-                  <polyline
-                    fill="none"
-                    stroke="#60a5fa"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    points={telemetry.seo30Days.map((d, i) => `${(i / 29) * 300},${90 - ((d.score / 100) * 80)}`).join(' ')}
-                  />
+
+                  {telemetry.seo30Days.map((d, i) => {
+                    const barWidth = 6.5;
+                    const xPos = i * 10;
+                    const barHeight = Math.max(12, (d.score / 100) * 95);
+                    const yPos = 110 - barHeight;
+                    const isHovered = hoveredSeoIndex === i;
+                    const isToday = i === 29;
+
+                    return (
+                      <g 
+                        key={i}
+                        onMouseEnter={() => setHoveredSeoIndex(i)}
+                        onMouseLeave={() => setHoveredSeoIndex(null)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <rect
+                          x={xPos}
+                          y={yPos}
+                          width={barWidth}
+                          height={barHeight}
+                          rx={2}
+                          fill={isHovered || isToday ? 'url(#seoBarHover)' : 'url(#seoBarGrad)'}
+                          stroke={isHovered ? '#ffffff' : isToday ? '#60a5fa' : 'none'}
+                          strokeWidth={isHovered ? 1.5 : 0}
+                          style={{ transition: 'all 0.15s ease' }}
+                        />
+                      </g>
+                    );
+                  })}
                 </svg>
+
+                {/* Hover Tooltip Popup for SEO */}
+                {hoveredSeoIndex !== null && telemetry.seo30Days[hoveredSeoIndex] && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '-32px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: '#121212',
+                    border: '1px solid #60a5fa',
+                    padding: '4px 12px',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: '#fff',
+                    whiteSpace: 'nowrap',
+                    zIndex: 10,
+                    pointerEvents: 'none',
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.6)'
+                  }}>
+                    Day {hoveredSeoIndex + 1}: SEO Score {telemetry.seo30Days[hoveredSeoIndex].score}/100
+                  </div>
+                )}
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: '#71717a', fontWeight: 600 }}>
@@ -401,8 +448,8 @@ export default function DashboardOverview({ setActiveTab }) {
               </div>
             </div>
 
-            {/* Column 2: Answer Engine Optimization (AEO) 30-Day Improvement Graph */}
-            <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            {/* Column 2: Answer Engine Optimization (AEO) 30-Day Improvement Bar Graph Card */}
+            <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', gap: '14px', position: 'relative' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Bot size={18} color="#10b981" />
@@ -422,27 +469,73 @@ export default function DashboardOverview({ setActiveTab }) {
                 </span>
               </div>
 
-              {/* Dynamic SVG Mini Area Curve for AEO */}
-              <div style={{ height: '90px', width: '100%' }}>
-                <svg width="100%" height="100%" viewBox="0 0 300 90" preserveAspectRatio="none">
+              {/* Dynamic 30-Bar Interactive SVG Bar Graph for AEO */}
+              <div style={{ height: '110px', width: '100%', position: 'relative', marginTop: '4px' }}>
+                <svg width="100%" height="100%" viewBox="0 0 300 110" preserveAspectRatio="none">
                   <defs>
-                    <linearGradient id="aeoGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
-                      <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
+                    <linearGradient id="aeoBarGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#10b981" stopOpacity="0.95" />
+                      <stop offset="100%" stopColor="#047857" stopOpacity="0.3" />
+                    </linearGradient>
+                    <linearGradient id="aeoBarHover" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
+                      <stop offset="100%" stopColor="#10b981" stopOpacity="0.9" />
                     </linearGradient>
                   </defs>
-                  <polygon
-                    points={`0,90 ${telemetry.aeo30Days.map((d, i) => `${(i / 29) * 300},${90 - ((d.score / 100) * 80)}`).join(' ')} 300,90`}
-                    fill="url(#aeoGrad)"
-                  />
-                  <polyline
-                    fill="none"
-                    stroke="#10b981"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    points={telemetry.aeo30Days.map((d, i) => `${(i / 29) * 300},${90 - ((d.score / 100) * 80)}`).join(' ')}
-                  />
+
+                  {telemetry.aeo30Days.map((d, i) => {
+                    const barWidth = 6.5;
+                    const xPos = i * 10;
+                    const barHeight = Math.max(12, (d.score / 100) * 95);
+                    const yPos = 110 - barHeight;
+                    const isHovered = hoveredAeoIndex === i;
+                    const isToday = i === 29;
+
+                    return (
+                      <g 
+                        key={i}
+                        onMouseEnter={() => setHoveredAeoIndex(i)}
+                        onMouseLeave={() => setHoveredAeoIndex(null)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <rect
+                          x={xPos}
+                          y={yPos}
+                          width={barWidth}
+                          height={barHeight}
+                          rx={2}
+                          fill={isHovered || isToday ? 'url(#aeoBarHover)' : 'url(#aeoBarGrad)'}
+                          stroke={isHovered ? '#ffffff' : isToday ? '#10b981' : 'none'}
+                          strokeWidth={isHovered ? 1.5 : 0}
+                          style={{ transition: 'all 0.15s ease' }}
+                        />
+                      </g>
+                    );
+                  })}
                 </svg>
+
+                {/* Hover Tooltip Popup for AEO */}
+                {hoveredAeoIndex !== null && telemetry.aeo30Days[hoveredAeoIndex] && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '-32px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: '#121212',
+                    border: '1px solid #10b981',
+                    padding: '4px 12px',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: '#fff',
+                    whiteSpace: 'nowrap',
+                    zIndex: 10,
+                    pointerEvents: 'none',
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.6)'
+                  }}>
+                    Day {hoveredAeoIndex + 1}: AEO Citation Rate {telemetry.aeo30Days[hoveredAeoIndex].score}%
+                  </div>
+                )}
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: '#71717a', fontWeight: 600 }}>
@@ -452,8 +545,8 @@ export default function DashboardOverview({ setActiveTab }) {
               </div>
             </div>
 
-            {/* Column 3: Generative Engine Optimization (GEO) 30-Day Improvement Graph */}
-            <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            {/* Column 3: Generative Engine Optimization (GEO) 30-Day Improvement Bar Graph Card */}
+            <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', gap: '14px', position: 'relative' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Radio size={18} color="#f59e0b" />
@@ -473,27 +566,73 @@ export default function DashboardOverview({ setActiveTab }) {
                 </span>
               </div>
 
-              {/* Dynamic SVG Mini Area Curve for GEO */}
-              <div style={{ height: '90px', width: '100%' }}>
-                <svg width="100%" height="100%" viewBox="0 0 300 90" preserveAspectRatio="none">
+              {/* Dynamic 30-Bar Interactive SVG Bar Graph for GEO */}
+              <div style={{ height: '110px', width: '100%', position: 'relative', marginTop: '4px' }}>
+                <svg width="100%" height="100%" viewBox="0 0 300 110" preserveAspectRatio="none">
                   <defs>
-                    <linearGradient id="geoGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.4" />
-                      <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.0" />
+                    <linearGradient id="geoBarGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.95" />
+                      <stop offset="100%" stopColor="#b45309" stopOpacity="0.3" />
+                    </linearGradient>
+                    <linearGradient id="geoBarHover" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
+                      <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.9" />
                     </linearGradient>
                   </defs>
-                  <polygon
-                    points={`0,90 ${telemetry.geo30Days.map((d, i) => `${(i / 29) * 300},${90 - ((d.score / 100) * 80)}`).join(' ')} 300,90`}
-                    fill="url(#geoGrad)"
-                  />
-                  <polyline
-                    fill="none"
-                    stroke="#f59e0b"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    points={telemetry.geo30Days.map((d, i) => `${(i / 29) * 300},${90 - ((d.score / 100) * 80)}`).join(' ')}
-                  />
+
+                  {telemetry.geo30Days.map((d, i) => {
+                    const barWidth = 6.5;
+                    const xPos = i * 10;
+                    const barHeight = Math.max(12, (d.score / 100) * 95);
+                    const yPos = 110 - barHeight;
+                    const isHovered = hoveredGeoIndex === i;
+                    const isToday = i === 29;
+
+                    return (
+                      <g 
+                        key={i}
+                        onMouseEnter={() => setHoveredGeoIndex(i)}
+                        onMouseLeave={() => setHoveredGeoIndex(null)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <rect
+                          x={xPos}
+                          y={yPos}
+                          width={barWidth}
+                          height={barHeight}
+                          rx={2}
+                          fill={isHovered || isToday ? 'url(#geoBarHover)' : 'url(#geoBarGrad)'}
+                          stroke={isHovered ? '#ffffff' : isToday ? '#f59e0b' : 'none'}
+                          strokeWidth={isHovered ? 1.5 : 0}
+                          style={{ transition: 'all 0.15s ease' }}
+                        />
+                      </g>
+                    );
+                  })}
                 </svg>
+
+                {/* Hover Tooltip Popup for GEO */}
+                {hoveredGeoIndex !== null && telemetry.geo30Days[hoveredGeoIndex] && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '-32px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: '#121212',
+                    border: '1px solid #f59e0b',
+                    padding: '4px 12px',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: '#fff',
+                    whiteSpace: 'nowrap',
+                    zIndex: 10,
+                    pointerEvents: 'none',
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.6)'
+                  }}>
+                    Day {hoveredGeoIndex + 1}: GEO Share of Model {telemetry.geo30Days[hoveredGeoIndex].score}% SoM
+                  </div>
+                )}
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: '#71717a', fontWeight: 600 }}>
