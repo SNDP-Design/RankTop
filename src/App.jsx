@@ -53,19 +53,17 @@ function WorkspaceShell() {
       {/* 64px spacer for fixed navbar */}
       <div style={{ height: '64px', flexShrink: 0 }} aria-hidden="true" />
 
-      {/* App workspace */}
+      {/* App workspace — 100% full screen Master Dashboard canvas */}
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden', minHeight: 0 }}>
-        <AppSidebar activeTab={activeAppTab} setActiveTab={openAppWithTab} />
-
         <main
           id="main-content"
           role="main"
-          aria-label="Workspace Module View"
+          aria-label="Master Dashboard Canvas"
           style={{ flex: 1, overflowY: 'auto', background: '#0F0F0F', minHeight: 0 }}
-          className="p-6 pb-24 focus-visible:outline-none font-sans"
+          className="p-6 md:p-8 pb-24 focus-visible:outline-none font-sans w-full max-w-7xl mx-auto"
         >
           <div className="w-full space-y-6">
-            {renderActiveModule()}
+            <DashboardOverview setActiveTab={openAppWithTab} />
           </div>
         </main>
       </div>
