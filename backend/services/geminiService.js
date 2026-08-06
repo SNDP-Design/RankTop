@@ -108,9 +108,39 @@ async function analyzeAllAgents(apiKey, domain) {
   return results;
 }
 
+const { convertMarkdownToXGrowthHtml } = require('./xgrowthDesignSystem');
+
 async function generateArticle(apiKey, { keyword, domain, wordCount = 2000, tone = 'Professional' }) {
-  const prompt = `Write a comprehensive, publication-ready ${wordCount}-word SEO article on "${keyword}" for domain "${domain}". Tone: ${tone}. Include H2/H3 headings, FAQ section, and JSON-LD BlogPosting schema. Return clean Markdown.`;
-  return await generateContent(apiKey, prompt);
+  const prompt = `You are the XGrowth Autonomous AI Content Creator Agent for domain "${domain}".
+Write a comprehensive, publication-ready ${wordCount}-word article on "${keyword}". Tone: ${tone}.
+
+CRITICAL DESIGN SYSTEM & STRUCTURAL REQUIREMENTS:
+1. Executive Summary: Start immediately with a BLUF box formatted as:
+   > **Executive Summary (BLUF)**: [40-to-60 word concise direct answer summary]
+2. Formulate H2/H3 headings as natural language questions.
+3. Include at least 4 empirical statistics/data points for GEO retrieval.
+4. Include a structured Markdown comparison table.
+5. Include a 3-question Voice & AI Search FAQ section at the end.
+6. Include JSON-LD BlogPosting & FAQPage schema.
+
+Return clean, structured Markdown ready for XGrowth Design System compilation.`;
+
+  const markdown = await generateContent(apiKey, prompt);
+  if (!markdown) return null;
+
+  // If domain relates to XGrowth, compile into 100% compliant XGrowth Design System HTML
+  if (domain && domain.includes('xgrowth')) {
+    const title = keyword.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    return convertMarkdownToXGrowthHtml({
+      title,
+      keyword,
+      categoryTag: 'GEO & AEO Growth Strategy',
+      markdown,
+      domain
+    });
+  }
+
+  return markdown;
 }
 
-module.exports = { analyzeAllAgents, generateContent, generateArticle, buildPrompts };
+module.exports = { analyzeAllAgents, generateContent, generateArticle, buildPrompts, convertMarkdownToXGrowthHtml };

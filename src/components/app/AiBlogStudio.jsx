@@ -26,7 +26,18 @@ export default function AiBlogStudio({ initialKeyword = '' }) {
 
     setIsGenerating(true);
 
-    const prompt = `Write a comprehensive, publication-ready ${wordCount}-word article on "${targetKeyword}" for domain "${domain}". Tone: ${tone}. Include structured H2/H3 headings, key takeaways, an FAQ section for voice search, and JSON-LD schema markup. Return clean Markdown.`;
+    const prompt = `Write a comprehensive, publication-ready ${wordCount}-word article on "${targetKeyword}" for domain "${domain}". Tone: ${tone}.
+
+CRITICAL XGROWTH DESIGN SYSTEM & STRUCTURAL REQUIREMENTS:
+1. Executive Summary: Start immediately with a BLUF box formatted as:
+   > **Executive Summary (BLUF)**: [40-to-60 word concise direct answer summary formatted for XGrowth design system callout box]
+2. Formulate H2/H3 headings as natural language questions.
+3. Include 4+ empirical data points & statistics for GEO retrieval.
+4. Include a structured comparison table.
+5. Include a 3-question Voice & AI Search FAQ section at the end.
+6. Include JSON-LD BlogPosting & FAQPage schema.
+
+Return clean, structured Markdown ready for compilation into /assets/design-system.css?v=10.`;
 
     try {
       const articleText = await geminiService.generateContent(prompt);
