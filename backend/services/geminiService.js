@@ -1,11 +1,15 @@
 const { GoogleGenAI } = require('@google/genai');
 
 const FALLBACK_MODELS = [
-  'gemini-2.0-flash',
-  'gemini-2.5-flash',
-  'gemini-1.5-flash',
-  'gemini-1.5-pro',
+  'gemini-3.6-flash',
+  'gemini-3.5-flash',
+  'gemini-3.1-pro-preview',
+  'gemini-3-flash-preview',
+  'gemini-3.1-flash-lite',
+  'gemini-3.1-flash-lite-preview',
   'gemini-2.5-pro',
+  'gemini-2.5-flash',
+  'gemini-2.5-flash-lite',
 ];
 
 
@@ -35,6 +39,33 @@ Return exactly 8 items.`,
 
     swarm: `You are an AI orchestration engine. For domain "${domain}", provide a strategic action plan. Return ONLY a valid JSON object:
 {"priority1":"<most critical action>","priority2":"<second action>","priority3":"<third action>","estimatedImpact":"<traffic % improvement>","timeToResults":"<e.g. 6-12 weeks>","agentInsight":"<2-sentence strategic insight>"}`,
+
+    backlinks: `You are an autonomous backlink strategist. For domain "${domain}", generate 5 high-DR link opportunity targets. Return ONLY a valid JSON object:
+{"prospects":[{"id":1,"domain":"<target domain>","dr":85,"strategy":"Unlinked Brand Mention","contact":"Editor","email":"editor@target.com","status":"Ready for Pitch","snippet":"<reason>","relevance":"96%"}],"toxicDomains":[{"domain":"<toxic domain>","dr":2,"spamScore":"88%","status":"Flagged for Disavow"}]}`,
+
+    llm_benchmarker: `You are an LLM citation benchmark auditor for "${domain}". Return ONLY a valid JSON array:
+[{"engine":"Perplexity Pro","rank":"Cited #1 Source","score":95,"status":"Verified"},{"engine":"ChatGPT Search","rank":"Cited #2 Source","score":90,"status":"Verified"}]`,
+
+    community_amplifier: `You are a Reddit & forum GEO citation strategist for "${domain}". Return ONLY a valid JSON array:
+[{"subreddit":"r/SEO","title":"Best GEO tools for AI Overviews","indexedBy":"Perplexity & ChatGPT","citations":"14 references"}]`,
+
+    decay_repairman: `You are a content decay auditor for "${domain}". Return ONLY a valid JSON array:
+[{"path":"/blog/guide","freshnessScore":"68%","status":"Decay Warning","action":"Auto-Refresh DateModified"}]`,
+
+    content_creator: `You are an AI content creator for "${domain}". Return ONLY a valid JSON object:
+{"articleTitle":"Guide for ${domain}","wordCount":2400,"status":"Drafted"}`,
+
+    data_citation: `You are a statistical data injector for "${domain}". Return ONLY a valid JSON object:
+{"injectionsCount":14,"factSources":["Statista","Gartner"],"status":"Injected"}`,
+
+    som_tracker: `You are a Share of Model tracker for "${domain}". Return ONLY a valid JSON object:
+{"somScore":88,"topPlatform":"Perplexity Pro","status":"Tracked"}`,
+
+    silo_architect: `You are a sitemap topic silo interlinker for "${domain}". Return ONLY a valid JSON object:
+{"silosCreated":4,"internalLinks":18,"status":"Siloed"}`,
+
+    schema_engineer: `You are a deep RAG schema synthesizer for "${domain}". Return ONLY a valid JSON object:
+{"schemaTypes":["Organization","WebSite","FAQPage"],"vectorRagStatus":"Synthesized"}`
   };
 }
 

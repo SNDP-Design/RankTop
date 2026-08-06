@@ -355,7 +355,7 @@ export default function SwarmOrchestratorView() {
           return (
             <div key={id} style={{
               background: '#171717', border: `1px solid ${isWorking ? 'rgba(62,207,142,0.3)' : status === 'COMPLETED' ? 'rgba(62,207,142,0.2)' : '#262626'}`,
-              borderRadius: '14px', padding: '16px 18px', display: 'flex', flexDirection: 'column', justifyBetween: 'space-between', gap: '12px'
+              borderRadius: '14px', padding: '16px 18px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '12px'
             }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '10px' }}>
                 <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: `${color}15`, border: `1px solid ${color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>

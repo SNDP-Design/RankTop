@@ -55,6 +55,7 @@ function WorkspaceShell() {
 
       {/* App workspace — 100% full screen Master Dashboard canvas */}
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden', minHeight: 0 }}>
+        <AppSidebar activeTab={activeAppTab} setActiveTab={openAppWithTab} />
         <main
           id="main-content"
           role="main"
@@ -63,7 +64,7 @@ function WorkspaceShell() {
           className="p-6 md:p-8 pb-24 focus-visible:outline-none font-sans w-full min-w-full"
         >
           <div className="w-full space-y-6">
-            <DashboardOverview setActiveTab={openAppWithTab} />
+            {renderActiveModule()}
           </div>
         </main>
       </div>
