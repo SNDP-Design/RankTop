@@ -126,6 +126,14 @@ export const AGENT_ROLES = {
     avatar: '📜',
     color: 'from-blue-400 to-indigo-700',
     description: 'Synthesizes nested JSON-LD schema (Speakable, FAQPage, Wikidata @sameAs) engineered for LLM RAG indexing.'
+  },
+  FREE_TOOLS_ENGINEER: {
+    id: 'free_tools_engineer',
+    name: '26 Free Tools Autonomous Engineer',
+    model: 'Gemini 3.6 Flash',
+    avatar: '🛠️',
+    color: 'from-amber-400 to-emerald-600',
+    description: 'Executes 26 free SEO & AI tools (Readability, llms.txt, AI Crawlability, SERP Preview, robots.txt, Sitemap Validator).'
   }
 };
 

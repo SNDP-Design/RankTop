@@ -27,6 +27,7 @@ export class SwarmOrchestrator {
       som_tracker:   { ...AGENT_ROLES.SOM_TRACKER,    state: 'IDLE', activeTask: 'Ready for Share of Model (SoM) LLM brand recommendation analysis' },
       silo_architect:{ ...AGENT_ROLES.SILO_ARCHITECT, state: 'IDLE', activeTask: 'Ready for autonomous topic sitemap silo interlinking' },
       schema_engineer:{ ...AGENT_ROLES.SCHEMA_ENGINEER,state:'IDLE', activeTask: 'Ready for deep RAG multi-entity JSON-LD schema synthesis' },
+      free_tools_engineer:{ ...AGENT_ROLES.FREE_TOOLS_ENGINEER, state: 'IDLE', activeTask: 'Ready for 26 free SEO & AI tool autonomous execution' },
     };
   }
 

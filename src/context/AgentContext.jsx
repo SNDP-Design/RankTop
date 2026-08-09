@@ -30,7 +30,8 @@ const AGENT_IDS = [
   'data_citation',
   'som_tracker',
   'silo_architect',
-  'schema_engineer'
+  'schema_engineer',
+  'free_tools'
 ];
 
 const initialStatus = () =>
@@ -226,7 +227,10 @@ Return exactly 8 items.`,
 { "silosCreated": 4, "internalLinks": 18, "status": "Siloed" }`,
 
     schema_engineer: `You are a deep RAG multi-entity vector JSON-LD schema synthesizer for ${domain}. Return ONLY a valid JSON object:
-{ "schemaTypes": ["Organization", "WebSite", "FAQPage"], "vectorRagStatus": "Synthesized" }`
+{ "schemaTypes": ["Organization", "WebSite", "FAQPage"], "vectorRagStatus": "Synthesized" }`,
+
+    free_tools: `You are a 26 free SEO & AI tools autonomous engineer for ${domain}. Return ONLY a valid JSON object:
+{ "toolsAvailable": 26, "activeTools": ["Readability", "llms.txt", "AI Crawlability", "SERP Preview"], "status": "Ready" }`
   };
 }
 
