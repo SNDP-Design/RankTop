@@ -30,17 +30,29 @@ function WorkspaceShell() {
 
   const renderActiveModule = () => {
     switch (activeAppTab) {
-      case 'swarm':      return <SwarmOrchestratorView />;
-      case 'backlinks':  return <BacklinkOutreach />;
-      case 'strategy':   return <KeywordStrategy onGenerateArticle={(kw) => openAppWithTab('studio', kw)} />;
-      case 'studio':     return <AiBlogStudio initialKeyword={studioKeyword} />;
-      case 'aeo':        return <AeoSimulatorApp />;
-      case 'geo':        return <LlmGeoOptimization />;
-      case 'competitors': return <CompetitorSpy onGenerateArticle={(kw) => openAppWithTab('studio', kw)} />;
-      case 'cms':        return <CmsIntegrations />;
-      case 'freetools':  return <FreeToolsApp />;
-      case 'dashboard':
-      default:           return <DashboardOverview setActiveTab={openAppWithTab} />;
+      // Core Workspace
+      case 'swarm':        return <SwarmOrchestratorView />;
+      case 'dashboard':    return <DashboardOverview setActiveTab={openAppWithTab} />;
+
+      // SEO Module
+      case 'strategy':     return <KeywordStrategy onGenerateArticle={(kw) => openAppWithTab('studio', kw)} />;
+      case 'competitors':  return <CompetitorSpy onGenerateArticle={(kw) => openAppWithTab('studio', kw)} />;
+      case 'studio':       return <AiBlogStudio initialKeyword={studioKeyword} />;
+      case 'backlinks':    return <BacklinkOutreach />;
+      case 'cms':          return <CmsIntegrations />;
+
+      // AEO Module
+      case 'aeo':          return <AeoSimulatorApp />;
+      case 'aeo_faq':      return <FreeToolsApp />;
+
+      // GEO Module
+      case 'geo':          return <LlmGeoOptimization initialTab="overview" />;
+      case 'geo_reddit':   return <LlmGeoOptimization initialTab="reddit" />;
+      case 'geo_decay':    return <LlmGeoOptimization initialTab="decay" />;
+
+      // Utilities
+      case 'freetools':    return <FreeToolsApp />;
+      default:             return <DashboardOverview setActiveTab={openAppWithTab} />;
     }
   };
 

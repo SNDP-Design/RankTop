@@ -17,7 +17,7 @@ import { useAgents } from '../../context/AgentContext';
 
 const visibilityColor = { High: '#3ECF8E', Medium: '#f59e0b', Low: '#f97316', None: '#ef4444' };
 
-export default function LlmGeoOptimization() {
+export default function LlmGeoOptimization({ initialTab = 'overview' }) {
   const { agentResults, agentStatus, websiteUrl } = useAgents();
   const data = agentResults.geo;
   const status = agentStatus.geo;
@@ -43,7 +43,11 @@ export default function LlmGeoOptimization() {
     { path: `https://${domain}/resources`, freshnessScore: '65%', status: 'Decay Warning', action: 'Auto-Refresh DateModified' }
   ] : []);
 
-  const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'benchmarks' | 'reddit' | 'decay'
+  const [activeTab, setActiveTab] = useState(initialTab); // 'overview' | 'benchmarks' | 'reddit' | 'decay'
+  
+  React.useEffect(() => {
+    if (initialTab) setActiveTab(initialTab);
+  }, [initialTab]);
   const [repairedMap, setRepairedMap] = useState({});
 
   const handleRepairPage = (path) => {
