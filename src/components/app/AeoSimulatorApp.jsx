@@ -25,8 +25,8 @@ export default function AeoSimulatorApp() {
 
       {/* Header */}
       <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '99px', background: 'rgba(96,165,250,0.1)', border: '1px solid rgba(96,165,250,0.2)', fontSize: '13px', fontWeight: 700, color: '#60a5fa', marginBottom: '8px' }}>
-          <Cpu size={13} /> AI Overview Simulator
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '99px', background: 'rgba(96,165,250,0.1)', border: '1px solid rgba(96,165,250,0.2)', fontSize: '14px', fontWeight: 700, color: '#60a5fa', marginBottom: '8px' }}>
+          <Cpu size={14} /> AI Overview Simulator
         </div>
         <h1 style={{ fontSize: '22px', fontWeight: 800, color: '#fff', margin: '0 0 4px' }}>Google AI Overview Citation Test</h1>
         <p style={{ fontSize: '14px', color: '#71717a', margin: 0 }}>
@@ -72,12 +72,12 @@ export default function AeoSimulatorApp() {
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
                   <div style={{ flex: 1 }}>
                     <p style={{ fontSize: '14px', fontWeight: 700, color: '#fff', margin: '0 0 4px' }}>"{item.query}"</p>
-                    <p style={{ fontSize: '13px', color: '#71717a', margin: 0 }}>{item.reason}</p>
+                    <p style={{ fontSize: '14px', color: '#71717a', margin: 0 }}>{item.reason}</p>
                   </div>
                 </div>
                 <ProbabilityBar value={item.citationProbability ?? 0} />
                 <div style={{ background: 'rgba(62,207,142,0.06)', border: '1px solid rgba(62,207,142,0.15)', borderRadius: '8px', padding: '10px 14px' }}>
-                  <p style={{ fontSize: '13px', color: '#d4d4d8', margin: 0 }}>
+                  <p style={{ fontSize: '14px', color: '#d4d4d8', margin: 0 }}>
                     <span style={{ color: '#3ECF8E', fontWeight: 700 }}>Recommendation: </span>
                     {item.recommendation}
                   </p>

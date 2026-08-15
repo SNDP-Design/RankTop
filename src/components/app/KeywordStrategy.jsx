@@ -47,10 +47,10 @@ Return exactly 6 items.`;
       {/* Header */}
       <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '99px', background: 'rgba(62,207,142,0.1)', border: '1px solid rgba(62,207,142,0.2)', fontSize: '13px', fontWeight: 700, color: '#3ECF8E' }}>
-            <Target size={13} /> Keyword Strategy
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '99px', background: 'rgba(62,207,142,0.1)', border: '1px solid rgba(62,207,142,0.2)', fontSize: '14px', fontWeight: 700, color: '#3ECF8E' }}>
+            <Target size={14} /> Keyword Strategy
           </div>
-          {status === 'done' && <span style={{ fontSize: '13px', color: '#3ECF8E', fontWeight: 600 }}>✓ AI Analysis Complete</span>}
+          {status === 'done' && <span style={{ fontSize: '14px', color: '#3ECF8E', fontWeight: 600 }}>✓ AI Analysis Complete</span>}
         </div>
         <h1 style={{ fontSize: '22px', fontWeight: 800, color: '#fff', margin: '0 0 4px' }}>Low-Difficulty Keyword Discovery</h1>
         <p style={{ fontSize: '14px', color: '#71717a', margin: 0 }}>
@@ -112,7 +112,7 @@ Return exactly 6 items.`;
               <thead>
                 <tr style={{ background: '#121212', borderBottom: '1px solid #262626' }}>
                   {['Keyword Cluster', 'Search Volume', 'Difficulty', 'Intent', 'Opportunity', 'Action'].map((h) => (
-                    <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 700, color: '#71717a', textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>{h}</th>
+                    <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: '14px', fontWeight: 700, color: '#71717a', textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -126,7 +126,7 @@ Return exactly 6 items.`;
                     <td style={{ padding: '14px 16px', fontSize: '14px', fontWeight: 600, color: '#d4d4d8', whiteSpace: 'nowrap' }}>{item.volume}</td>
                     <td style={{ padding: '14px 16px' }}>
                       <span style={{
-                        padding: '3px 10px', borderRadius: '6px', fontSize: '13px', fontWeight: 700,
+                        padding: '3px 10px', borderRadius: '6px', fontSize: '14px', fontWeight: 700,
                         background: item.kd <= 20 ? 'rgba(62,207,142,0.1)' : 'rgba(251,191,36,0.1)',
                         border: `1px solid ${item.kd <= 20 ? 'rgba(62,207,142,0.25)' : 'rgba(251,191,36,0.25)'}`,
                         color: item.kd <= 20 ? '#3ECF8E' : '#fbbf24',
@@ -139,11 +139,11 @@ Return exactly 6 items.`;
                         onClick={() => onGenerateArticle && onGenerateArticle(item.keyword)}
                         style={{
                           padding: '7px 14px', background: '#3ECF8E', color: '#000', border: 'none',
-                          borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer',
+                          borderRadius: '8px', fontSize: '14px', fontWeight: 700, cursor: 'pointer',
                           display: 'inline-flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap',
                         }}
                       >
-                        <Sparkles size={13} /> Write Article
+                        <Sparkles size={14} /> Write Article
                       </button>
                     </td>
                   </tr>

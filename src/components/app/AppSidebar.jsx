@@ -82,7 +82,7 @@ export default function AppSidebar({ activeTab, setActiveTab, isOpen, onClose })
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 10px 6px' }}>
               <span
                 style={{
-                  fontSize:      '11px',
+                  fontSize:      '14px',
                   fontWeight:    800,
                   letterSpacing: '0.06em',
                   textTransform: 'uppercase',
@@ -93,7 +93,7 @@ export default function AppSidebar({ activeTab, setActiveTab, isOpen, onClose })
               </span>
               <span
                 style={{
-                  fontSize:      '9px',
+                  fontSize:      '14px',
                   fontWeight:    800,
                   padding:       '1px 6px',
                   borderRadius:  '4px',
@@ -127,10 +127,10 @@ export default function AppSidebar({ activeTab, setActiveTab, isOpen, onClose })
                     alignItems:     'center',
                     gap:            '10px',
                     width:          '100%',
-                    padding:        '7px 10px',
+                    padding:        '8px 10px',
                     borderRadius:   '8px',
                     marginBottom:   '2px',
-                    fontSize:       '13px',
+                    fontSize:       '14px',
                     fontWeight:     active ? 700 : 500,
                     color:          active ? '#fff' : '#a1a1aa',
                     background:     active ? 'rgba(62,207,142,0.12)' : 'transparent',
@@ -165,7 +165,7 @@ export default function AppSidebar({ activeTab, setActiveTab, isOpen, onClose })
                     }}
                   />
                   <Icon
-                    size={15}
+                    size={16}
                     style={{
                       flexShrink: 0,
                       color:      active ? '#3ECF8E' : '#71717a',
@@ -206,13 +206,13 @@ export default function AppSidebar({ activeTab, setActiveTab, isOpen, onClose })
             flexShrink:   0,
           }}
         />
-        <span style={{ fontSize: '12px', fontWeight: 700, color: '#d4d4d8' }}>
+        <span style={{ fontSize: '14px', fontWeight: 700, color: '#d4d4d8' }}>
           SEO · AEO · GEO Suite
         </span>
       </div>
       <span
         style={{
-          fontSize:     '10px',
+          fontSize:     '14px',
           fontWeight:   800,
           color:        '#3ECF8E',
           background:   'rgba(62,207,142,0.08)',

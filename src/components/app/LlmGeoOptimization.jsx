@@ -51,8 +51,8 @@ export default function LlmGeoOptimization({ initialTab = 'overview' }) {
 
       {/* Header Banner */}
       <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '99px', background: 'rgba(167,139,250,0.1)', border: '1px solid rgba(167,139,250,0.2)', fontSize: '13px', fontWeight: 700, color: '#a78bfa', marginBottom: '8px' }}>
-          <ShieldCheck size={13} /> LLM & Generative Engine Optimization (GEO)
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '99px', background: 'rgba(167,139,250,0.1)', border: '1px solid rgba(167,139,250,0.2)', fontSize: '14px', fontWeight: 700, color: '#a78bfa', marginBottom: '8px' }}>
+          <ShieldCheck size={14} /> LLM & Generative Engine Optimization (GEO)
         </div>
         <h1 style={{ fontSize: '22px', fontWeight: 800, color: '#fff', margin: '0 0 4px' }}>
           Generative Engine & LLM Search Visibility Suite
@@ -62,7 +62,7 @@ export default function LlmGeoOptimization({ initialTab = 'overview' }) {
         </p>
 
         {/* Navigation Tabs */}
-        <div style={{ display: 'flex', gap: '8px', marginTop: '20px', borderTop: '1px solid #262626', paddingTop: '16px' }}>
+        <div style={{ display: 'flex', gap: '8px', marginTop: '20px', borderTop: '1px solid #262626', paddingTop: '16px', flexWrap: 'wrap' }}>
           {[
             { id: 'overview', label: 'GEO Overview & Crawlers', icon: ShieldCheck },
             { id: 'benchmarks', label: '📡 LLM Citation Benchmarks (#11)', icon: Radio },
@@ -77,14 +77,14 @@ export default function LlmGeoOptimization({ initialTab = 'overview' }) {
                 onClick={() => setActiveTab(t.id)}
                 style={{
                   display: 'flex', alignItems: 'center', gap: '6px',
-                  padding: '6px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 600,
+                  padding: '6px 14px', borderRadius: '8px', fontSize: '14px', fontWeight: 600,
                   background: active ? '#1f1f1f' : 'transparent',
                   color: active ? '#3ECF8E' : '#a1a1aa',
                   border: active ? '1px solid #2d2d2d' : '1px solid transparent',
                   cursor: 'pointer'
                 }}
               >
-                <Icon size={14} color={active ? '#3ECF8E' : '#71717a'} />
+                <Icon size={16} color={active ? '#3ECF8E' : '#71717a'} />
                 {t.label}
               </button>
             );
@@ -103,7 +103,7 @@ export default function LlmGeoOptimization({ initialTab = 'overview' }) {
                   Agent #11: Live LLM Citation & Benchmark Radar
                 </h3>
               </div>
-              <span style={{ fontSize: '12px', fontWeight: 700, color: '#34d399', background: 'rgba(52,211,153,0.1)', padding: '3px 10px', borderRadius: '6px', border: '1px solid rgba(52,211,153,0.2)' }}>
+              <span style={{ fontSize: '14px', fontWeight: 700, color: '#34d399', background: 'rgba(52,211,153,0.1)', padding: '3px 10px', borderRadius: '6px', border: '1px solid rgba(52,211,153,0.2)' }}>
                 Simulating Live Search Queries
               </span>
             </div>
@@ -113,12 +113,12 @@ export default function LlmGeoOptimization({ initialTab = 'overview' }) {
                 <div key={i} style={{ background: '#121212', border: '1px solid #262626', borderRadius: '12px', padding: '18px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
                     <span style={{ fontSize: '14px', fontWeight: 700, color: '#fff' }}>{b.engine}</span>
-                    <span style={{ fontSize: '11px', fontWeight: 700, color: b.color || '#34d399', background: `${b.color || '#34d399'}15`, padding: '2px 7px', borderRadius: '4px' }}>
+                    <span style={{ fontSize: '14px', fontWeight: 700, color: b.color || '#34d399', background: `${b.color || '#34d399'}15`, padding: '2px 7px', borderRadius: '4px' }}>
                       {b.status}
                     </span>
                   </div>
                   <div style={{ fontSize: '24px', fontWeight: 800, color: b.color || '#34d399', margin: '4px 0' }}>{b.score}% Score</div>
-                  <div style={{ fontSize: '12px', fontWeight: 600, color: '#a1a1aa' }}>Rank: <strong style={{ color: '#fff' }}>{b.rank}</strong></div>
+                  <div style={{ fontSize: '14px', fontWeight: 600, color: '#a1a1aa' }}>Rank: <strong style={{ color: '#fff' }}>{b.rank}</strong></div>
                 </div>
               ))}
             </div>
@@ -136,7 +136,7 @@ export default function LlmGeoOptimization({ initialTab = 'overview' }) {
                 Agent #12: Reddit & Forum GEO Citation Radar
               </h3>
             </div>
-            <span style={{ fontSize: '12px', fontWeight: 700, color: '#f97316', background: 'rgba(249,115,22,0.1)', padding: '3px 10px', borderRadius: '6px', border: '1px solid rgba(249,115,22,0.2)' }}>
+            <span style={{ fontSize: '14px', fontWeight: 700, color: '#f97316', background: 'rgba(249,115,22,0.1)', padding: '3px 10px', borderRadius: '6px', border: '1px solid rgba(249,115,22,0.2)' }}>
               OpenAI / Perplexity Feed Indexed
             </span>
           </div>
@@ -146,14 +146,14 @@ export default function LlmGeoOptimization({ initialTab = 'overview' }) {
               <div key={i} style={{ background: '#121212', border: '1px solid #262626', borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '12px', fontWeight: 800, color: '#f97316', background: 'rgba(249,115,22,0.1)', padding: '1px 8px', borderRadius: '4px' }}>
+                    <span style={{ fontSize: '14px', fontWeight: 800, color: '#f97316', background: 'rgba(249,115,22,0.1)', padding: '1px 8px', borderRadius: '4px' }}>
                       {th.subreddit}
                     </span>
-                    <span style={{ fontSize: '12px', color: '#71717a' }}>Indexed by: <strong style={{ color: '#a1a1aa' }}>{th.indexedBy}</strong></span>
+                    <span style={{ fontSize: '14px', color: '#71717a' }}>Indexed by: <strong style={{ color: '#a1a1aa' }}>{th.indexedBy}</strong></span>
                   </div>
                   <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#fff', margin: '6px 0 2px' }}>{th.title}</h4>
                 </div>
-                <button style={{ background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', color: '#fff', border: 'none', padding: '8px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>
+                <button style={{ background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', color: '#fff', border: 'none', padding: '8px 14px', borderRadius: '8px', fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}>
                   Draft Entity Answer
                 </button>
               </div>
@@ -172,7 +172,7 @@ export default function LlmGeoOptimization({ initialTab = 'overview' }) {
                 Agent #13: Content Decay & Freshness Repair Guard
               </h3>
             </div>
-            <span style={{ fontSize: '12px', fontWeight: 700, color: '#f43f5e', background: 'rgba(244,63,94,0.1)', padding: '3px 10px', borderRadius: '6px', border: '1px solid rgba(244,63,94,0.2)' }}>
+            <span style={{ fontSize: '14px', fontWeight: 700, color: '#f43f5e', background: 'rgba(244,63,94,0.1)', padding: '3px 10px', borderRadius: '6px', border: '1px solid rgba(244,63,94,0.2)' }}>
               GSC Velocity Guard
             </span>
           </div>
@@ -184,7 +184,7 @@ export default function LlmGeoOptimization({ initialTab = 'overview' }) {
                 <div key={i} style={{ background: '#121212', border: '1px solid #262626', borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
                   <div>
                     <span style={{ fontSize: '14px', fontWeight: 700, color: '#fff' }}>{pg.path}</span>
-                    <div style={{ fontSize: '12px', color: '#71717a', marginTop: '4px' }}>
+                    <div style={{ fontSize: '14px', color: '#71717a', marginTop: '4px' }}>
                       Freshness Score: <strong style={{ color: isRepaired ? '#3ECF8E' : '#f59e0b' }}>{isRepaired ? '100% ✓' : pg.freshnessScore}</strong>
                     </div>
                   </div>
@@ -195,7 +195,7 @@ export default function LlmGeoOptimization({ initialTab = 'overview' }) {
                     style={{
                       background: isRepaired ? '#1f1f1f' : 'linear-gradient(135deg, #f43f5e 0%, #e11d48 100%)',
                       color: isRepaired ? '#3ECF8E' : '#fff', border: isRepaired ? '1px solid #333' : 'none',
-                      padding: '8px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 700, cursor: 'pointer'
+                      padding: '8px 14px', borderRadius: '8px', fontSize: '14px', fontWeight: 700, cursor: 'pointer'
                     }}
                   >
                     {isRepaired ? 'Repaired & Updated ✓' : pg.action}
@@ -216,7 +216,7 @@ export default function LlmGeoOptimization({ initialTab = 'overview' }) {
               <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px', display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: '48px', fontWeight: 800, color: '#a78bfa', lineHeight: 1 }}>{data.overallGeoScore ?? 92}</div>
-                  <div style={{ fontSize: '13px', color: '#71717a', fontWeight: 600, marginTop: '4px' }}>Overall GEO Score</div>
+                  <div style={{ fontSize: '14px', color: '#71717a', fontWeight: 600, marginTop: '4px' }}>Overall GEO Score</div>
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ height: '10px', background: '#1f1f1f', borderRadius: '99px', overflow: 'hidden', marginBottom: '8px' }}>
@@ -238,7 +238,7 @@ export default function LlmGeoOptimization({ initialTab = 'overview' }) {
                     <div key={i} style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
                         <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#fff', margin: 0 }}>{engine.name}</h3>
-                        <span style={{ padding: '3px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, background: `${color}15`, border: `1px solid ${color}30`, color }}>
+                        <span style={{ padding: '3px 10px', borderRadius: '6px', fontSize: '14px', fontWeight: 700, background: `${color}15`, border: `1px solid ${color}30`, color }}>
                           {engine.visibility}
                         </span>
                       </div>
@@ -246,11 +246,11 @@ export default function LlmGeoOptimization({ initialTab = 'overview' }) {
                       <div style={{ height: '4px', background: '#1f1f1f', borderRadius: '99px', overflow: 'hidden', marginBottom: '14px' }}>
                         <div style={{ width: `${engine.score ?? 0}%`, height: '100%', background: color, borderRadius: '99px' }} />
                       </div>
-                      <p style={{ fontSize: '13px', color: '#71717a', margin: '0 0 4px' }}>
+                      <p style={{ fontSize: '14px', color: '#71717a', margin: '0 0 4px' }}>
                         <span style={{ fontWeight: 700, color: '#a1a1aa' }}>Queries found: </span>{engine.queriesFound ?? 0}
                       </p>
                       {engine.topQuery && (
-                        <p style={{ fontSize: '13px', color: '#71717a', margin: 0 }}>
+                        <p style={{ fontSize: '14px', color: '#71717a', margin: 0 }}>
                           <span style={{ fontWeight: 700, color: '#a1a1aa' }}>Best query: </span>"{engine.topQuery}"
                         </p>
                       )}

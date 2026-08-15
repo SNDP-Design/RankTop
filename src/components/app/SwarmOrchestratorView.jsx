@@ -181,8 +181,8 @@ export default function SwarmOrchestratorView() {
       {/* Beginner Header */}
       <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
         <div>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '99px', background: 'rgba(62,207,142,0.1)', border: '1px solid rgba(62,207,142,0.2)', fontSize: '13px', fontWeight: 700, color: '#3ECF8E', marginBottom: '8px' }}>
-            <Sparkles size={13} /> 16-Agent Autonomous AI Engine
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '99px', background: 'rgba(62,207,142,0.1)', border: '1px solid rgba(62,207,142,0.2)', fontSize: '14px', fontWeight: 700, color: '#3ECF8E', marginBottom: '8px' }}>
+            <Sparkles size={14} /> 16-Agent Autonomous AI Engine
           </div>
           <h1 style={{ fontSize: '22px', fontWeight: 800, color: '#fff', margin: '0 0 4px' }}>16-Agent Autonomous Engine for {domain}</h1>
           <p style={{ fontSize: '14px', color: '#71717a', margin: 0, maxWidth: '640px', lineHeight: 1.5 }}>
@@ -222,7 +222,7 @@ export default function SwarmOrchestratorView() {
             Assign Custom Strategic Goal to the 16-Agent Engine
           </h3>
         </div>
-        <p style={{ fontSize: '13px', color: '#a1a1aa', margin: '0 0 14px' }}>
+        <p style={{ fontSize: '14px', color: '#a1a1aa', margin: '0 0 14px' }}>
           Prompt the Manager Agent with any objective. The 16 agents will autonomously decompose it into subtasks and execute across SEO, GEO, and AEO.
         </p>
 
@@ -234,7 +234,7 @@ export default function SwarmOrchestratorView() {
             placeholder="e.g. Outrank rival domains in Perplexity Pro & ChatGPT Search for high-intent AI queries"
             style={{
               flex: 1, minWidth: '280px', background: '#121212', border: '1px solid #333',
-              borderRadius: '10px', padding: '10px 14px', color: '#fff', fontSize: '13px', outline: 'none'
+              borderRadius: '10px', padding: '10px 14px', color: '#fff', fontSize: '14px', outline: 'none'
             }}
           />
           <button
@@ -242,7 +242,7 @@ export default function SwarmOrchestratorView() {
             disabled={swarmState.status === 'RUNNING'}
             style={{
               background: 'linear-gradient(135deg, #3ECF8E 0%, #059669 100%)', color: '#000',
-              border: 'none', padding: '10px 18px', borderRadius: '10px', fontWeight: 800, fontSize: '13px',
+              border: 'none', padding: '10px 18px', borderRadius: '10px', fontWeight: 800, fontSize: '14px',
               cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px'
             }}
           >
@@ -274,7 +274,7 @@ export default function SwarmOrchestratorView() {
               <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#fff', margin: 0 }}>
                 24/7 Background Autonomous Engine
               </h3>
-              <p style={{ fontSize: '12px', color: '#71717a', margin: 0 }}>
+              <p style={{ fontSize: '14px', color: '#71717a', margin: 0 }}>
                 Connect your backend to enable weekly scheduled crawls, AI analysis reports, and auto-publishing.
               </p>
             </div>
@@ -283,7 +283,7 @@ export default function SwarmOrchestratorView() {
             onClick={handleToggleAutonomy}
             disabled={loadingLoop}
             style={{
-              padding: '8px 16px', borderRadius: '8px', border: 'none', fontSize: '13px', fontWeight: 700,
+              padding: '8px 16px', borderRadius: '8px', border: 'none', fontSize: '14px', fontWeight: 700,
               cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px',
               background: isLoopActive ? '#ef4444' : '#3ECF8E',
               color: isLoopActive ? '#fff' : '#000',
@@ -296,7 +296,7 @@ export default function SwarmOrchestratorView() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px', marginTop: '12px' }}>
           <div>
-            <label style={{ fontSize: '12px', color: '#a1a1aa', fontWeight: 600, display: 'block', marginBottom: '4px' }}>
+            <label style={{ fontSize: '14px', color: '#a1a1aa', fontWeight: 600, display: 'block', marginBottom: '4px' }}>
               Backend URL
             </label>
             <div style={{ display: 'flex', gap: '6px' }}>
@@ -305,11 +305,11 @@ export default function SwarmOrchestratorView() {
                 value={backendUrl}
                 onChange={(e) => setBackendUrl(e.target.value)}
                 placeholder="https://ranktop-backend.onrender.com"
-                style={{ flex: 1, background: '#121212', border: '1px solid #2d2d2d', borderRadius: '8px', padding: '8px 12px', color: '#fff', fontSize: '13px', outline: 'none' }}
+                style={{ flex: 1, background: '#121212', border: '1px solid #2d2d2d', borderRadius: '8px', padding: '8px 12px', color: '#fff', fontSize: '14px', outline: 'none' }}
               />
               <button
                 onClick={handleSaveBackendUrl}
-                style={{ background: '#262626', border: '1px solid #333', color: '#3ECF8E', padding: '8px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}
+                style={{ background: '#262626', border: '1px solid #333', color: '#3ECF8E', padding: '8px 12px', borderRadius: '8px', fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}
               >
                 Save
               </button>
@@ -317,7 +317,7 @@ export default function SwarmOrchestratorView() {
           </div>
 
           <div>
-            <label style={{ fontSize: '12px', color: '#a1a1aa', fontWeight: 600, display: 'block', marginBottom: '4px' }}>
+            <label style={{ fontSize: '14px', color: '#a1a1aa', fontWeight: 600, display: 'block', marginBottom: '4px' }}>
               Notification Email
             </label>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#121212', border: '1px solid #2d2d2d', borderRadius: '8px', padding: '0 10px' }}>
@@ -327,14 +327,12 @@ export default function SwarmOrchestratorView() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@company.com"
-                style={{ flex: 1, background: 'transparent', border: 'none', padding: '8px 0', color: '#fff', fontSize: '13px', outline: 'none' }}
+                style={{ flex: 1, background: 'transparent', border: 'none', padding: '8px 0', color: '#fff', fontSize: '14px', outline: 'none' }}
               />
             </div>
           </div>
         </div>
       </div>
-
-
 
       {/* Human Approval vs Autopilot Governance Switch */}
       <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
@@ -342,7 +340,7 @@ export default function SwarmOrchestratorView() {
           <Sliders size={18} color="#3ECF8E" />
           <div>
             <p style={{ fontSize: '14px', fontWeight: 700, color: '#fff', margin: 0 }}>Publishing Guardrail Control</p>
-            <p style={{ fontSize: '12px', color: '#71717a', margin: 0 }}>Choose if the AI should ask for your approval before publishing content.</p>
+            <p style={{ fontSize: '14px', color: '#71717a', margin: 0 }}>Choose if the AI should ask for your approval before publishing content.</p>
           </div>
         </div>
 
@@ -350,7 +348,7 @@ export default function SwarmOrchestratorView() {
           <button
             onClick={() => handleToggleMode('hitl')}
             style={{
-              padding: '6px 14px', borderRadius: '8px', border: 'none', fontSize: '13px', fontWeight: 700, cursor: 'pointer',
+              padding: '6px 14px', borderRadius: '8px', border: 'none', fontSize: '14px', fontWeight: 700, cursor: 'pointer',
               background: swarmState.mode === 'hitl' ? '#3ECF8E' : 'transparent',
               color: swarmState.mode === 'hitl' ? '#000' : '#71717a', transition: 'all 0.15s'
             }}
@@ -360,7 +358,7 @@ export default function SwarmOrchestratorView() {
           <button
             onClick={() => handleToggleMode('autopilot')}
             style={{
-              padding: '6px 14px', borderRadius: '8px', border: 'none', fontSize: '13px', fontWeight: 700, cursor: 'pointer',
+              padding: '6px 14px', borderRadius: '8px', border: 'none', fontSize: '14px', fontWeight: 700, cursor: 'pointer',
               background: swarmState.mode === 'autopilot' ? '#3ECF8E' : 'transparent',
               color: swarmState.mode === 'autopilot' ? '#000' : '#71717a', transition: 'all 0.15s'
             }}
@@ -380,11 +378,11 @@ export default function SwarmOrchestratorView() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <ShieldAlert size={20} color="#3ECF8E" />
-              <span style={{ fontSize: '13px', fontWeight: 800, color: '#3ECF8E', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <span style={{ fontSize: '14px', fontWeight: 800, color: '#3ECF8E', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 Human Approval Gate Active
               </span>
             </div>
-            <span style={{ fontSize: '12px', background: 'rgba(62,207,142,0.15)', color: '#3ECF8E', padding: '2px 8px', borderRadius: '6px', fontWeight: 700 }}>
+            <span style={{ fontSize: '14px', background: 'rgba(62,207,142,0.15)', color: '#3ECF8E', padding: '2px 8px', borderRadius: '6px', fontWeight: 700 }}>
               Action Required
             </span>
           </div>
@@ -444,8 +442,8 @@ export default function SwarmOrchestratorView() {
               </div>
 
               <div>
-                <p style={{ fontSize: '13px', fontWeight: 700, color: '#fff', margin: '0 0 2px' }}>{name}</p>
-                <p style={{ fontSize: '12px', color: '#71717a', margin: 0, lineHeight: 1.4 }}>{activeTask}</p>
+                <p style={{ fontSize: '14px', fontWeight: 700, color: '#fff', margin: '0 0 2px' }}>{name}</p>
+                <p style={{ fontSize: '14px', color: '#71717a', margin: 0, lineHeight: 1.4 }}>{activeTask}</p>
               </div>
             </div>
           );
@@ -455,14 +453,14 @@ export default function SwarmOrchestratorView() {
       {/* Swarm Live Log Activity */}
       {swarmState.logs.length > 0 && (
         <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '20px 24px' }}>
-          <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#3ECF8E', margin: '0 0 14px', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#3ECF8E', margin: '0 0 14px', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Zap size={14} /> Live AI Team Activity Log
           </h3>
 
           <div style={{ maxHeight: '240px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', paddingRight: '4px' }}>
             {swarmState.logs.map((log) => (
-              <div key={log.id} style={{ background: '#121212', border: '1px solid #222', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                <span style={{ fontSize: '11px', color: '#71717a', fontFamily: 'monospace', flexShrink: 0 }}>{log.timestamp}</span>
+              <div key={log.id} style={{ background: '#121212', border: '1px solid #222', borderRadius: '8px', padding: '10px 14px', fontSize: '14px', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                <span style={{ fontSize: '14px', color: '#71717a', fontFamily: 'monospace', flexShrink: 0 }}>{log.timestamp}</span>
                 <span style={{ fontWeight: 700, color: '#3ECF8E', flexShrink: 0 }}>[{log.senderName}] → [{log.receiverName}]</span>
                 <span style={{ color: log.type === 'warning' ? '#ef4444' : log.type === 'success' ? '#3ECF8E' : '#d4d4d8', flex: 1 }}>{log.message}</span>
               </div>
@@ -470,8 +468,6 @@ export default function SwarmOrchestratorView() {
           </div>
         </div>
       )}
-
-
 
     </div>
   );

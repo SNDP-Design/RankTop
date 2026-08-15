@@ -95,8 +95,8 @@ Generate a structured, expert output in JSON format or formatted Markdown text a
     <div className="w-full space-y-6 font-sans">
       {/* Header Banner */}
       <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '99px', background: 'rgba(62,207,142,0.1)', border: '1px solid rgba(62,207,142,0.2)', fontSize: '13px', fontWeight: 700, color: '#3ECF8E', marginBottom: '8px' }}>
-          <Wrench size={13} /> 26 Free SEO & AI Visibility Tools
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '99px', background: 'rgba(62,207,142,0.1)', border: '1px solid rgba(62,207,142,0.2)', fontSize: '14px', fontWeight: 700, color: '#3ECF8E', marginBottom: '8px' }}>
+          <Wrench size={14} /> 26 Free SEO & AI Visibility Tools
         </div>
         <h1 style={{ fontSize: '22px', fontWeight: 800, color: '#fff', margin: '0 0 4px' }}>
           Autonomous 26-Tool Suite for SEO, Schema, Audits & AI Visibility
@@ -112,7 +112,7 @@ Generate a structured, expert output in JSON format or formatted Markdown text a
               key={cat}
               onClick={() => setActiveCategory(cat)}
               style={{
-                padding: '6px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 600,
+                padding: '6px 14px', borderRadius: '8px', fontSize: '14px', fontWeight: 600,
                 background: activeCategory === cat ? '#3ECF8E' : '#1f1f1f',
                 color: activeCategory === cat ? '#000' : '#a1a1aa',
                 border: activeCategory === cat ? '1px solid #3ECF8E' : '1px solid #2d2d2d',
@@ -135,13 +135,13 @@ Generate a structured, expert output in JSON format or formatted Markdown text a
               </div>
               <div>
                 <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#fff', margin: 0 }}>{selectedTool.name}</h3>
-                <p style={{ fontSize: '12px', color: '#a1a1aa', margin: 0 }}>{selectedTool.desc}</p>
+                <p style={{ fontSize: '14px', color: '#a1a1aa', margin: 0 }}>{selectedTool.desc}</p>
               </div>
             </div>
 
             <button
               onClick={() => { setSelectedTool(null); setToolOutput(null); }}
-              style={{ background: '#222', border: '1px solid #333', color: '#aaa', padding: '4px 10px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 600 }}
+              style={{ background: '#222', border: '1px solid #333', color: '#aaa', padding: '4px 10px', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: 600 }}
             >
               Close Tool
             </button>
@@ -155,7 +155,7 @@ Generate a structured, expert output in JSON format or formatted Markdown text a
               placeholder={`Enter text, keyword, or URL for ${selectedTool.name} (default: ${domain})`}
               style={{
                 flex: 1, minWidth: '280px', background: '#121212', border: '1px solid #333',
-                borderRadius: '10px', padding: '10px 14px', color: '#fff', fontSize: '13px', outline: 'none'
+                borderRadius: '10px', padding: '10px 14px', color: '#fff', fontSize: '14px', outline: 'none'
               }}
             />
             <button
@@ -163,11 +163,11 @@ Generate a structured, expert output in JSON format or formatted Markdown text a
               disabled={isProcessing}
               style={{
                 background: 'linear-gradient(135deg, #3ECF8E 0%, #059669 100%)', color: '#000',
-                border: 'none', padding: '10px 20px', borderRadius: '10px', fontWeight: 800, fontSize: '13px',
+                border: 'none', padding: '10px 20px', borderRadius: '10px', fontWeight: 800, fontSize: '14px',
                 cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', opacity: isProcessing ? 0.6 : 1
               }}
             >
-              {isProcessing ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={15} />}
+              {isProcessing ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
               {isProcessing ? 'Agent Executing...' : 'Run Autonomous Agent Check'}
             </button>
           </form>
@@ -176,18 +176,18 @@ Generate a structured, expert output in JSON format or formatted Markdown text a
           {toolOutput && (
             <div style={{ background: '#121212', border: '1px solid #262626', borderRadius: '12px', padding: '18px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px', borderBottom: '1px solid #222', pb: '8px' }}>
-                <span style={{ fontSize: '12px', fontWeight: 700, color: '#3ECF8E', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '14px', fontWeight: 700, color: '#3ECF8E', textTransform: 'uppercase' }}>
                   Autonomous Agent Output
                 </span>
                 <button
                   onClick={handleCopyOutput}
-                  style={{ background: '#222', border: '1px solid #333', color: '#fff', padding: '4px 10px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}
+                  style={{ background: '#222', border: '1px solid #333', color: '#fff', padding: '4px 10px', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}
                 >
-                  {copied ? <Check size={13} color="#3ECF8E" /> : <Copy size={13} />}
+                  {copied ? <Check size={14} color="#3ECF8E" /> : <Copy size={14} />}
                   {copied ? 'Copied' : 'Copy Output'}
                 </button>
               </div>
-              <pre style={{ margin: 0, fontSize: '13px', color: '#d4d4d8', whitespace: 'pre-wrap', fontFamily: 'monospace', lineHeight: 1.5 }}>
+              <pre style={{ margin: 0, fontSize: '14px', color: '#d4d4d8', whitespace: 'pre-wrap', fontFamily: 'monospace', lineHeight: 1.5 }}>
                 {toolOutput}
               </pre>
             </div>
@@ -221,7 +221,7 @@ Generate a structured, expert output in JSON format or formatted Markdown text a
             >
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-                  <span style={{ fontSize: '11px', fontWeight: 700, color: tool.color, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  <span style={{ fontSize: '14px', fontWeight: 700, color: tool.color, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     {tool.cat}
                   </span>
                   <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: `${tool.color}15`, border: `1px solid ${tool.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -230,12 +230,12 @@ Generate a structured, expert output in JSON format or formatted Markdown text a
                 </div>
 
                 <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#fff', margin: '0 0 6px' }}>{tool.name}</h3>
-                <p style={{ fontSize: '13px', color: '#71717a', margin: 0, lineHeight: 1.4 }}>{tool.desc}</p>
+                <p style={{ fontSize: '14px', color: '#71717a', margin: 0, lineHeight: 1.4 }}>{tool.desc}</p>
               </div>
 
-              <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px', fontWeight: 700, color: '#3ECF8E' }}>
+              <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '14px', fontWeight: 700, color: '#3ECF8E' }}>
                 <span>Launch Autonomous Agent →</span>
-                <Sparkles size={13} />
+                <Sparkles size={14} />
               </div>
             </div>
           );

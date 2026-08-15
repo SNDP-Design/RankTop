@@ -143,11 +143,11 @@ export default function ApiKeyModal() {
           rel="noopener noreferrer"
           style={{
             display: 'inline-flex', alignItems: 'center', gap: '6px',
-            fontSize: '13px', color: '#3ECF8E', textDecoration: 'none',
+            fontSize: '14px', color: '#3ECF8E', textDecoration: 'none',
             fontWeight: 600, marginBottom: '24px',
           }}
         >
-          <ExternalLink size={13} />
+          <ExternalLink size={14} />
           Get your free key at aistudio.google.com/apikey
         </a>
 
@@ -155,7 +155,7 @@ export default function ApiKeyModal() {
         <div style={{
           background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: '10px',
           padding: '12px 14px', marginBottom: '24px',
-          fontSize: '13px', color: '#71717a', lineHeight: 1.6,
+          fontSize: '14px', color: '#71717a', lineHeight: 1.6,
         }}>
           🔒 Your key is stored <strong style={{ color: '#a1a1aa' }}>only in your browser</strong> (localStorage). It is never sent to any server other than Google's own Gemini API.
         </div>

@@ -15,8 +15,8 @@ export default function CompetitorSpy({ onGenerateArticle }) {
 
       {/* Header */}
       <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '24px' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '99px', background: 'rgba(62,207,142,0.1)', border: '1px solid rgba(62,207,142,0.2)', fontSize: '13px', fontWeight: 700, color: '#3ECF8E', marginBottom: '8px' }}>
-          <Search size={13} /> Competitor Intelligence
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '99px', background: 'rgba(62,207,142,0.1)', border: '1px solid rgba(62,207,142,0.2)', fontSize: '14px', fontWeight: 700, color: '#3ECF8E', marginBottom: '8px' }}>
+          <Search size={14} /> Competitor Intelligence
         </div>
         <h1 style={{ fontSize: '22px', fontWeight: 800, color: '#fff', margin: '0 0 4px' }}>AI Competitor Analysis</h1>
         <p style={{ fontSize: '14px', color: '#71717a', margin: 0 }}>
@@ -59,26 +59,26 @@ export default function CompetitorSpy({ onGenerateArticle }) {
               </div>
               <div>
                 <p style={{ fontSize: '16px', fontWeight: 800, color: '#fff', margin: '0 0 2px' }}>{comp.domain}</p>
-                <p style={{ fontSize: '13px', color: '#71717a', margin: 0 }}>{comp.strength}</p>
+                <p style={{ fontSize: '14px', color: '#71717a', margin: 0 }}>{comp.strength}</p>
               </div>
             </div>
             <span style={{
-              padding: '4px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: 700,
+              padding: '4px 12px', borderRadius: '8px', fontSize: '14px', fontWeight: 700,
               background: `${threatColors[comp.threatLevel] || '#71717a'}15`,
               border: `1px solid ${threatColors[comp.threatLevel] || '#71717a'}30`,
               color: threatColors[comp.threatLevel] || '#71717a',
             }}>
-              <Shield size={11} style={{ display: 'inline', marginRight: '4px' }} />
+              <Shield size={14} style={{ display: 'inline', marginRight: '4px' }} />
               {comp.threatLevel} Threat
             </span>
           </div>
 
           {/* Top keywords */}
           <div style={{ marginBottom: '14px' }}>
-            <p style={{ fontSize: '12px', fontWeight: 700, color: '#71717a', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Their Top Keywords</p>
+            <p style={{ fontSize: '14px', fontWeight: 700, color: '#71717a', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Their Top Keywords</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
               {(comp.topKeywords ?? []).map((kw, j) => (
-                <span key={j} style={{ padding: '4px 10px', background: '#1f1f1f', border: '1px solid #2d2d2d', borderRadius: '6px', fontSize: '13px', color: '#d4d4d8', fontWeight: 500 }}>
+                <span key={j} style={{ padding: '4px 10px', background: '#1f1f1f', border: '1px solid #2d2d2d', borderRadius: '6px', fontSize: '14px', color: '#d4d4d8', fontWeight: 500 }}>
                   {kw}
                 </span>
               ))}
@@ -88,16 +88,16 @@ export default function CompetitorSpy({ onGenerateArticle }) {
           {/* Content gap opportunity */}
           <div style={{ background: 'rgba(62,207,142,0.06)', border: '1px solid rgba(62,207,142,0.15)', borderRadius: '10px', padding: '14px 16px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
             <div>
-              <p style={{ fontSize: '12px', fontWeight: 700, color: '#3ECF8E', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 4px' }}>
-                <TrendingUp size={11} style={{ display: 'inline', marginRight: '4px' }} /> Content Gap Opportunity
+              <p style={{ fontSize: '14px', fontWeight: 700, color: '#3ECF8E', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 4px' }}>
+                <TrendingUp size={14} style={{ display: 'inline', marginRight: '4px' }} /> Content Gap Opportunity
               </p>
               <p style={{ fontSize: '14px', color: '#d4d4d8', margin: 0 }}>{comp.contentGap}</p>
             </div>
             <button
               onClick={() => onGenerateArticle && onGenerateArticle(comp.contentGap)}
-              style={{ padding: '8px 16px', background: '#3ECF8E', color: '#000', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', flexShrink: 0 }}
+              style={{ padding: '8px 16px', background: '#3ECF8E', color: '#000', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', flexShrink: 0 }}
             >
-              <Sparkles size={13} /> Write Article
+              <Sparkles size={14} /> Write Article
             </button>
           </div>
         </div>
