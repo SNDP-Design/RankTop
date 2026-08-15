@@ -1,28 +1,21 @@
 import React, { useState } from 'react';
 import { 
   Magnet, 
-  Search, 
   Send, 
   CheckCircle2, 
-  AlertCircle, 
   Globe, 
-  Mail, 
   ShieldAlert, 
   Download, 
   Sparkles, 
   TrendingUp, 
   Copy, 
   Check, 
-  ExternalLink,
-  RefreshCw,
-  Zap,
-  Filter,
-  FileText
+  RefreshCw
 } from 'lucide-react';
 import { useAgents } from '../../context/AgentContext';
 
 export default function BacklinkOutreach() {
-  const { websiteUrl, agentResults, agentStatus, setSettingsOpen, hasApiKey } = useAgents();
+  const { websiteUrl, agentResults } = useAgents();
   const domain = websiteUrl ? websiteUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') : '';
 
   // Retrieve dynamic Gemini AI backlink results for the entered domain
@@ -89,18 +82,21 @@ export default function BacklinkOutreach() {
 
   const handleSelectProspect = (p) => {
     setSelectedProspect(p);
-    setEmailSubject(`Quick question regarding your article on ${p.domain}`);
-    setEmailBody(
-      `Hi ${p.contact.split(' ')[0]},\n\nI was reading your piece on ${p.domain} regarding ${p.strategy.toLowerCase()} and thought your breakdown was spot on.\n\nOur team at ${domain} just launched a framework targeting this exact gap with verified metrics. Given your readers' interest in this space, I thought this would be a great resource to reference.\n\nHere is the direct link: https://${domain}\n\nLet me know if you'd like a quick quote or custom stat for your upcoming piece!\n\nBest,\nAutonomous Backlink Agent @ ${domain}`
-    );
+    if (p) {
+      setEmailSubject(`Quick question regarding your article on ${p.domain}`);
+      setEmailBody(
+        `Hi ${p.contact?.split(' ')[0] || 'there'},\n\nI was reading your piece on ${p.domain} regarding ${p.strategy?.toLowerCase() || 'content'} and thought your breakdown was spot on.\n\nOur team at ${domain || 'our domain'} just launched a framework targeting this exact gap with verified metrics. Given your readers' interest in this space, I thought this would be a great resource to reference.\n\nHere is the direct link: https://${domain || 'example.com'}\n\nLet me know if you'd like a quick quote or custom stat for your upcoming piece!\n\nBest,\nAutonomous Backlink Agent @ ${domain || 'RankTop'}`
+      );
+    }
   };
 
   const handleGenerateAiPitch = () => {
+    if (!selectedProspect) return;
     setIsGenerating(true);
     setTimeout(() => {
       setEmailSubject(`Personalized Pitch: ${selectedProspect.strategy} for ${selectedProspect.domain}`);
       setEmailBody(
-        `Hi ${selectedProspect.contact.split(' ')[0]},\n\nI saw your article on ${selectedProspect.domain} ("${selectedProspect.snippet}").\n\nAs the ${selectedProspect.strategy} specialist at ${domain}, I noticed a high-value opportunity where our newly published research on Gemini 3.6 Flash Swarm Orchestration directly complements your coverage.\n\nKey Highlights for your readers:\n1. 98% LLM Citation rate verification in Google AI Overviews\n2. Automated BLUF formatting & Wikidata JSON-LD schema\n3. Zero-fluff research with 15+ verified data points\n\nWould you be open to linking to our guide or adding a quick citation?\n\nCheers,\nAutonomous Backlink Agent @ ${domain}`
+        `Hi ${selectedProspect.contact?.split(' ')[0] || 'there'},\n\nI saw your article on ${selectedProspect.domain} ("${selectedProspect.snippet || ''}").\n\nAs the ${selectedProspect.strategy || 'outreach'} specialist at ${domain || 'our site'}, I noticed a high-value opportunity where our newly published research on Gemini Swarm Orchestration directly complements your coverage.\n\nKey Highlights for your readers:\n1. 98% LLM Citation rate verification in Google AI Overviews\n2. Automated BLUF formatting & Wikidata JSON-LD schema\n3. Zero-fluff research with 15+ verified data points\n\nWould you be open to linking to our guide or adding a quick citation?\n\nCheers,\nAutonomous Backlink Agent @ ${domain || 'RankTop'}`
       );
       setIsGenerating(false);
     }, 800);
@@ -280,55 +276,61 @@ export default function BacklinkOutreach() {
 
           {/* Prospects List */}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {filteredProspects.map(p => {
-              const isSelected = selectedProspect.id === p.id;
-              const isSent = sentMap[p.id];
-              return (
-                <div
-                  key={p.id}
-                  onClick={() => handleSelectProspect(p)}
-                  style={{
-                    padding: '16px 20px',
-                    borderBottom: '1px solid #222',
-                    background: isSelected ? 'rgba(139,92,246,0.06)' : 'transparent',
-                    borderLeft: isSelected ? '3px solid #8b5cf6' : '3px solid transparent',
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease'
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <span style={{ fontSize: '15px', fontWeight: 700, color: '#fff' }}>{p.domain}</span>
-                      <span style={{
-                        fontSize: '11px', fontWeight: 800, background: 'rgba(62,207,142,0.1)',
-                        color: '#3ECF8E', padding: '1px 7px', borderRadius: '4px', border: '1px solid rgba(62,207,142,0.2)'
-                      }}>
-                        DR {p.dr}
-                      </span>
-                      <span style={{
-                        fontSize: '11px', fontWeight: 600, background: '#222', color: '#a78bfa',
-                        padding: '1px 8px', borderRadius: '4px', border: '1px solid #333'
-                      }}>
-                        {p.strategy}
+            {filteredProspects.length === 0 ? (
+              <div style={{ padding: '32px', textAlign: 'center', color: '#71717a', fontSize: '13px' }}>
+                No prospects found matching this filter.
+              </div>
+            ) : (
+              filteredProspects.map(p => {
+                const isSelected = selectedProspect?.id === p.id;
+                const isSent = sentMap[p.id];
+                return (
+                  <div
+                    key={p.id}
+                    onClick={() => handleSelectProspect(p)}
+                    style={{
+                      padding: '16px 20px',
+                      borderBottom: '1px solid #222',
+                      background: isSelected ? 'rgba(139,92,246,0.06)' : 'transparent',
+                      borderLeft: isSelected ? '3px solid #8b5cf6' : '3px solid transparent',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <span style={{ fontSize: '15px', fontWeight: 700, color: '#fff' }}>{p.domain}</span>
+                        <span style={{
+                          fontSize: '11px', fontWeight: 800, background: 'rgba(62,207,142,0.1)',
+                          color: '#3ECF8E', padding: '1px 7px', borderRadius: '4px', border: '1px solid rgba(62,207,142,0.2)'
+                        }}>
+                          DR {p.dr}
+                        </span>
+                        <span style={{
+                          fontSize: '11px', fontWeight: 600, background: '#222', color: '#a78bfa',
+                          padding: '1px 8px', borderRadius: '4px', border: '1px solid #333'
+                        }}>
+                          {p.strategy}
+                        </span>
+                      </div>
+
+                      <span style={{ fontSize: '12px', fontWeight: 600, color: isSent ? '#3ECF8E' : '#a1a1aa' }}>
+                        {isSent ? 'Sent ✓' : p.status}
                       </span>
                     </div>
 
-                    <span style={{ fontSize: '12px', fontWeight: 600, color: isSent ? '#3ECF8E' : '#a1a1aa' }}>
-                      {isSent ? 'Sent ✓' : p.status}
-                    </span>
-                  </div>
+                    <p style={{ fontSize: '13px', color: '#71717a', margin: '4px 0 8px', lineHeight: '1.4' }}>
+                      "{p.snippet}"
+                    </p>
 
-                  <p style={{ fontSize: '13px', color: '#71717a', margin: '4px 0 8px', lineHeight: '1.4' }}>
-                    "{p.snippet}"
-                  </p>
-
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px', color: '#52525b' }}>
-                    <span>Contact: <strong style={{ color: '#d4d4d8' }}>{p.contact}</strong> ({p.email})</span>
-                    <span style={{ color: '#8b5cf6', fontWeight: 600 }}>Relevance: {p.relevance}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px', color: '#52525b' }}>
+                      <span>Contact: <strong style={{ color: '#d4d4d8' }}>{p.contact}</strong> ({p.email})</span>
+                      <span style={{ color: '#8b5cf6', fontWeight: 600 }}>Relevance: {p.relevance}</span>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
 
           {/* Toxic Link Disavow Section */}
@@ -373,82 +375,90 @@ export default function BacklinkOutreach() {
             </span>
           </div>
 
-          {/* Selected Prospect Summary */}
-          <div style={{ background: '#121212', border: '1px solid #262626', borderRadius: '10px', padding: '12px 14px' }}>
-            <div style={{ fontSize: '11px', color: '#71717a', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>
-              Target Domain & Contact
+          {selectedProspect ? (
+            <>
+              {/* Selected Prospect Summary */}
+              <div style={{ background: '#121212', border: '1px solid #262626', borderRadius: '10px', padding: '12px 14px' }}>
+                <div style={{ fontSize: '11px', color: '#71717a', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>
+                  Target Domain & Contact
+                </div>
+                <div style={{ fontSize: '14px', fontWeight: 700, color: '#fff', marginTop: '2px' }}>
+                  {selectedProspect.domain} <span style={{ color: '#8b5cf6', fontWeight: 600 }}>(DR {selectedProspect.dr})</span>
+                </div>
+                <div style={{ fontSize: '12px', color: '#a1a1aa', marginTop: '2px' }}>
+                  {selectedProspect.contact} — <span style={{ color: '#3ECF8E' }}>{selectedProspect.email}</span>
+                </div>
+              </div>
+
+              {/* Email Subject Line */}
+              <div>
+                <label style={{ fontSize: '12px', fontWeight: 600, color: '#a1a1aa', display: 'block', marginBottom: '6px' }}>
+                  Email Subject Line
+                </label>
+                <input
+                  type="text"
+                  value={emailSubject}
+                  onChange={(e) => setEmailSubject(e.target.value)}
+                  style={{
+                    width: '100%', background: '#121212', border: '1px solid #2d2d2d',
+                    borderRadius: '8px', padding: '8px 12px', color: '#fff', fontSize: '13px',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+
+              {/* Email Body Editor */}
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <label style={{ fontSize: '12px', fontWeight: 600, color: '#a1a1aa', display: 'block', marginBottom: '6px' }}>
+                  Outreach Pitch Sequence Body
+                </label>
+                <textarea
+                  value={emailBody}
+                  onChange={(e) => setEmailBody(e.target.value)}
+                  rows={12}
+                  style={{
+                    width: '100%', background: '#121212', border: '1px solid #2d2d2d',
+                    borderRadius: '8px', padding: '12px', color: '#d4d4d8', fontSize: '13px',
+                    lineHeight: '1.5', resize: 'vertical', outline: 'none', fontFamily: 'sans-serif'
+                  }}
+                />
+              </div>
+
+              {/* Actions */}
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button
+                  onClick={handleCopyPitch}
+                  style={{
+                    flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                    background: '#222', border: '1px solid #333', color: '#fff', padding: '10px',
+                    borderRadius: '8px', fontWeight: 600, fontSize: '13px', cursor: 'pointer'
+                  }}
+                >
+                  {copied ? <Check size={14} color="#3ECF8E" /> : <Copy size={14} />}
+                  {copied ? 'Copied to Clipboard' : 'Copy Pitch'}
+                </button>
+
+                <button
+                  onClick={() => handleSendPitch(selectedProspect.id)}
+                  disabled={sentMap[selectedProspect.id]}
+                  style={{
+                    flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                    background: sentMap[selectedProspect.id] ? '#1f1f1f' : 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)',
+                    border: sentMap[selectedProspect.id] ? '1px solid #333' : 'none',
+                    color: sentMap[selectedProspect.id] ? '#3ECF8E' : '#fff',
+                    padding: '10px', borderRadius: '8px', fontWeight: 700, fontSize: '13px', cursor: 'pointer'
+                  }}
+                >
+                  {sentMap[selectedProspect.id] ? <CheckCircle2 size={14} /> : <Send size={14} />}
+                  {sentMap[selectedProspect.id] ? 'Outreach Dispatched' : 'Dispatch Email'}
+                </button>
+              </div>
+            </>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '32px 16px', color: '#71717a', fontSize: '13px' }}>
+              Select any target prospect from the radar list to view or synthesize a custom outreach pitch.
             </div>
-            <div style={{ fontSize: '14px', fontWeight: 700, color: '#fff', marginTop: '2px' }}>
-              {selectedProspect.domain} <span style={{ color: '#8b5cf6', fontWeight: 600 }}>(DR {selectedProspect.dr})</span>
-            </div>
-            <div style={{ fontSize: '12px', color: '#a1a1aa', marginTop: '2px' }}>
-              {selectedProspect.contact} — <span style={{ color: '#3ECF8E' }}>{selectedProspect.email}</span>
-            </div>
-          </div>
-
-          {/* Email Subject Line */}
-          <div>
-            <label style={{ fontSize: '12px', fontWeight: 600, color: '#a1a1aa', display: 'block', marginBottom: '6px' }}>
-              Email Subject Line
-            </label>
-            <input
-              type="text"
-              value={emailSubject}
-              onChange={(e) => setEmailSubject(e.target.value)}
-              style={{
-                width: '100%', background: '#121212', border: '1px solid #2d2d2d',
-                borderRadius: '8px', padding: '8px 12px', color: '#fff', fontSize: '13px',
-                outline: 'none'
-              }}
-            />
-          </div>
-
-          {/* Email Body Editor */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-            <label style={{ fontSize: '12px', fontWeight: 600, color: '#a1a1aa', display: 'block', marginBottom: '6px' }}>
-              Outreach Pitch Sequence Body
-            </label>
-            <textarea
-              value={emailBody}
-              onChange={(e) => setEmailBody(e.target.value)}
-              rows={12}
-              style={{
-                width: '100%', background: '#121212', border: '1px solid #2d2d2d',
-                borderRadius: '8px', padding: '12px', color: '#d4d4d8', fontSize: '13px',
-                lineHeight: '1.5', resize: 'vertical', outline: 'none', fontFamily: 'sans-serif'
-              }}
-            />
-          </div>
-
-          {/* Actions */}
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <button
-              onClick={handleCopyPitch}
-              style={{
-                flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-                background: '#222', border: '1px solid #333', color: '#fff', padding: '10px',
-                borderRadius: '8px', fontWeight: 600, fontSize: '13px', cursor: 'pointer'
-              }}
-            >
-              {copied ? <Check size={14} color="#3ECF8E" /> : <Copy size={14} />}
-              {copied ? 'Copied to Clipboard' : 'Copy Pitch'}
-            </button>
-
-            <button
-              onClick={() => handleSendPitch(selectedProspect.id)}
-              disabled={sentMap[selectedProspect.id]}
-              style={{
-                flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-                background: sentMap[selectedProspect.id] ? '#1f1f1f' : 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)',
-                border: sentMap[selectedProspect.id] ? '1px solid #333' : 'none',
-                color: sentMap[selectedProspect.id] ? '#3ECF8E' : '#fff',
-                padding: '10px', borderRadius: '8px', fontWeight: 700, fontSize: '13px', cursor: 'pointer'
-              }}
-            >
-              {sentMap[selectedProspect.id] ? <CheckCircle2 size={14} /> : <Send size={14} />}
-              {sentMap[selectedProspect.id] ? 'Outreach Dispatched' : 'Dispatch Email'}
-            </button>
-          </div>
+          )}
 
         </div>
 

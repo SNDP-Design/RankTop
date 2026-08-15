@@ -5,7 +5,6 @@ import {
   FileText, 
   Cpu, 
   Search, 
-  Share2, 
   Wrench, 
   ShieldCheck,
   Bot,
@@ -13,9 +12,7 @@ import {
   Radio,
   Zap,
   Code,
-  Globe,
-  Sparkles,
-  Layers
+  Sparkles
 } from 'lucide-react';
 
 // ─── Universal Sidebar Navigation ────────────────────────────────────────────

@@ -6,7 +6,7 @@
 
 function convertMarkdownToXGrowthHtml({ title, keyword, categoryTag = 'SEO & AEO Strategy', markdown, domain = 'xgrowth.uno', publishDate = new Date().toISOString().split('T')[0] }) {
   const slug = keyword.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-  const canonicalUrl = `https://www.xgrowth.uno/blogs/${slug}.html`;
+  const canonicalUrl = `https://${domain.replace(/^https?:\/\//, '').replace(/\/$/, '')}/blogs/${slug}.html`;
 
   // Process markdown into styled HTML components
   let contentHtml = markdown
@@ -25,7 +25,7 @@ function convertMarkdownToXGrowthHtml({ title, keyword, categoryTag = 'SEO & AEO
     // Convert Italics
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
     // Convert Lists
-    .replace(/^\-\s+(.+)$/gm, '<li>$1</li>')
+    .replace(/^-\s+(.+)$/gm, '<li>$1</li>')
     .replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>')
     // Convert Paragraphs
     .replace(/^(?!<h2|<h3|<ul|<li|<div|<blockquote|<script|<table|<thead|<tr|<td|<th)(.+)$/gm, '<p>$1</p>');

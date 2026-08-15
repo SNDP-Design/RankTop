@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Wrench, Copy, Check, Loader2, AlertCircle, Sparkles, FileText, Search, 
-  ShieldCheck, Cpu, Code, Download, ExternalLink, RefreshCw, BarChart2, Globe, Filter
+  ShieldCheck, Cpu, Code, Globe, Radio, Share2
 } from 'lucide-react';
 import { useAgents } from '../../context/AgentContext';
 import { geminiService } from '../../services/geminiService';
@@ -35,12 +35,8 @@ const FREE_TOOLS = [
   { id: 'broken_links', name: 'Broken Link Checker', cat: 'Technical', desc: 'Paste HTML or URL list to find links that appear unreachable.', icon: AlertCircle, color: '#f43f5e' },
 ];
 
-function Radio({ size, color }) {
-  return <Cpu size={size} color={color} />;
-}
-
 export default function FreeToolsApp() {
-  const { websiteUrl, agentResults } = useAgents();
+  const { websiteUrl } = useAgents();
   const domain = websiteUrl || 'yourwebsite.com';
 
   const [activeCategory, setActiveCategory] = useState('All');

@@ -6,11 +6,11 @@ const cron = require('node-cron');
 
 const { initDB } = require('./db');
 const analyzeRouter = require('./routes/analyze');
+const { runWeeklyReports, runAllActiveLoops } = require('./cron/weeklyReport');
 const scheduleRouter = require('./routes/schedule');
 const publishRouter = require('./routes/publish');
 const gscRouter = require('./routes/gsc');
 const agentLoopRouter = require('./routes/agentLoop');
-const { runWeeklyReports } = require('./cron/weeklyReport');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -61,7 +61,7 @@ app.use('/api/gsc',        gscRouter);
 app.use('/api/agent-loop', agentLoopRouter);
 
 // ── Global error handler ─────────────────────────────────────────────────────
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
   console.error('[Server Error]', err.message);
   res.status(500).json({ error: err.message || 'Internal server error' });
 });
@@ -72,10 +72,17 @@ async function start() {
   console.log('[DB] SQLite initialized');
 
   // Weekly cron: every Monday at 9:00 AM (IST / Asia/Kolkata)
-  cron.schedule('0 9 * * 1', runWeeklyReports, {
+  cron.schedule('0 9 * * 1', async () => {
+    try {
+      await runWeeklyReports();
+      await runAllActiveLoops();
+    } catch (cronErr) {
+      console.error('[CRON Error]', cronErr.message || cronErr);
+    }
+  }, {
     timezone: process.env.CRON_TIMEZONE || 'Asia/Kolkata',
   });
-  console.log('[CRON] Weekly report scheduler active — fires every Monday 9:00 AM');
+  console.log('[CRON] Weekly report & autonomous agent scheduler active — fires every Monday 9:00 AM');
 
   app.listen(PORT, () => {
     console.log(`[Server] RankTop Autonomous Agent Backend running on port ${PORT}`);

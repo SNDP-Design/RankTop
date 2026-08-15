@@ -4,10 +4,11 @@ const { google } = require('googleapis');
 const { saveGscTokens, getGscTokens } = require('../db');
 
 function getOAuth2Client() {
+  const backendUrl = (process.env.BACKEND_URL || 'http://localhost:3001').replace(/\/$/, '');
   return new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
-    `${process.env.BACKEND_URL}/api/gsc/callback`
+    `${backendUrl}/api/gsc/callback`
   );
 }
 
@@ -75,9 +76,10 @@ router.get('/auth', (req, res) => {
 router.get('/callback', async (req, res) => {
   const { code, error } = req.query;
   const domain = req.session.gscDomain;
+  const frontendUrl = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '');
 
   if (error) {
-    return res.redirect(`${process.env.FRONTEND_URL}/#gsc-error=${encodeURIComponent(error)}`);
+    return res.redirect(`${frontendUrl}/#gsc-error=${encodeURIComponent(error)}`);
   }
   if (!code || !domain) {
     return res.status(400).json({ error: 'Missing OAuth code or domain session' });
@@ -89,10 +91,10 @@ router.get('/callback', async (req, res) => {
     saveGscTokens(domain, tokens);
 
     // Redirect back to the frontend with success signal
-    res.redirect(`${process.env.FRONTEND_URL}/#gsc-connected=${encodeURIComponent(domain)}`);
+    res.redirect(`${frontendUrl}/#gsc-connected=${encodeURIComponent(domain)}`);
   } catch (err) {
     console.error('[GSC OAuth Callback]', err.message);
-    res.redirect(`${process.env.FRONTEND_URL}/#gsc-error=${encodeURIComponent(err.message)}`);
+    res.redirect(`${frontendUrl}/#gsc-error=${encodeURIComponent(err.message)}`);
   }
 });
 
@@ -148,11 +150,11 @@ router.get('/data', async (req, res) => {
     const overall = overallResp.status === 'fulfilled' ? overallResp.value.data?.rows?.[0] : null;
     const queries = queryResp.status === 'fulfilled'
       ? (queryResp.value.data?.rows || []).map(r => ({
-          query: r.keys[0],
-          clicks: r.clicks,
-          impressions: r.impressions,
-          ctr: (r.ctr * 100).toFixed(1) + '%',
-          position: r.position.toFixed(1),
+          query: r.keys?.[0] || '',
+          clicks: r.clicks ?? 0,
+          impressions: r.impressions ?? 0,
+          ctr: typeof r.ctr === 'number' ? (r.ctr * 100).toFixed(1) + '%' : '0.0%',
+          position: typeof r.position === 'number' ? r.position.toFixed(1) : '0.0',
         }))
       : [];
 
@@ -161,10 +163,10 @@ router.get('/data', async (req, res) => {
       domain,
       dateRange: { start, end },
       overview: overall ? {
-        clicks: overall.clicks,
-        impressions: overall.impressions,
-        ctr: (overall.ctr * 100).toFixed(2) + '%',
-        avgPosition: overall.position.toFixed(1),
+        clicks: overall.clicks ?? 0,
+        impressions: overall.impressions ?? 0,
+        ctr: typeof overall.ctr === 'number' ? (overall.ctr * 100).toFixed(2) + '%' : '0.00%',
+        avgPosition: typeof overall.position === 'number' ? overall.position.toFixed(1) : '0.0',
       } : null,
       topQueries: queries,
     });

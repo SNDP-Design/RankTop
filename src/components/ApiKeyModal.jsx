@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Key, ExternalLink, CheckCircle, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { useAgents } from '../context/AgentContext';
-import { geminiService } from '../services/geminiService';
 
 export default function ApiKeyModal() {
   const { settingsOpen, setSettingsOpen, saveApiKey } = useAgents();

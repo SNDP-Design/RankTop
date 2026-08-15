@@ -76,7 +76,6 @@ async function runAgentLoop(domain, config) {
     logLoopRun(domain, 'analyze', { domain }, 'success');
 
     // Step 2: Decide highest-priority action
-    const dash = results.dashboard || {};
     const keywords = results.keywords || [];
     const swarm = results.swarm || {};
 

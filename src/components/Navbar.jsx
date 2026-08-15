@@ -9,7 +9,7 @@ export default function Navbar() {
   const [apiActive, setApiActive] = useState(false);
 
   useEffect(() => {
-    if (websiteUrl && !inputUrl) {
+    if (websiteUrl) {
       setInputUrl(websiteUrl);
     }
   }, [websiteUrl]);
@@ -37,8 +37,6 @@ export default function Navbar() {
 
   const runningCount = Object.values(agentStatus).filter((s) => s === 'running').length;
   const doneCount = Object.values(agentStatus).filter((s) => s === 'done').length;
-
-  const currentDomain = (websiteUrl || inputUrl).replace(/^https?:\/\//, '').replace(/\/$/, '');
 
   return (
     <header
@@ -85,7 +83,7 @@ export default function Navbar() {
                 onChange={(e) => setInputUrl(e.target.value)}
                 placeholder="Enter website URL (e.g. xgrowth.uno)"
                 aria-label="Website URL — triggers all AI agents"
-                className="bg-transparent text-[#71717a] placeholder-zinc-500 text-sm focus:text-zinc-200 focus:outline-none w-full font-mono font-semibold"
+                className="bg-transparent text-zinc-100 placeholder-zinc-500 text-sm focus:text-white focus:outline-none w-full font-mono font-semibold"
               />
 
               {submitted && (

@@ -3,15 +3,28 @@
 // Example: 'https://ranktop-backend.onrender.com'
 // Leave as empty string to use Gemini directly from the browser (no backend).
 
-const DEFAULT_RENDER_BACKEND = 'https://ranktop-backend.onrender.com';
-const BACKEND_URL = localStorage.getItem('RANKTOP_BACKEND_URL') || DEFAULT_RENDER_BACKEND;
+export const DEFAULT_RENDER_BACKEND = 'https://ranktop-backend.onrender.com';
 
 export function getBackendUrl() {
-  return BACKEND_URL;
+  if (typeof localStorage !== 'undefined') {
+    const saved = localStorage.getItem('RANKTOP_BACKEND_URL');
+    if (saved !== null) return saved;
+  }
+  return DEFAULT_RENDER_BACKEND;
+}
+
+export function setBackendUrl(url) {
+  if (typeof localStorage !== 'undefined') {
+    if (url) {
+      localStorage.setItem('RANKTOP_BACKEND_URL', url.trim());
+    } else {
+      localStorage.removeItem('RANKTOP_BACKEND_URL');
+    }
+  }
 }
 
 export function isBackendConnected() {
-  return Boolean(BACKEND_URL);
+  return Boolean(getBackendUrl());
 }
 
 // Helper: call backend API or fall back gracefully

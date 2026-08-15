@@ -25,10 +25,10 @@ export default function Footer({ onOpenApp }) {
           <div>
             <h4 className="font-semibold text-white uppercase tracking-wider mb-3 text-sm">Product</h4>
             <ul className="space-y-2">
-              <li><button onClick={() => onOpenApp('strategy')} className="hover:text-white transition-colors">Keyword Strategy</button></li>
-              <li><button onClick={() => onOpenApp('studio')} className="hover:text-white transition-colors">AI Blog Studio</button></li>
-              <li><button onClick={() => onOpenApp('aeo')} className="hover:text-white transition-colors">AEO Simulator</button></li>
-              <li><button onClick={() => onOpenApp('competitors')} className="hover:text-white transition-colors">Competitor Crawler</button></li>
+              <li><button onClick={() => onOpenApp?.('strategy')} className="hover:text-white transition-colors">Keyword Strategy</button></li>
+              <li><button onClick={() => onOpenApp?.('studio')} className="hover:text-white transition-colors">AI Blog Studio</button></li>
+              <li><button onClick={() => onOpenApp?.('aeo')} className="hover:text-white transition-colors">AEO Simulator</button></li>
+              <li><button onClick={() => onOpenApp?.('competitors')} className="hover:text-white transition-colors">Competitor Crawler</button></li>
             </ul>
           </div>
 
@@ -36,10 +36,10 @@ export default function Footer({ onOpenApp }) {
           <div>
             <h4 className="font-semibold text-white uppercase tracking-wider mb-3 text-sm">Free Micro-Tools</h4>
             <ul className="space-y-2">
-              <li><button onClick={() => onOpenApp('freetools')} className="hover:text-white transition-colors">Google SERP Simulator</button></li>
-              <li><button onClick={() => onOpenApp('freetools')} className="hover:text-white transition-colors">Schema JSON-LD Generator</button></li>
-              <li><button onClick={() => onOpenApp('freetools')} className="hover:text-white transition-colors">Headline CTR Optimizer</button></li>
-              <li><button onClick={() => onOpenApp('aeo')} className="hover:text-white transition-colors">AI Overview Inspector</button></li>
+              <li><button onClick={() => onOpenApp?.('freetools')} className="hover:text-white transition-colors">Google SERP Simulator</button></li>
+              <li><button onClick={() => onOpenApp?.('freetools')} className="hover:text-white transition-colors">Schema JSON-LD Generator</button></li>
+              <li><button onClick={() => onOpenApp?.('freetools')} className="hover:text-white transition-colors">Headline CTR Optimizer</button></li>
+              <li><button onClick={() => onOpenApp?.('aeo')} className="hover:text-white transition-colors">AI Overview Inspector</button></li>
             </ul>
           </div>
 

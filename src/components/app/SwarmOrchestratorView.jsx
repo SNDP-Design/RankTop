@@ -1,7 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Bot, CheckCircle2, Loader2, AlertCircle, Clock, Zap, Settings2, Mail, Globe, Power, ExternalLink, Play, ShieldAlert, Check, X, Sliders, HelpCircle, ArrowRight, Sparkles, Layers, FileText, Search } from 'lucide-react';
+import { 
+  Bot, 
+  CheckCircle2, 
+  Loader2, 
+  AlertCircle, 
+  Clock, 
+  Zap, 
+  Play, 
+  ShieldAlert, 
+  Check, 
+  X, 
+  Sliders, 
+  Sparkles,
+  Server,
+  Mail
+} from 'lucide-react';
 import { useAgents } from '../../context/AgentContext';
-import { backendPost, backendGet, getBackendUrl } from '../../config';
+import { backendPost, backendGet, getBackendUrl, setBackendUrl as saveBackendUrlConfig } from '../../config';
 import { SwarmOrchestrator } from '../../agents/SwarmOrchestrator';
 
 // Beginner-friendly non-technical agent definitions
@@ -62,13 +77,10 @@ function StatusBadge({ status }) {
 }
 
 export default function SwarmOrchestratorView() {
-  const { websiteUrl, triggerAllAgents, setSettingsOpen, hasApiKey } = useAgents();
+  const { websiteUrl, setSettingsOpen, hasApiKey } = useAgents();
 
   const [backendUrl, setBackendUrl] = useState(getBackendUrl());
   const [email, setEmail] = useState('');
-  const [wpUrl, setWpUrl] = useState('');
-  const [wpUser, setWpUser] = useState('');
-  const [wpPass, setWpPass] = useState('');
 
   const [swarmState, setSwarmState] = useState({
     status: 'IDLE',
@@ -110,11 +122,6 @@ export default function SwarmOrchestratorView() {
     orchestratorInstance.runCustomStrategicGoal(customGoal.trim(), domain);
   };
 
-  const handleSampleClick = (sampleDomain) => {
-    triggerAllAgents(sampleDomain);
-    handleStartInteractiveSwarm(sampleDomain);
-  };
-
   const handleApproveGate = () => {
     orchestratorInstance.approvePendingTask();
   };
@@ -128,8 +135,8 @@ export default function SwarmOrchestratorView() {
   };
 
   const handleSaveBackendUrl = (e) => {
-    e.preventDefault();
-    localStorage.setItem('RANKTOP_BACKEND_URL', backendUrl.trim());
+    if (e) e.preventDefault();
+    saveBackendUrlConfig(backendUrl);
     setMsg({ type: 'success', text: 'Server connection updated successfully!' });
     setTimeout(() => setMsg(null), 3000);
   };
@@ -154,9 +161,6 @@ export default function SwarmOrchestratorView() {
         await backendPost('/api/agent-loop/start', {
           domain,
           email: email.trim(),
-          wpSiteUrl: wpUrl.trim(),
-          wpUsername: wpUser.trim(),
-          wpAppPassword: wpPass.trim(),
         });
         setIsLoopActive(true);
         setMsg({ type: 'success', text: '24/7 Autopilot activated! First automated cycle started.' });
@@ -260,6 +264,75 @@ export default function SwarmOrchestratorView() {
           {msg.text}
         </div>
       )}
+
+      {/* 24/7 Autonomous Agent Loop Backend Setup */}
+      <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', padding: '20px 24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Server size={18} color="#3ECF8E" />
+            <div>
+              <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#fff', margin: 0 }}>
+                24/7 Background Autonomous Engine
+              </h3>
+              <p style={{ fontSize: '12px', color: '#71717a', margin: 0 }}>
+                Connect your backend to enable weekly scheduled crawls, AI analysis reports, and auto-publishing.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={handleToggleAutonomy}
+            disabled={loadingLoop}
+            style={{
+              padding: '8px 16px', borderRadius: '8px', border: 'none', fontSize: '13px', fontWeight: 700,
+              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px',
+              background: isLoopActive ? '#ef4444' : '#3ECF8E',
+              color: isLoopActive ? '#fff' : '#000',
+            }}
+          >
+            {loadingLoop ? <Loader2 size={14} className="animate-spin" /> : isLoopActive ? <AlertCircle size={14} /> : <Play size={14} />}
+            {isLoopActive ? 'Pause 24/7 Autopilot' : 'Activate 24/7 Autopilot'}
+          </button>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px', marginTop: '12px' }}>
+          <div>
+            <label style={{ fontSize: '12px', color: '#a1a1aa', fontWeight: 600, display: 'block', marginBottom: '4px' }}>
+              Backend URL
+            </label>
+            <div style={{ display: 'flex', gap: '6px' }}>
+              <input
+                type="text"
+                value={backendUrl}
+                onChange={(e) => setBackendUrl(e.target.value)}
+                placeholder="https://ranktop-backend.onrender.com"
+                style={{ flex: 1, background: '#121212', border: '1px solid #2d2d2d', borderRadius: '8px', padding: '8px 12px', color: '#fff', fontSize: '13px', outline: 'none' }}
+              />
+              <button
+                onClick={handleSaveBackendUrl}
+                style={{ background: '#262626', border: '1px solid #333', color: '#3ECF8E', padding: '8px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label style={{ fontSize: '12px', color: '#a1a1aa', fontWeight: 600, display: 'block', marginBottom: '4px' }}>
+              Notification Email
+            </label>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#121212', border: '1px solid #2d2d2d', borderRadius: '8px', padding: '0 10px' }}>
+              <Mail size={14} color="#71717a" />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@company.com"
+                style={{ flex: 1, background: 'transparent', border: 'none', padding: '8px 0', color: '#fff', fontSize: '13px', outline: 'none' }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
 
 
 

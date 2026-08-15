@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Share2, CheckCircle2, RefreshCw, Key, Globe, ExternalLink, Zap, Loader2 } from 'lucide-react';
-import { getBackendUrl } from '../../config';
+import { Share2, CheckCircle2, Globe, Loader2 } from 'lucide-react';
 import { gscService } from '../../services/gscService';
 
 export default function CmsIntegrations() {

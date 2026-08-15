@@ -1,34 +1,17 @@
 import React, { useState, useMemo } from 'react';
 import { 
   TrendingUp, 
-  Zap, 
   Globe2, 
-  CheckCircle2, 
   Sparkles, 
-  ShieldCheck, 
-  Calendar, 
   ArrowUpRight, 
-  Bot,
-  Award,
-  BarChart3,
-  PieChart,
-  Activity,
-  Layers,
-  ArrowUp,
-  Clock,
-  Radio,
-  MessageSquare,
-  Magnet,
-  FileText,
-  Search,
-  Share2,
-  Wrench,
-  Target,
-  LayoutDashboard,
-  Flame,
-  Check,
-  ZapOff,
-  Link2
+  Bot, 
+  Award, 
+  BarChart3, 
+  PieChart, 
+  Radio, 
+  Target, 
+  LayoutDashboard, 
+  Flame 
 } from 'lucide-react';
 import { useAgents } from '../../context/AgentContext';
 
@@ -42,27 +25,33 @@ function getDomainDailyTelemetry(domain, agentResults) {
     seed += cleanDomain.charCodeAt(i);
   }
 
-  const dashData = agentResults.dashboard || {};
-  const geoData = agentResults.geo || {};
-  const kwData = agentResults.keywords || [];
-  const compData = agentResults.competitors || [];
-  const backlinkData = agentResults.backlinks || {};
-  const llmBenchData = agentResults.llm_benchmarker || [];
-  const communityData = agentResults.community_amplifier || [];
-  const decayData = agentResults.decay_repairman || [];
+  const dashData = agentResults?.dashboard || {};
+  const geoData = agentResults?.geo || {};
+  const kwData = Array.isArray(agentResults?.keywords) ? agentResults.keywords : [];
+  const compData = Array.isArray(agentResults?.competitors) ? agentResults.competitors : [];
+  const backlinkData = agentResults?.backlinks || {};
+  const llmBenchData = Array.isArray(agentResults?.llm_benchmarker) ? agentResults.llm_benchmarker : [];
+  const communityData = Array.isArray(agentResults?.community_amplifier) ? agentResults.community_amplifier : [];
+  const decayData = Array.isArray(agentResults?.decay_repairman) ? agentResults.decay_repairman : [];
 
-  // Current rank derived from Gemini analysis or domain seed
-  const currentRank = dashData.avgPosition 
-    ? Math.max(1, Math.round(parseFloat(dashData.avgPosition)))
+  // Current rank derived safely from Gemini analysis or domain seed
+  const parsedPos = parseFloat(dashData.avgPosition);
+  const currentRank = (!isNaN(parsedPos) && parsedPos > 0)
+    ? Math.max(1, Math.round(parsedPos))
     : Math.max(2, (seed % 15) + 3);
 
   const prevRank = currentRank + 1;
   const startRank = currentRank + Math.min(20, (seed % 12) + 8);
-  const totalRankLift = startRank - currentRank;
+  const totalRankLift = Math.max(1, startRank - currentRank);
 
-  const seoScore = dashData.seoScore ?? Math.min(98, 70 + (seed % 25));
-  const geoScore = geoData.overallGeoScore ?? dashData.geoScore ?? Math.min(96, 75 + (seed % 20));
-  const aeoScore = dashData.aeoScore ?? Math.min(95, 72 + (seed % 22));
+  const parsedSeo = parseInt(dashData.seoScore, 10);
+  const seoScore = !isNaN(parsedSeo) ? Math.min(100, Math.max(0, parsedSeo)) : Math.min(98, 70 + (seed % 25));
+
+  const parsedGeo = parseInt(geoData.overallGeoScore ?? dashData.geoScore, 10);
+  const geoScore = !isNaN(parsedGeo) ? Math.min(100, Math.max(0, parsedGeo)) : Math.min(96, 75 + (seed % 20));
+
+  const parsedAeo = parseInt(dashData.aeoScore, 10);
+  const aeoScore = !isNaN(parsedAeo) ? Math.min(100, Math.max(0, parsedAeo)) : Math.min(95, 72 + (seed % 22));
 
   // Generate 30 distinct daily points representing Day 1 to Day 30
   const all30Days = [];
@@ -902,28 +891,53 @@ export default function DashboardOverview({ setActiveTab }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {agentPerformanceList.map((ag) => (
-                    <tr key={ag.id} style={{ borderBottom: '1px solid #222', transition: 'background 0.15s ease' }}>
-                      <td style={{ padding: '14px 24px', fontWeight: 700, color: '#fff' }}>
-                        <span style={{ marginRight: '8px', fontSize: '16px' }}>{ag.avatar}</span>
-                        {ag.name}
-                      </td>
-                      <td style={{ padding: '14px 20px', color: ag.color, fontWeight: 600 }}>
-                        {ag.category}
-                      </td>
-                      <td style={{ padding: '14px 20px', color: '#d4d4d8', fontWeight: 600 }}>
-                        {ag.outputs}
-                      </td>
-                      <td style={{ padding: '14px 20px', color: '#3ECF8E', fontWeight: 800 }}>
-                        {ag.impact}
-                      </td>
-                      <td style={{ padding: '14px 24px' }}>
-                        <span style={{ fontSize: '14px', fontWeight: 700, color: '#3ECF8E', background: 'rgba(62,207,142,0.08)', padding: '3px 10px', borderRadius: '6px', border: '1px solid rgba(62,207,142,0.2)' }}>
-                          {ag.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
+                  {agentPerformanceList.map((ag) => {
+                    const tabMap = {
+                      orchestrator: 'swarm',
+                      backlinker: 'backlinks',
+                      aeo: 'aeo',
+                      competitor: 'competitors',
+                      writer: 'studio',
+                      research: 'strategy',
+                      llm_benchmarker: 'geo',
+                      community_amplifier: 'geo',
+                      decay_repairman: 'geo',
+                      som_tracker: 'geo',
+                      silo_architect: 'strategy',
+                      schema_engineer: 'freetools'
+                    };
+                    const targetTab = tabMap[ag.id] || 'swarm';
+                    return (
+                      <tr
+                        key={ag.id}
+                        onClick={() => setActiveTab && setActiveTab(targetTab)}
+                        style={{
+                          borderBottom: '1px solid #222',
+                          cursor: setActiveTab ? 'pointer' : 'default',
+                          transition: 'background 0.15s ease'
+                        }}
+                      >
+                        <td style={{ padding: '14px 24px', fontWeight: 700, color: '#fff' }}>
+                          <span style={{ marginRight: '8px', fontSize: '16px' }}>{ag.avatar}</span>
+                          {ag.name}
+                        </td>
+                        <td style={{ padding: '14px 20px', color: ag.color, fontWeight: 600 }}>
+                          {ag.category}
+                        </td>
+                        <td style={{ padding: '14px 20px', color: '#d4d4d8', fontWeight: 600 }}>
+                          {ag.outputs}
+                        </td>
+                        <td style={{ padding: '14px 20px', color: '#3ECF8E', fontWeight: 800 }}>
+                          {ag.impact}
+                        </td>
+                        <td style={{ padding: '14px 24px' }}>
+                          <span style={{ fontSize: '14px', fontWeight: 700, color: '#3ECF8E', background: 'rgba(62,207,142,0.08)', padding: '3px 10px', borderRadius: '6px', border: '1px solid rgba(62,207,142,0.2)' }}>
+                            {ag.status}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

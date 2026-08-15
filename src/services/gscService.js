@@ -219,18 +219,18 @@ class GscClientService {
 
       const overall = overviewData.rows?.[0] || null;
       const queries = (queryData.rows || []).map((r) => ({
-        query: r.keys[0],
-        clicks: r.clicks,
-        impressions: r.impressions,
-        ctr: (r.ctr * 100).toFixed(1) + '%',
-        position: r.position.toFixed(1),
+        query: r.keys?.[0] || '',
+        clicks: r.clicks ?? 0,
+        impressions: r.impressions ?? 0,
+        ctr: typeof r.ctr === 'number' ? (r.ctr * 100).toFixed(1) + '%' : '0.0%',
+        position: typeof r.position === 'number' ? r.position.toFixed(1) : '0.0',
       }));
 
       const dailyBreakdown = (dateData.rows || []).map((r) => ({
-        date: r.keys[0],
-        clicks: r.clicks,
-        impressions: r.impressions,
-        position: r.position ? r.position.toFixed(1) : '0',
+        date: r.keys?.[0] || '',
+        clicks: r.clicks ?? 0,
+        impressions: r.impressions ?? 0,
+        position: typeof r.position === 'number' ? r.position.toFixed(1) : '0.0',
       }));
 
       return {
@@ -239,10 +239,10 @@ class GscClientService {
         startDate,
         endDate,
         overview: overall ? {
-          clicks: overall.clicks,
-          impressions: overall.impressions,
-          ctr: (overall.ctr * 100).toFixed(2) + '%',
-          avgPosition: overall.position.toFixed(1),
+          clicks: overall.clicks ?? 0,
+          impressions: overall.impressions ?? 0,
+          ctr: typeof overall.ctr === 'number' ? (overall.ctr * 100).toFixed(2) + '%' : '0.00%',
+          avgPosition: typeof overall.position === 'number' ? overall.position.toFixed(1) : '0.0',
         } : { clicks: 0, impressions: 0, ctr: '0%', avgPosition: '0' },
         topQueries: queries,
         dailyBreakdown,

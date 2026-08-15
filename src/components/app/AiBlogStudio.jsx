@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Sparkles, Copy, Check, Share2, Download } from 'lucide-react';
+import { FileText, Sparkles, Copy, Check, Download } from 'lucide-react';
 import { geminiService } from '../../services/geminiService';
 import { useAgents } from '../../context/AgentContext';
 

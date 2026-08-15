@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Target, Sparkles, Loader2, AlertCircle } from 'lucide-react';
+import { Target, Sparkles, Loader2 } from 'lucide-react';
 import { useAgents } from '../../context/AgentContext';
 import { geminiService } from '../../services/geminiService';
 

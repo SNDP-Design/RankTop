@@ -1,26 +1,18 @@
 import React, { useState } from 'react';
 import { 
   ShieldCheck, 
-  Loader2, 
-  AlertCircle, 
   Radio, 
   MessageSquare, 
-  Zap, 
-  CheckCircle2, 
-  ExternalLink, 
-  Sparkles, 
-  Flame, 
-  Clock, 
-  RefreshCw 
+  Zap
 } from 'lucide-react';
 import { useAgents } from '../../context/AgentContext';
 
 const visibilityColor = { High: '#3ECF8E', Medium: '#f59e0b', Low: '#f97316', None: '#ef4444' };
 
 export default function LlmGeoOptimization({ initialTab = 'overview' }) {
-  const { agentResults, agentStatus, websiteUrl } = useAgents();
+  const { agentResults, websiteUrl } = useAgents();
   const data = agentResults.geo;
-  const status = agentStatus.geo;
+  const status = agentResults.geo ? 'done' : 'idle';
   const domain = websiteUrl ? websiteUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') : '';
 
   // Dynamic Agent Results for Entered Domain
