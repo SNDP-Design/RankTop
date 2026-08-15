@@ -236,7 +236,7 @@ export default function BacklinkOutreach() {
       )}
 
       {/* Main Workspace Layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 420px', gap: '20px' }}>
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_420px] gap-5">
         
         {/* Left Column: Prospecting Table */}
         <div style={{ background: '#171717', border: '1px solid #262626', borderRadius: '16px', overflow: 'hidden' }}>

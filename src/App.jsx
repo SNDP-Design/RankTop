@@ -20,10 +20,12 @@ import BacklinkOutreach from './components/app/BacklinkOutreach';
 function WorkspaceShell() {
   const [activeAppTab, setActiveAppTab] = useState('dashboard');
   const [studioKeyword, setStudioKeyword] = useState('');
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   const openAppWithTab = (tab, keyword = '') => {
     if (keyword) setStudioKeyword(keyword);
     setActiveAppTab(tab || 'dashboard');
+    setIsMobileSidebarOpen(false);
     const mainEl = document.getElementById('main-content');
     if (mainEl) mainEl.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -58,24 +60,36 @@ function WorkspaceShell() {
 
   return (
     <>
-      {/* Fixed Navbar */}
-      <Navbar />
+      {/* Fixed Navbar with mobile sidebar toggle */}
+      <Navbar onToggleSidebar={() => setIsMobileSidebarOpen(prev => !prev)} />
       {/* ApiKey Modal — rendered at root level, overlays everything */}
       <ApiKeyModal />
       {/* 64px spacer for fixed navbar */}
       <div style={{ height: '64px', flexShrink: 0 }} aria-hidden="true" />
 
       {/* App workspace — 100% full screen Master Dashboard canvas */}
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden', minHeight: 0 }}>
-        <AppSidebar activeTab={activeAppTab} setActiveTab={openAppWithTab} />
+      <div style={{ flex: 1, display: 'flex', overflow: 'hidden', minHeight: 0, width: '100%' }}>
+        <AppSidebar
+          activeTab={activeAppTab}
+          setActiveTab={openAppWithTab}
+          isOpen={isMobileSidebarOpen}
+          onClose={() => setIsMobileSidebarOpen(false)}
+        />
         <main
           id="main-content"
           role="main"
           aria-label="Master Dashboard Canvas"
-          style={{ flex: 1, overflowY: 'auto', background: '#0F0F0F', minHeight: 0 }}
-          className="p-6 md:p-8 pb-24 focus-visible:outline-none font-sans w-full min-w-full"
+          style={{
+            flex: 1,
+            minWidth: 0,
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            background: '#0F0F0F',
+            minHeight: 0,
+          }}
+          className="p-4 sm:p-6 lg:p-8 pb-24 focus-visible:outline-none font-sans"
         >
-          <div className="w-full space-y-6">
+          <div className="w-full max-w-7xl mx-auto space-y-6">
             {renderActiveModule()}
           </div>
         </main>

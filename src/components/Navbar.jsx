@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, Globe, Search, Check, Settings } from 'lucide-react';
+import { Sparkles, Globe, Search, Check, Settings, Menu } from 'lucide-react';
 import { useAgents } from '../context/AgentContext';
 
-export default function Navbar() {
+export default function Navbar({ onToggleSidebar }) {
   const { triggerAllAgents, isAnyRunning, agentStatus, setSettingsOpen, hasApiKey, websiteUrl } = useAgents();
   const [inputUrl, setInputUrl] = useState(websiteUrl || '');
   const [submitted, setSubmitted] = useState(false);
@@ -44,10 +44,20 @@ export default function Navbar() {
       className="bg-[#121212]/95 backdrop-blur-xl border-b border-[#262626] w-full"
       style={{ position: 'fixed', top: 0, left: 0, right: 0, height: '64px', zIndex: 50 }}
     >
-      <div className="w-full px-6 flex items-center justify-between h-16 gap-4">
+      <div className="w-full px-4 sm:px-6 flex items-center justify-between h-16 gap-3">
 
-        {/* Left: Brand Logo */}
+        {/* Left: Hamburger (Mobile) + Brand Logo */}
         <div className="flex items-center gap-3 shrink-0">
+          {onToggleSidebar && (
+            <button
+              onClick={onToggleSidebar}
+              aria-label="Toggle navigation sidebar"
+              className="md:hidden p-2 bg-[#1a1a1a] hover:bg-[#262626] text-zinc-400 hover:text-white rounded-xl border border-[#2d2d2d] transition-all"
+            >
+              <Menu size={18} />
+            </button>
+          )}
+
           <div className="w-9 h-9 rounded-xl bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 flex items-center justify-center shadow-lg shadow-[#3ECF8E]/20">
             <Sparkles className="w-5 h-5 text-[#3ECF8E]" aria-hidden="true" />
           </div>
