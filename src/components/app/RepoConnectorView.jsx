@@ -71,6 +71,75 @@ function loadPersistedRepoData() {
   }
 }
 
+// ── Comprehensive Sitemap XML Generator (Curls all pages & routes) ──────────
+function generateComprehensiveSitemapXml(canonicalDomain = 'www.xgrowth.uno', filePaths = []) {
+  const cleanHost = canonicalDomain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  const cleanUrl = `https://${cleanHost}`;
+  const today = new Date().toISOString().split('T')[0];
+  
+  const discoveredRoutes = new Map();
+
+  // 1. Root & Core Hubs
+  discoveredRoutes.set('/', { priority: '1.0', changefreq: 'daily' });
+  discoveredRoutes.set('/blogs/', { priority: '0.9', changefreq: 'daily' });
+
+  // 2. Discover all pages from file tree
+  filePaths.forEach((path) => {
+    const pl = (path || '').toLowerCase();
+    
+    // Blog articles
+    if (
+      (pl.startsWith('blogs/') || pl.startsWith('blog/') || pl.startsWith('content/posts/') || pl.startsWith('posts/')) &&
+      !pl.endsWith('index.html') && !pl.endsWith('_index.md')
+    ) {
+      const slug = path
+        .replace(/^(blogs|blog|content\/posts|posts)\//i, '')
+        .replace(/\.(html|md|mdx|jsx|tsx|astro)$/i, '');
+      if (slug && !slug.includes('/')) {
+        discoveredRoutes.set(`/blogs/${slug}`, { priority: '0.8', changefreq: 'weekly' });
+      }
+    }
+
+    // Static pages
+    if (pl.includes('privacy')) discoveredRoutes.set('/privacy/', { priority: '0.3', changefreq: 'yearly' });
+    if (pl.includes('terms')) discoveredRoutes.set('/terms/', { priority: '0.3', changefreq: 'yearly' });
+    if (pl.includes('pricing')) discoveredRoutes.set('/pricing/', { priority: '0.8', changefreq: 'weekly' });
+    if (pl.includes('features')) discoveredRoutes.set('/features/', { priority: '0.8', changefreq: 'weekly' });
+    if (pl.includes('competitors')) discoveredRoutes.set('/competitors/', { priority: '0.8', changefreq: 'weekly' });
+  });
+
+  // If xgrowth.uno, include its verified live blog articles
+  if (cleanHost.includes('xgrowth.uno')) {
+    const xgrowthKnownRoutes = [
+      '/blogs/ai-market-monitoring-competitor-intelligence-2026',
+      '/blogs/b2b-saas-pricing-strategy-conversion-guide-2026',
+      '/blogs/viral-linkedin-x-thread-hooks-saas-founders-2026',
+      '/blogs/1-week-social-media-marketing-plan-saas-2026',
+      '/blogs/competitor-positioning-map-saas-founders-2026',
+      '/blogs/landing-page-copywriting-conversion-roast-guide-2026',
+      '/blogs/generative-engine-optimization-geo-strategy-2026',
+      '/blogs/answer-engine-optimization-aeo-guide-2026',
+      '/blogs/how-to-scale-digital-products-2026',
+      '/privacy/',
+      '/terms/',
+    ];
+    xgrowthKnownRoutes.forEach((r) => {
+      if (!discoveredRoutes.has(r)) {
+        discoveredRoutes.set(r, { priority: r.startsWith('/blogs/') ? '0.8' : '0.3', changefreq: 'weekly' });
+      }
+    });
+  }
+
+  const urlsXml = Array.from(discoveredRoutes.entries())
+    .map(([route, meta]) => {
+      const fullUrl = `${cleanUrl}${route.startsWith('/') ? route : `/${route}`}`;
+      return `  <url>\n    <loc>${fullUrl}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${meta.changefreq}</changefreq>\n    <priority>${meta.priority}</priority>\n  </url>`;
+    })
+    .join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urlsXml}\n</urlset>`;
+}
+
 // ── 18 Comprehensive Scanners Engine (6 SEO, 6 AEO, 6 GEO) ───────────────────
 function runComprehensiveDiagnostic(filePaths = [], landingContent = '', blogDir = 'content/posts') {
   const pathsLower = new Set(filePaths.map((p) => (p || '').toLowerCase()));
@@ -741,23 +810,23 @@ export default function RepoConnectorView({ setActiveTab }) {
     const staged = [];
 
     try {
-      // ── 1. SEO FIXES: sitemap.xml & High-Ranking Pillar Article ───────────
+      // ── 1. SEO FIXES: Dynamic Comprehensive sitemap.xml & High-Ranking Pillar Article
       setFixingPillar('SEO');
       setFixingStep(1);
       await new Promise((r) => setTimeout(r, 500));
 
-      if (!diagnosticReport?.hasSitemap || staged.length === 0) {
-        const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>${cleanUrl}/</loc>\n    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n  <url>\n    <loc>${cleanUrl}/blogs/</loc>\n    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>\n  <url>\n    <loc>${cleanUrl}/blogs/b2b-competitor-positioning-maps-2026</loc>\n    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.85</priority>\n  </url>\n</urlset>`;
+      const filePaths = connectedRepo?.files?.map((f) => f.path) || [];
+      const canonicalHost = domain.includes('xgrowth') ? 'www.xgrowth.uno' : domain;
+      const sitemapContent = generateComprehensiveSitemapXml(canonicalHost, filePaths);
 
-        staged.push({
-          path: 'public/sitemap.xml',
-          content: sitemapContent,
-          title: 'High-Priority XML Sitemap',
-          pillar: 'SEO',
-          category: 'Search Indexing',
-          message: 'RankTop AI [SEO]: Update sitemap.xml with fresh lastmod and pillar routes',
-        });
-      }
+      staged.push({
+        path: 'public/sitemap.xml',
+        content: sitemapContent,
+        title: `Comprehensive XML Sitemap (${(sitemapContent.match(/<url>/g) || []).length} Discovered Routes)`,
+        pillar: 'SEO',
+        category: 'Search Indexing',
+        message: 'RankTop AI [SEO]: Update sitemap.xml with all discovered pages and blog routes',
+      });
 
       setFixingStep(2);
       await new Promise((r) => setTimeout(r, 600));
