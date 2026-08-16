@@ -1731,6 +1731,137 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
             </div>
           )}
 
+          {/* ─── GOOGLE SEARCH CONSOLE INDEXING DIAGNOSTIC & ACCELERATOR ─── */}
+          <div className="bg-[#171717] rounded-2xl border-2 border-[#60a5fa]/40 p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-[#60a5fa]/5 rounded-full blur-3xl pointer-events-none" />
+            
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#60a5fa]/10 text-[#60a5fa] text-xs font-bold border border-[#60a5fa]/20">
+                  <BarChart3 className="w-3.5 h-3.5" />
+                  <span>GOOGLE SEARCH CONSOLE • INDEXING AUDIT & FIXER</span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                  GSC Indexing Assessment & Instant Fixer
+                </h3>
+                <p className="text-xs sm:text-sm text-zinc-400 max-w-2xl">
+                  Assessment for <strong className="text-white">9 Not Indexed Pages (3 Reasons)</strong> in Google Search Console with direct solutions.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <a
+                  href="https://search.google.com/search-console"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 rounded-xl bg-[#60a5fa] hover:bg-[#93c5fd] text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-[#60a5fa]/20"
+                >
+                  <span>Open Search Console</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              </div>
+            </div>
+
+            {/* 3 Reasons Breakdown Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+              
+              {/* Reason 1 */}
+              <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-amber-400">Reason 1 • Page with redirect</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-bold">Healthy (308)</span>
+                </div>
+                <h4 className="text-xs font-bold text-white">Non-www / HTTP Domain Variants</h4>
+                <p className="text-[11px] text-zinc-400 leading-relaxed">
+                  URLs like <code className="text-zinc-300">https://xgrowth.uno/</code> redirect via 308 to <code className="text-zinc-300">https://www.xgrowth.uno/</code>. Google correctly skips indexing redirect hops.
+                </p>
+                <div className="text-[10px] text-emerald-400 font-semibold pt-1">✓ No action required (Standard SEO behavior)</div>
+              </div>
+
+              {/* Reason 2 */}
+              <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-sky-400">Reason 2 • Discovered - not indexed</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded bg-sky-500/10 text-sky-400 font-bold">In Queue</span>
+                </div>
+                <h4 className="text-xs font-bold text-white">New Blog Articles in Crawl Queue</h4>
+                <p className="text-[11px] text-zinc-400 leading-relaxed">
+                  Google found the URLs in your sitemap, but hasn't allocated crawl budget to render them yet due to domain age.
+                </p>
+                <div className="text-[10px] text-sky-400 font-semibold pt-1">⚡ Fix: Request indexing via GSC URL Inspection</div>
+              </div>
+
+              {/* Reason 3 */}
+              <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-purple-400">Reason 3 • Crawled - not indexed</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 font-bold">Link Signals</span>
+                </div>
+                <h4 className="text-xs font-bold text-white">Internal Link Equity & Breadcrumbs</h4>
+                <p className="text-[11px] text-zinc-400 leading-relaxed">
+                  Google crawled the page but wants stronger internal cross-linking signals from related articles before pushing to SERP.
+                </p>
+                <div className="text-[10px] text-purple-400 font-semibold pt-1">⚡ Fix: Add BreadcrumbList & Related Post Links</div>
+              </div>
+
+            </div>
+
+            {/* Live All 13 Pages Indexing Status Table */}
+            <div className="bg-[#121212] rounded-xl border border-[#262626] p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-extrabold text-white flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#3ECF8E]" />
+                  <span>Live Production Routes & Indexing Priority Checklist (13 Pages)</span>
+                </h4>
+                <span className="text-[11px] text-zinc-500">Canonical: https://www.xgrowth.uno/</span>
+              </div>
+
+              <div className="divide-y divide-[#262626] max-h-60 overflow-y-auto pr-1">
+                {[
+                  { url: 'https://www.xgrowth.uno/', label: 'Homepage / Core Landing', type: 'Core Hub', priority: '1.0' },
+                  { url: 'https://www.xgrowth.uno/blogs/', label: 'Blog Archive & Knowledge Hub', type: 'Hub', priority: '0.9' },
+                  { url: 'https://www.xgrowth.uno/blogs/ai-market-monitoring-competitor-intelligence-2026', label: 'Autonomous AI Market Monitoring 2026', type: 'Pillar Post', priority: '0.8' },
+                  { url: 'https://www.xgrowth.uno/blogs/b2b-saas-pricing-strategy-conversion-guide-2026', label: 'B2B SaaS Pricing Strategy Guide 2026', type: 'Pillar Post', priority: '0.8' },
+                  { url: 'https://www.xgrowth.uno/blogs/viral-linkedin-x-thread-hooks-saas-founders-2026', label: '100+ Viral LinkedIn & X Thread Hooks', type: 'Pillar Post', priority: '0.8' },
+                  { url: 'https://www.xgrowth.uno/blogs/1-week-social-media-marketing-plan-saas-2026', label: '1-Week Social Media Marketing Plan', type: 'Guide', priority: '0.8' },
+                  { url: 'https://www.xgrowth.uno/blogs/competitor-positioning-map-saas-founders-2026', label: 'Competitor Positioning Maps Framework', type: 'Pillar Post', priority: '0.8' },
+                  { url: 'https://www.xgrowth.uno/blogs/landing-page-copywriting-conversion-roast-guide-2026', label: 'Landing Page Copywriting & Conversion Roast', type: 'Guide', priority: '0.8' },
+                  { url: 'https://www.xgrowth.uno/blogs/generative-engine-optimization-geo-strategy-2026', label: 'GEO Strategy: Generative Engine Optimization', type: 'Pillar Post', priority: '0.8' },
+                  { url: 'https://www.xgrowth.uno/blogs/answer-engine-optimization-aeo-guide-2026', label: 'AEO Guide: Answer Engine Optimization', type: 'Pillar Post', priority: '0.8' },
+                  { url: 'https://www.xgrowth.uno/blogs/how-to-scale-digital-products-2026', label: 'How to Scale Digital Products in 2026', type: 'Guide', priority: '0.8' },
+                  { url: 'https://www.xgrowth.uno/privacy/', label: 'Privacy Policy Page', type: 'Legal', priority: '0.3' },
+                  { url: 'https://www.xgrowth.uno/terms/', label: 'Terms of Service Page', type: 'Legal', priority: '0.3' },
+                ].map((item, idx) => (
+                  <div key={idx} className="py-2.5 flex items-center justify-between text-xs gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-white truncate">{item.label}</span>
+                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#262626] text-zinc-400 font-mono">{item.type}</span>
+                      </div>
+                      <span className="text-[11px] text-zinc-500 font-mono truncate block">{item.url}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <span className="text-[10px] text-emerald-400 font-mono font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                        200 OK
+                      </span>
+                      <a
+                        href={`https://search.google.com/search-console/inspect?resource_id=https%3A%2F%2Fwww.xgrowth.uno%2F&id=${encodeURIComponent(item.url)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-2.5 py-1 rounded bg-[#262626] hover:bg-[#60a5fa] hover:text-black text-zinc-300 text-[11px] font-bold flex items-center gap-1 transition-all"
+                      >
+                        <span>Request Indexing</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+
           {/* ─── NEXT STRATEGIC STEPS PLAYBOOK ─── */}
           <div className="bg-gradient-to-br from-[#171717] to-[#121212] rounded-2xl border-2 border-[#3ECF8E]/40 p-6 sm:p-8 space-y-6 shadow-2xl">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
