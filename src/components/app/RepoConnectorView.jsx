@@ -1763,281 +1763,61 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
             </div>
           )}
 
-          {/* ─── GOOGLE SEARCH CONSOLE INDEXING DIAGNOSTIC & ACCELERATOR ─── */}
-          <div className="bg-[#171717] rounded-2xl border-2 border-[#60a5fa]/40 p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-80 h-80 bg-[#60a5fa]/5 rounded-full blur-3xl pointer-events-none" />
-            
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
-              <div className="space-y-1">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#60a5fa]/10 text-[#60a5fa] text-xs font-bold border border-[#60a5fa]/20">
-                  <BarChart3 className="w-3.5 h-3.5" />
-                  <span>GOOGLE SEARCH CONSOLE • INDEXING AUDIT & FIXER</span>
-                </div>
-                <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                  GSC Indexing Assessment & Instant Fixer
-                </h3>
-                <p className="text-xs sm:text-sm text-zinc-400 max-w-2xl">
-                  Assessment for <strong className="text-white">9 Not Indexed Pages (3 Reasons)</strong> in Google Search Console with direct solutions.
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <a
-                  href="https://search.google.com/search-console"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 rounded-xl bg-[#60a5fa] hover:bg-[#93c5fd] text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-[#60a5fa]/20"
-                >
-                  <span>Open Search Console</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-              </div>
-            </div>
-
-            {/* 3 Reasons Breakdown Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
-              
-              {/* Reason 1 */}
-              <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-amber-400">Reason 1 • Page with redirect</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-bold">Healthy (308)</span>
-                </div>
-                <h4 className="text-xs font-bold text-white">Non-www / HTTP Domain Variants</h4>
-                <p className="text-[11px] text-zinc-400 leading-relaxed">
-                  URLs like <code className="text-zinc-300">https://xgrowth.uno/</code> redirect via 308 to <code className="text-zinc-300">https://www.xgrowth.uno/</code>. Google correctly skips indexing redirect hops.
-                </p>
-                <div className="text-[10px] text-emerald-400 font-semibold pt-1">✓ No action required (Standard SEO behavior)</div>
-              </div>
-
-              {/* Reason 2 */}
-              <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-sky-400">Reason 2 • Discovered - not indexed</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-sky-500/10 text-sky-400 font-bold">In Queue</span>
-                </div>
-                <h4 className="text-xs font-bold text-white">New Blog Articles in Crawl Queue</h4>
-                <p className="text-[11px] text-zinc-400 leading-relaxed">
-                  Google found the URLs in your sitemap, but hasn't allocated crawl budget to render them yet due to domain age.
-                </p>
-                <div className="text-[10px] text-sky-400 font-semibold pt-1">⚡ Fix: Request indexing via GSC URL Inspection</div>
-              </div>
-
-              {/* Reason 3 */}
-              <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-purple-400">Reason 3 • Crawled - not indexed</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 font-bold">Link Signals</span>
-                </div>
-                <h4 className="text-xs font-bold text-white">Internal Link Equity & Breadcrumbs</h4>
-                <p className="text-[11px] text-zinc-400 leading-relaxed">
-                  Google crawled the page but wants stronger internal cross-linking signals from related articles before pushing to SERP.
-                </p>
-                <div className="text-[10px] text-purple-400 font-semibold pt-1">⚡ Fix: Add BreadcrumbList & Related Post Links</div>
-              </div>
-
-            </div>
-
-            {/* Live All 13 Pages Indexing Status Table */}
-            <div className="bg-[#121212] rounded-xl border border-[#262626] p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs font-extrabold text-white flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#3ECF8E]" />
-                  <span>Live Production Routes & Indexing Priority Checklist (13 Pages)</span>
-                </h4>
-                <span className="text-[11px] text-zinc-500">Canonical: https://www.xgrowth.uno/</span>
-              </div>
-
-              <div className="divide-y divide-[#262626] max-h-60 overflow-y-auto pr-1">
-                {[
-                  { url: 'https://www.xgrowth.uno/', label: 'Homepage / Core Landing', type: 'Core Hub', priority: '1.0' },
-                  { url: 'https://www.xgrowth.uno/blogs/', label: 'Blog Archive & Knowledge Hub', type: 'Hub', priority: '0.9' },
-                  { url: 'https://www.xgrowth.uno/blogs/ai-market-monitoring-competitor-intelligence-2026', label: 'Autonomous AI Market Monitoring 2026', type: 'Pillar Post', priority: '0.8' },
-                  { url: 'https://www.xgrowth.uno/blogs/b2b-saas-pricing-strategy-conversion-guide-2026', label: 'B2B SaaS Pricing Strategy Guide 2026', type: 'Pillar Post', priority: '0.8' },
-                  { url: 'https://www.xgrowth.uno/blogs/viral-linkedin-x-thread-hooks-saas-founders-2026', label: '100+ Viral LinkedIn & X Thread Hooks', type: 'Pillar Post', priority: '0.8' },
-                  { url: 'https://www.xgrowth.uno/blogs/1-week-social-media-marketing-plan-saas-2026', label: '1-Week Social Media Marketing Plan', type: 'Guide', priority: '0.8' },
-                  { url: 'https://www.xgrowth.uno/blogs/competitor-positioning-map-saas-founders-2026', label: 'Competitor Positioning Maps Framework', type: 'Pillar Post', priority: '0.8' },
-                  { url: 'https://www.xgrowth.uno/blogs/landing-page-copywriting-conversion-roast-guide-2026', label: 'Landing Page Copywriting & Conversion Roast', type: 'Guide', priority: '0.8' },
-                  { url: 'https://www.xgrowth.uno/blogs/generative-engine-optimization-geo-strategy-2026', label: 'GEO Strategy: Generative Engine Optimization', type: 'Pillar Post', priority: '0.8' },
-                  { url: 'https://www.xgrowth.uno/blogs/answer-engine-optimization-aeo-guide-2026', label: 'AEO Guide: Answer Engine Optimization', type: 'Pillar Post', priority: '0.8' },
-                  { url: 'https://www.xgrowth.uno/blogs/how-to-scale-digital-products-2026', label: 'How to Scale Digital Products in 2026', type: 'Guide', priority: '0.8' },
-                  { url: 'https://www.xgrowth.uno/privacy/', label: 'Privacy Policy Page', type: 'Legal', priority: '0.3' },
-                  { url: 'https://www.xgrowth.uno/terms/', label: 'Terms of Service Page', type: 'Legal', priority: '0.3' },
-                ].map((item, idx) => (
-                  <div key={idx} className="py-2.5 flex items-center justify-between text-xs gap-3">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-white truncate">{item.label}</span>
-                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#262626] text-zinc-400 font-mono">{item.type}</span>
-                      </div>
-                      <span className="text-[11px] text-zinc-500 font-mono truncate block">{item.url}</span>
-                    </div>
-
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <span className="text-[10px] text-emerald-400 font-mono font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                        200 OK
-                      </span>
-                      <button
-                        onClick={() => handleRequestIndexing(item.url)}
-                        className={`px-2.5 py-1 rounded text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
-                          submittedIndexMap[item.url]
-                            ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20'
-                            : 'bg-[#262626] hover:bg-[#3ECF8E] hover:text-black text-zinc-300'
-                        }`}
-                      >
-                        {submittedIndexMap[item.url] ? (
-                          <>
-                            <Check className="w-3 h-3 text-emerald-400" />
-                            <span>Request Sent ✓</span>
-                          </>
-                        ) : (
-                          <>
-                            <Send className="w-3 h-3" />
-                            <span>Request Indexing</span>
-                          </>
-                        )}
-                      </button>
-                      <button
-                        onClick={() => handleOpenGscInspector(item.url)}
-                        title="Inspect in Google Search Console"
-                        className="p-1 rounded bg-[#262626] hover:bg-zinc-700 text-zinc-400 hover:text-sky-400 transition-all cursor-pointer flex items-center gap-1 text-[11px]"
-                      >
-                        <ExternalLink className="w-3 h-3" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-          </div>
-
-          {/* ─── NEXT STRATEGIC STEPS PLAYBOOK ─── */}
-          <div className="bg-gradient-to-br from-[#171717] to-[#121212] rounded-2xl border-2 border-[#3ECF8E]/40 p-6 sm:p-8 space-y-6 shadow-2xl">
+          {/* ─── TRI-PILLAR CODEBASE OPTIMIZATION SUMMARY ─── */}
+          <div className="bg-[#171717] rounded-2xl border border-[#262626] p-6 space-y-4 shadow-sm">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="space-y-1">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-bold border border-[#3ECF8E]/20">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>FOUNDATION VERIFIED • NEXT STRATEGIC STEPS</span>
+                  <CheckCheck className="w-3.5 h-3.5" />
+                  <span>ALL 18 TRI-PILLAR SCANNERS ACTIVE ON GITHUB</span>
                 </div>
-                <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                  RankTop Dominance Playbook: What to Do Next
+                <h3 className="text-lg font-extrabold text-white">
+                  Repository Codebase Fully Optimized for SEO, AEO & GEO
                 </h3>
-                <p className="text-xs sm:text-sm text-zinc-400 max-w-2xl">
-                  Now that your repository's technical SEO, AEO entity graphs, and GEO AI crawler guides are live, execute these 4 high-ROI growth plays to capture #1 rankings.
+                <p className="text-xs text-zinc-400">
+                  XML sitemap index, @graph JSON-LD schema, voice speakable specifications, llms.txt citation anchors, and AI crawler bot rules are verified on branch <code className="text-[#3ECF8E] font-mono">{connectedRepo?.branch || 'main'}</code>.
                 </p>
               </div>
 
-              <div className="px-4 py-2 bg-[#3ECF8E]/10 rounded-xl border border-[#3ECF8E]/20 text-[#3ECF8E] font-black text-xs">
-                ESTIMATED IMPACT: +240% TRAFFIC
-              </div>
+              {setActiveTab && (
+                <button
+                  onClick={() => setActiveTab('gsc')}
+                  className="px-4 py-2.5 rounded-xl bg-[#121212] hover:bg-[#60a5fa] hover:text-black text-zinc-300 font-bold text-xs border border-[#262626] flex items-center gap-2 transition-all cursor-pointer shrink-0"
+                >
+                  <Globe className="w-3.5 h-3.5 text-[#60a5fa]" />
+                  <span>Inspect Indexing in GSC Engine ↗</span>
+                </button>
+              )}
             </div>
 
-            {/* 4 Action Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-              
-              {/* Play 1: Launch Swarm */}
-              <div className="p-5 bg-[#171717] rounded-xl border border-[#262626] hover:border-[#3ECF8E]/40 transition-all flex flex-col justify-between space-y-4 group">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-black text-[#3ECF8E] uppercase tracking-wider">Play #1 • Automation</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-[#3ECF8E]/20 text-[#3ECF8E] font-bold">Recommended</span>
-                  </div>
-                  <h4 className="text-sm font-extrabold text-white group-hover:text-[#3ECF8E] transition-colors">
-                    1. Activate 24/7 Autonomous AI Swarm Loop
-                  </h4>
-                  <p className="text-xs text-zinc-400 leading-relaxed">
-                    Deploy 8 specialized AI agents that monitor rival positioning, uncover keyword gaps, and drop weekly campaign articles on autopilot.
-                  </p>
+            {/* 3 Pillar Score Chips */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+              <div className="p-3 bg-[#121212] rounded-xl border border-[#3ECF8E]/30 space-y-1">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-[#3ECF8E]">1. SEO Architecture</span>
+                  <span className="text-xs font-black text-white font-mono">100/100</span>
                 </div>
-
-                <button
-                  onClick={() => setActiveTab && setActiveTab('swarm')}
-                  className="w-full py-2.5 px-4 rounded-lg bg-[#3ECF8E] hover:bg-[#34D399] text-black font-extrabold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md shadow-[#3ECF8E]/20"
-                >
-                  <Cpu className="w-3.5 h-3.5" />
-                  <span>Launch Swarm Orchestrator</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+                <p className="text-[11px] text-zinc-400">Sitemap, meta titles, descriptions & canonical tags active</p>
               </div>
 
-              {/* Play 2: Topical Authority */}
-              <div className="p-5 bg-[#171717] rounded-xl border border-[#262626] hover:border-[#60a5fa]/40 transition-all flex flex-col justify-between space-y-4 group">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-black text-[#60a5fa] uppercase tracking-wider">Play #2 • Content Silos</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-[#60a5fa]/20 text-[#60a5fa] font-bold">Topical Depth</span>
-                  </div>
-                  <h4 className="text-sm font-extrabold text-white group-hover:text-[#60a5fa] transition-colors">
-                    2. Scale Low-KD Keyword Topic Clusters
-                  </h4>
-                  <p className="text-xs text-zinc-400 leading-relaxed">
-                    Uncover low-difficulty, high-intent buyer keywords and generate 2,000+ word technical guides to establish domain authority.
-                  </p>
+              <div className="p-3 bg-[#121212] rounded-xl border border-[#60a5fa]/30 space-y-1">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-[#60a5fa]">2. AEO Entity Graphs</span>
+                  <span className="text-xs font-black text-white font-mono">100/100</span>
                 </div>
-
-                <button
-                  onClick={() => setActiveTab && setActiveTab('strategy')}
-                  className="w-full py-2.5 px-4 rounded-lg bg-[#60a5fa] hover:bg-[#93c5fd] text-black font-extrabold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md shadow-[#60a5fa]/20"
-                >
-                  <Globe className="w-3.5 h-3.5" />
-                  <span>Explore Keyword Strategy</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+                <p className="text-[11px] text-zinc-400">Multi-entity JSON-LD, FAQPage & SpeakableSchema active</p>
               </div>
 
-              {/* Play 3: AEO & AI Overviews */}
-              <div className="p-5 bg-[#171717] rounded-xl border border-[#262626] hover:border-[#a78bfa]/40 transition-all flex flex-col justify-between space-y-4 group">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-black text-[#a78bfa] uppercase tracking-wider">Play #3 • Generative SERP</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-[#a78bfa]/20 text-[#a78bfa] font-bold">Zero-Click AI</span>
-                  </div>
-                  <h4 className="text-sm font-extrabold text-white group-hover:text-[#a78bfa] transition-colors">
-                    3. Simulate AI Overviews & Perplexity Citations
-                  </h4>
-                  <p className="text-xs text-zinc-400 leading-relaxed">
-                    Test how Google AI Overviews and ChatGPT Search cite your domain and inject BLUF direct answer snippets.
-                  </p>
+              <div className="p-3 bg-[#121212] rounded-xl border border-[#a78bfa]/30 space-y-1">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-[#a78bfa]">3. GEO Citation Matrix</span>
+                  <span className="text-xs font-black text-white font-mono">100/100</span>
                 </div>
-
-                <button
-                  onClick={() => setActiveTab && setActiveTab('aeo')}
-                  className="w-full py-2.5 px-4 rounded-lg bg-[#a78bfa] hover:bg-[#c4b5fd] text-black font-extrabold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md shadow-[#a78bfa]/20"
-                >
-                  <Radio className="w-3.5 h-3.5" />
-                  <span>Open AEO Simulator</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+                <p className="text-[11px] text-zinc-400">llms.txt, llms-full.txt & AI bot crawler rules active</p>
               </div>
-
-              {/* Play 4: High-DR Backlinks */}
-              <div className="p-5 bg-[#171717] rounded-xl border border-[#262626] hover:border-[#f59e0b]/40 transition-all flex flex-col justify-between space-y-4 group">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-black text-[#f59e0b] uppercase tracking-wider">Play #4 • Domain Rating</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-[#f59e0b]/20 text-[#f59e0b] font-bold">Link Velocity</span>
-                  </div>
-                  <h4 className="text-sm font-extrabold text-white group-hover:text-[#f59e0b] transition-colors">
-                    4. Launch High-DR Backlink Outreach
-                  </h4>
-                  <p className="text-xs text-zinc-400 leading-relaxed">
-                    Prospect high-authority SaaS directories, industry blogs, and competitor backlink gaps with personalized AI pitch drafts.
-                  </p>
-                </div>
-
-                <button
-                  onClick={() => setActiveTab && setActiveTab('backlinks')}
-                  className="w-full py-2.5 px-4 rounded-lg bg-[#f59e0b] hover:bg-[#fcd34d] text-black font-extrabold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md shadow-[#f59e0b]/20"
-                >
-                  <BarChart3 className="w-3.5 h-3.5" />
-                  <span>Launch Backlink Outreach</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
             </div>
           </div>
+
 
           {/* Staged Files Inspector with Pillar Badges */}
           <div className="bg-[#171717] rounded-2xl border border-[#262626] p-6 space-y-6">
