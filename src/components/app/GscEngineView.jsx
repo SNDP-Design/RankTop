@@ -239,7 +239,9 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
       const parsedRoutes = discoveredUrls.map((url, idx) => {
         const isRoot = url.endsWith('/') && !url.includes('/blogs/') && !url.includes('/privacy') && !url.includes('/terms');
         const isBlogHub = url.endsWith('/blogs/') || url.endsWith('/blog/');
-        const isLegal = url.includes('/privacy') || url.includes('/terms');
+        const isLegal = url.includes('/privacy') || url.includes('/terms') || url.includes('/cookie') || url.includes('/legal');
+        const isUtility = isLegal || url.includes('/app') || url.includes('/login') || url.includes('/admin') || url.includes('/404');
+        const isHarmless = isUtility;
         const isIndexed = idx < indexedEstimate || isRoot || isBlogHub;
 
         let gscReason = null;
@@ -254,6 +256,10 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
           priority: isRoot ? '1.0' : isBlogHub ? '0.9' : isLegal ? '0.3' : '0.8',
           status: '200 OK',
           indexed: isIndexed,
+          isHarmless,
+          needsIndexing: !isIndexed && !isHarmless,
+          chipTag: isHarmless ? "Doesn't need to be indexed" : !isIndexed ? 'Requires Indexing' : 'Indexed',
+          harmlessReason: isHarmless ? 'Low-intent compliance route. Non-indexation does not hamper Google ranking or topical authority.' : null,
           gscReason,
         };
       });
@@ -548,8 +554,9 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
     setSuccessMsg(null);
   };
 
-  // Filter ONLY non-indexed pages found by RankTop
-  const unindexedRoutes = (diagnosticData?.routes || []).filter((r) => !r.indexed);
+  // Separate Actionable Growth Pages vs Harmless Utility Pages
+  const actionableUnindexedRoutes = (diagnosticData?.routes || []).filter((r) => !r.indexed && !r.isHarmless);
+  const harmlessRoutes = (diagnosticData?.routes || []).filter((r) => r.isHarmless);
 
   return (
     <div className="w-full space-y-6 font-sans">
@@ -701,20 +708,20 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
 
             <div className="bg-[#171717] rounded-2xl border border-amber-500/30 p-5 space-y-2 relative overflow-hidden">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Not Indexed Found</span>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold">{unindexedRoutes.length} Found</span>
+                <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Growth Pages to Index</span>
+                <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold">{actionableUnindexedRoutes.length} Priority</span>
               </div>
-              <div className="text-3xl font-black text-amber-400">{unindexedRoutes.length} Pages</div>
+              <div className="text-3xl font-black text-amber-400">{actionableUnindexedRoutes.length} Guides</div>
               <p className="text-[11px] text-zinc-500">Auto-submitted by RankTop AI</p>
             </div>
 
-            <div className="bg-[#171717] rounded-2xl border border-[#60a5fa]/30 p-5 space-y-2 relative overflow-hidden">
+            <div className="bg-[#171717] rounded-2xl border border-zinc-700/50 p-5 space-y-2 relative overflow-hidden">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Discovered Routes</span>
-                <Globe className="w-4 h-4 text-[#60a5fa]" />
+                <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Harmless Excluded</span>
+                <span className="text-[10px] px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 font-bold">0% SEO Impact</span>
               </div>
-              <div className="text-3xl font-black text-[#60a5fa]">{diagnosticData.coverage.totalDiscovered} Pages</div>
-              <p className="text-[11px] text-zinc-500">Full inventory in XML sitemap</p>
+              <div className="text-3xl font-black text-zinc-300">{harmlessRoutes.length} Pages</div>
+              <p className="text-[11px] text-zinc-500">Utility / legal compliance</p>
             </div>
 
             <div className="bg-[#171717] rounded-2xl border border-purple-500/30 p-5 space-y-2 relative overflow-hidden">
@@ -795,8 +802,8 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
             )}
           </div>
 
-          {/* ─── DEDICATED PRIORITY INDEXATION RADAR (ONLY NON-INDEXED PAGES) ─── */}
-          {unindexedRoutes.length > 0 && (
+          {/* ─── DEDICATED PRIORITY INDEXATION RADAR (ONLY HIGH-PRIORITY ACTIONABLE PAGES) ─── */}
+          {actionableUnindexedRoutes.length > 0 && (
             <div className="bg-[#171717] rounded-2xl border-2 border-[#3ECF8E]/50 p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-80 h-80 bg-[#3ECF8E]/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -804,13 +811,13 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
                 <div className="space-y-1">
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-bold border border-[#3ECF8E]/20">
                     <Radio className="w-3.5 h-3.5 text-[#3ECF8E]" />
-                    <span>PRIORITY INDEXATION RADAR • AUTONOMOUS REQUESTS SUBMITTED</span>
+                    <span>PRIORITY INDEXATION RADAR • HIGH-IMPACT GROWTH GUIDES</span>
                   </div>
                   <h3 className="text-xl font-black text-white tracking-tight">
-                    {unindexedRoutes.length} Non-Indexed Pages Found & Indexing Requests Submitted
+                    {actionableUnindexedRoutes.length} Growth Content Guides Found & Indexing Requests Dispatched
                   </h3>
                   <p className="text-xs text-zinc-400 max-w-2xl leading-relaxed">
-                    Showing <strong className="text-white">only the non-indexed pages found by RankTop</strong>. RankTop has autonomously submitted priority indexing requests for these URLs to Googlebot and IndexNow.
+                    Showing <strong className="text-white">only high-impact growth articles and guides</strong> that drive organic keyword rankings. RankTop has autonomously submitted priority indexing requests to Googlebot and IndexNow.
                   </p>
                 </div>
 
@@ -834,9 +841,9 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
                 </div>
               </div>
 
-              {/* Verified Non-Indexed Pages Grid */}
+              {/* Verified Non-Indexed Actionable Pages Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10 pt-2">
-                {unindexedRoutes.map((item, idx) => {
+                {actionableUnindexedRoutes.map((item, idx) => {
                   const submission = submittedIndexMap[item.url] || (pingedGsc ? {
                     submittedAt: 'Today, Just Now',
                     status: 'Indexing Request Dispatched to Googlebot & IndexNow ✓',
@@ -895,6 +902,50 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
                     </div>
                   );
                 })}
+              </div>
+            </div>
+          )}
+
+          {/* ─── HARMLESS PAGES: DISCARDED FROM INDEXING QUEUE ─── */}
+          {harmlessRoutes.length > 0 && (
+            <div className="bg-[#171717] rounded-2xl border border-zinc-800 p-6 space-y-4 shadow-md">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-zinc-400" />
+                    <span className="text-xs font-black text-zinc-400 uppercase tracking-wider">
+                      Harmless Pages (Discarded From Indexing Queue)
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300 font-bold border border-zinc-700">
+                      doesn't need to be indexed
+                    </span>
+                  </div>
+                  <h4 className="text-sm font-extrabold text-white">
+                    Compliance & Utility Pages — Zero Negative SEO Impact
+                  </h4>
+                  <p className="text-xs text-zinc-400 max-w-3xl leading-relaxed">
+                    These utility and legal routes (Terms of Service, Privacy Policy, redirect variants) have zero commercial search intent. Leaving them unindexed is standard SEO best practice to prevent crawl budget dilution and will <strong className="text-zinc-200">not hamper your Google rankings or topical authority</strong>.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                {harmlessRoutes.map((h, idx) => (
+                  <div key={idx} className="p-4 bg-[#121212] rounded-xl border border-zinc-800/80 flex items-center justify-between gap-3 text-xs">
+                    <div className="min-w-0 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-zinc-200">{h.label}</span>
+                        <span className="px-2 py-0.5 rounded-full bg-zinc-800/90 text-zinc-400 text-[10px] font-bold border border-zinc-700">
+                          doesn't need to be indexed
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-zinc-500 font-mono truncate block">{h.url}</span>
+                    </div>
+                    <span className="text-[10px] text-zinc-500 font-mono shrink-0 bg-zinc-900 px-2 py-1 rounded border border-zinc-800">
+                      Harmless ✓
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
           )}
