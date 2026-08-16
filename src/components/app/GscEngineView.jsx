@@ -14,7 +14,14 @@ import {
   Send, 
   ChevronDown, 
   ChevronUp, 
-  Radio
+  Radio,
+  Target,
+  Split,
+  Network,
+  History,
+  Sparkles,
+  Zap,
+  ArrowUpRight
 } from 'lucide-react';
 import { gscService } from '../../services/gscService';
 import { githubService } from '../../services/githubService';
@@ -56,17 +63,9 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
     }
   });
 
-  // Autonomous Repair State
-  const [isFixing, setIsFixing] = useState(false);
-  const [fixingStep, setFixingStep] = useState(0);
-  const [autoFixResult, setAutoFixResult] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.GSC_AUTO_FIX_RESULT);
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
-  });
+  // Active Sub-Tab: 'coverage' | 'striking' | 'cannibal' | 'equity' | 'decay'
+  const [activeGscTab, setActiveGscTab] = useState('coverage');
+  const [copiedSnippetId, setCopiedSnippetId] = useState(null);
 
   // Autonomous Indexing Submission Tracking Map
   const [submittedIndexMap, setSubmittedIndexMap] = useState(() => {
@@ -86,6 +85,7 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
   const [copiedUrl, setCopiedUrl] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
+
 
   // GitHub Auth Config
   const [githubToken, setGithubToken] = useState(() => {
@@ -555,20 +555,24 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
 
   const handleResetGscState = () => {
     localStorage.removeItem(STORAGE_KEYS.GSC_DIAGNOSTIC);
-    localStorage.removeItem(STORAGE_KEYS.GSC_AUTO_FIX_RESULT);
-    localStorage.removeItem(STORAGE_KEYS.GSC_SUBMITTED_INDEX_MAP);
-    setDiagnosticData(null);
-    setAutoFixResult(null);
-    setSubmittedIndexMap({});
-    setErrorMsg(null);
-    setSuccessMsg(null);
-  };
-
-  // Separate Indexed Pages vs Actionable Growth Pages vs Harmless Utility Pages
+    localStorage.removeI  // Separate Indexed Pages vs Actionable Growth Pages vs Harmless Utility Pages
   const indexedRoutes = (diagnosticData?.routes || []).filter((r) => r.indexed);
   const actionableUnindexedRoutes = (diagnosticData?.routes || []).filter((r) => !r.indexed && !r.isHarmless);
   const harmlessRoutes = (diagnosticData?.routes || []).filter((r) => r.isHarmless);
 
+  const strikingDistanceList = gscService.getStrikingDistanceData(selectedDomain);
+  const cannibalizationList = gscService.getCannibalizationData(selectedDomain);
+  const linkEquityList = gscService.getLinkEquityData(selectedDomain, diagnosticData?.routes || []);
+  const contentDecayList = gscService.getContentDecayData(selectedDomain);
+
+  const handleCopyCodeSnippet = (id, text, msg = 'Copied to clipboard!') => {
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(text);
+      setCopiedSnippetId(id);
+      setSuccessMsg(msg);
+      setTimeout(() => setCopiedSnippetId(null), 2500);
+    }
+  };
 
   return (
     <div className="w-full space-y-4 font-sans max-w-7xl mx-auto">
@@ -696,155 +700,538 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
         </div>
       )}
 
-      {/* ─── SIDE-BY-SIDE DUAL PANEL ─── */}
+      {/* ─── RANKING OPTIMIZATION SUB-TABS ─── */}
       {diagnosticData && !isScanning && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-          
-          {/* ─── LEFT COLUMN: INDEXED IN GOOGLE ─── */}
-          <div className="bg-[#171717] rounded-2xl border border-[#262626] overflow-hidden shadow-sm flex flex-col">
-            <div className="px-4 py-3 bg-[#121212] border-b border-[#262626] flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                <h3 className="text-xs font-extrabold text-white uppercase tracking-wider">
-                  Indexed in Google ({indexedRoutes.length})
-                </h3>
-              </div>
-              <a
-                href="https://search.google.com/search-console"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[11px] text-[#60a5fa] hover:underline flex items-center gap-1 font-bold"
-              >
-                <span>Open GSC</span>
-                <ExternalLink className="w-3 h-3" />
-              </a>
-            </div>
+        <div className="flex items-center gap-1.5 p-1.5 bg-[#171717] rounded-xl border border-[#262626] overflow-x-auto text-xs">
+          <button
+            onClick={() => setActiveGscTab('coverage')}
+            className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all shrink-0 cursor-pointer ${
+              activeGscTab === 'coverage'
+                ? 'bg-[#262626] text-white shadow-sm border border-zinc-700'
+                : 'text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            <Radio className="w-3.5 h-3.5 text-[#3ECF8E]" />
+            <span>Indexing & Coverage ({indexedRoutes.length + actionableUnindexedRoutes.length})</span>
+          </button>
 
-            <div className="divide-y divide-[#262626] max-h-[520px] overflow-y-auto">
-              {indexedRoutes.map((item, idx) => (
-                <div key={idx} className="p-3 hover:bg-[#1f1f1f]/50 transition-colors flex items-center justify-between gap-3 text-xs">
-                  <div className="min-w-0 flex-1 space-y-0.5">
-                    <div className="flex items-center gap-1.5">
-                      <span className="font-bold text-white truncate">{item.label}</span>
-                      <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#121212] text-zinc-400 font-mono border border-[#262626]">{item.type}</span>
-                    </div>
-                    <span className="text-[11px] text-zinc-500 font-mono truncate block">{item.url}</span>
-                  </div>
+          <button
+            onClick={() => setActiveGscTab('striking')}
+            className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all shrink-0 cursor-pointer ${
+              activeGscTab === 'striking'
+                ? 'bg-[#262626] text-white shadow-sm border border-zinc-700'
+                : 'text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            <Target className="w-3.5 h-3.5 text-[#60a5fa]" />
+            <span>Striking Distance CTR Booster ({strikingDistanceList.length})</span>
+          </button>
 
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">
-                      Indexed ✓
-                    </span>
-                    <button
-                      onClick={() => handleOpenGscInspector(item.url)}
-                      title="Inspect URL in Google Search Console"
-                      className="px-2.5 py-1 rounded-lg bg-[#121212] hover:bg-[#60a5fa] hover:text-black text-zinc-300 text-[11px] font-bold border border-[#262626] flex items-center gap-1 transition-all cursor-pointer"
-                    >
-                      <span>{copiedUrl === item.url ? 'Copied & Opening...' : 'Inspect'}</span>
-                      <ExternalLink className="w-2.5 h-2.5" />
-                    </button>
-                  </div>
+          <button
+            onClick={() => setActiveGscTab('cannibal')}
+            className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all shrink-0 cursor-pointer ${
+              activeGscTab === 'cannibal'
+                ? 'bg-[#262626] text-white shadow-sm border border-zinc-700'
+                : 'text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            <Split className="w-3.5 h-3.5 text-amber-400" />
+            <span>Cannibalization Detector ({cannibalizationList.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveGscTab('equity')}
+            className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all shrink-0 cursor-pointer ${
+              activeGscTab === 'equity'
+                ? 'bg-[#262626] text-white shadow-sm border border-zinc-700'
+                : 'text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            <Network className="w-3.5 h-3.5 text-purple-400" />
+            <span>Internal Link Equity Mesh ({linkEquityList.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveGscTab('decay')}
+            className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all shrink-0 cursor-pointer ${
+              activeGscTab === 'decay'
+                ? 'bg-[#262626] text-white shadow-sm border border-zinc-700'
+                : 'text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            <History className="w-3.5 h-3.5 text-rose-400" />
+            <span>Content Decay Watchdog ({contentDecayList.length})</span>
+          </button>
+        </div>
+      )}
+
+      {/* ─── TAB 1: INDEXING & COVERAGE ─── */}
+      {diagnosticData && !isScanning && activeGscTab === 'coverage' && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+            
+            {/* ─── LEFT COLUMN: INDEXED IN GOOGLE ─── */}
+            <div className="bg-[#171717] rounded-2xl border border-[#262626] overflow-hidden shadow-sm flex flex-col">
+              <div className="px-4 py-3 bg-[#121212] border-b border-[#262626] flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <h3 className="text-xs font-extrabold text-white uppercase tracking-wider">
+                    Indexed in Google ({indexedRoutes.length})
+                  </h3>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* ─── RIGHT COLUMN: NOT INDEXED • AI AGENT REQUESTED ─── */}
-          <div className="bg-[#171717] rounded-2xl border border-[#3ECF8E]/40 overflow-hidden shadow-sm flex flex-col">
-            <div className="px-4 py-3 bg-[#121212] border-b border-[#262626] flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Radio className="w-4 h-4 text-[#3ECF8E]" />
-                <h3 className="text-xs font-extrabold text-white uppercase tracking-wider">
-                  Not Indexed • AI Requested ({actionableUnindexedRoutes.length})
-                </h3>
+                <a
+                  href="https://search.google.com/search-console"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[11px] text-[#60a5fa] hover:underline flex items-center gap-1 font-bold"
+                >
+                  <span>Open GSC</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
               </div>
-              <button
-                onClick={handleCopyAllUnindexed}
-                className="text-[11px] text-zinc-400 hover:text-white flex items-center gap-1 cursor-pointer transition-colors"
-              >
-                {copiedUnindexed ? <Check className="w-3 h-3 text-[#3ECF8E]" /> : <Copy className="w-3 h-3" />}
-                <span>{copiedUnindexed ? 'Copied URLs' : 'Copy All'}</span>
-              </button>
-            </div>
 
-            <div className="divide-y divide-[#262626] max-h-[520px] overflow-y-auto">
-              {actionableUnindexedRoutes.map((item, idx) => {
-                const submission = submittedIndexMap[item.url];
-                return (
+              <div className="divide-y divide-[#262626] max-h-[520px] overflow-y-auto">
+                {indexedRoutes.map((item, idx) => (
                   <div key={idx} className="p-3 hover:bg-[#1f1f1f]/50 transition-colors flex items-center justify-between gap-3 text-xs">
                     <div className="min-w-0 flex-1 space-y-0.5">
-                      <div className="flex items-center gap-1.5 flex-wrap">
+                      <div className="flex items-center gap-1.5">
                         <span className="font-bold text-white truncate">{item.label}</span>
-                        <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-400 font-bold border border-amber-500/20">
-                          {item.gscReason ? item.gscReason.split('–')[0].trim() : 'Unindexed'}
-                        </span>
+                        <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#121212] text-zinc-400 font-mono border border-[#262626]">{item.type}</span>
                       </div>
                       <span className="text-[11px] text-zinc-500 font-mono truncate block">{item.url}</span>
                     </div>
 
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      {submission ? (
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30">
-                          Pinged ✓
-                        </span>
-                      ) : (
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 font-bold border border-purple-500/20">
-                          Queued ⚡
-                        </span>
-                      )}
-                      <button
-                        onClick={() => handleAutonomousSubmitIndexing(item.url)}
-                        title="Re-send Googlebot sitemap ping & IndexNow broadcast"
-                        className="px-2.5 py-1 rounded-lg bg-[#121212] hover:bg-[#3ECF8E] hover:text-black text-zinc-300 text-[11px] font-bold border border-[#262626] flex items-center gap-1 transition-all cursor-pointer"
-                      >
-                        <RefreshCw className="w-2.5 h-2.5" />
-                        <span>Ping</span>
-                      </button>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">
+                        Indexed ✓
+                      </span>
                       <button
                         onClick={() => handleOpenGscInspector(item.url)}
-                        title="Inspect in Google Search Console"
-                        className="p-1 rounded-lg bg-[#121212] hover:bg-zinc-800 text-zinc-400 hover:text-sky-400 border border-[#262626] transition-all cursor-pointer"
+                        title="Inspect URL in Google Search Console"
+                        className="px-2.5 py-1 rounded-lg bg-[#121212] hover:bg-[#60a5fa] hover:text-black text-zinc-300 text-[11px] font-bold border border-[#262626] flex items-center gap-1 transition-all cursor-pointer"
                       >
-                        <ExternalLink className="w-3 h-3" />
+                        <span>{copiedUrl === item.url ? 'Copied & Opening...' : 'Inspect'}</span>
+                        <ExternalLink className="w-2.5 h-2.5" />
                       </button>
                     </div>
                   </div>
-                );
-              })}
+                ))}
+              </div>
             </div>
+
+            {/* ─── RIGHT COLUMN: NOT INDEXED • AI AGENT REQUESTED ─── */}
+            <div className="bg-[#171717] rounded-2xl border border-[#3ECF8E]/40 overflow-hidden shadow-sm flex flex-col">
+              <div className="px-4 py-3 bg-[#121212] border-b border-[#262626] flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Radio className="w-4 h-4 text-[#3ECF8E]" />
+                  <h3 className="text-xs font-extrabold text-white uppercase tracking-wider">
+                    Not Indexed • AI Requested ({actionableUnindexedRoutes.length})
+                  </h3>
+                </div>
+                <button
+                  onClick={handleCopyAllUnindexed}
+                  className="text-[11px] text-zinc-400 hover:text-white flex items-center gap-1 cursor-pointer transition-colors"
+                >
+                  {copiedUnindexed ? <Check className="w-3 h-3 text-[#3ECF8E]" /> : <Copy className="w-3 h-3" />}
+                  <span>{copiedUnindexed ? 'Copied URLs' : 'Copy All'}</span>
+                </button>
+              </div>
+
+              <div className="divide-y divide-[#262626] max-h-[520px] overflow-y-auto">
+                {actionableUnindexedRoutes.map((item, idx) => {
+                  const submission = submittedIndexMap[item.url];
+                  return (
+                    <div key={idx} className="p-3 hover:bg-[#1f1f1f]/50 transition-colors flex items-center justify-between gap-3 text-xs">
+                      <div className="min-w-0 flex-1 space-y-0.5">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="font-bold text-white truncate">{item.label}</span>
+                          <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-400 font-bold border border-amber-500/20">
+                            {item.gscReason ? item.gscReason.split('–')[0].trim() : 'Unindexed'}
+                          </span>
+                        </div>
+                        <span className="text-[11px] text-zinc-500 font-mono truncate block">{item.url}</span>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        {submission ? (
+                          <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30">
+                            Pinged ✓
+                          </span>
+                        ) : (
+                          <span className="text-[10px] px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 font-bold border border-purple-500/20">
+                            Queued ⚡
+                          </span>
+                        )}
+                        <button
+                          onClick={() => handleAutonomousSubmitIndexing(item.url)}
+                          title="Re-send Googlebot sitemap ping & IndexNow broadcast"
+                          className="px-2.5 py-1 rounded-lg bg-[#121212] hover:bg-[#3ECF8E] hover:text-black text-zinc-300 text-[11px] font-bold border border-[#262626] flex items-center gap-1 transition-all cursor-pointer"
+                        >
+                          <RefreshCw className="w-2.5 h-2.5" />
+                          <span>Ping</span>
+                        </button>
+                        <button
+                          onClick={() => handleOpenGscInspector(item.url)}
+                          title="Inspect in Google Search Console"
+                          className="p-1 rounded-lg bg-[#121212] hover:bg-zinc-800 text-zinc-400 hover:text-sky-400 border border-[#262626] transition-all cursor-pointer"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
           </div>
 
+          {/* ─── COLLAPSIBLE: EXCLUDED LEGAL & UTILITY ROUTES (0% SEO IMPACT) ─── */}
+          {harmlessRoutes.length > 0 && (
+            <div className="bg-[#171717] rounded-xl border border-[#262626] overflow-hidden">
+              <button
+                onClick={() => setShowExcluded(!showExcluded)}
+                className="w-full px-4 py-2.5 flex items-center justify-between text-xs text-zinc-400 hover:text-zinc-200 transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-3.5 h-3.5 text-zinc-500" />
+                  <span>Excluded Utility & Legal Pages ({harmlessRoutes.length})</span>
+                  <span className="text-[10px] text-zinc-600 font-mono hidden sm:inline">— 0% Negative SEO Impact (Intentionally excluded from indexing queue)</span>
+                </div>
+                {showExcluded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+              </button>
+
+              {showExcluded && (
+                <div className="p-3 border-t border-[#262626] bg-[#121212] divide-y divide-[#262626]/50">
+                  {harmlessRoutes.map((h, idx) => (
+                    <div key={idx} className="py-2 flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="font-bold text-zinc-300 truncate">{h.label}</span>
+                        <span className="text-[11px] text-zinc-500 font-mono truncate">{h.url}</span>
+                      </div>
+                      <span className="text-[10px] text-zinc-500 font-mono shrink-0">Harmless ✓</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 
-      {/* ─── COLLAPSIBLE: EXCLUDED LEGAL & UTILITY ROUTES (0% SEO IMPACT) ─── */}
-      {harmlessRoutes.length > 0 && diagnosticData && (
-        <div className="bg-[#171717] rounded-xl border border-[#262626] overflow-hidden">
-          <button
-            onClick={() => setShowExcluded(!showExcluded)}
-            className="w-full px-4 py-2.5 flex items-center justify-between text-xs text-zinc-400 hover:text-zinc-200 transition-colors cursor-pointer"
-          >
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="w-3.5 h-3.5 text-zinc-500" />
-              <span>Excluded Utility & Legal Pages ({harmlessRoutes.length})</span>
-              <span className="text-[10px] text-zinc-600 font-mono hidden sm:inline">— 0% Negative SEO Impact (Intentionally excluded from indexing queue)</span>
+      {/* ─── TAB 2: STRIKING DISTANCE (CTR BOOSTER) ─── */}
+      {diagnosticData && !isScanning && activeGscTab === 'striking' && (
+        <div className="space-y-4">
+          <div className="bg-[#171717] p-4 rounded-xl border border-[#60a5fa]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <Target className="w-4 h-4 text-[#60a5fa]" />
+                <h3 className="text-sm font-extrabold text-white">
+                  Striking Distance Queries (Positions #4–#15 • High Impressions, Low CTR)
+                </h3>
+              </div>
+              <p className="text-xs text-zinc-400">
+                You already rank on Page 1 or top of Page 2 with high search volume. Optimize title tags with high-CTR power words to double organic clicks.
+              </p>
             </div>
-            {showExcluded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-          </button>
+            <span className="px-2.5 py-1 rounded-lg bg-[#60a5fa]/10 text-[#60a5fa] border border-[#60a5fa]/30 text-xs font-bold shrink-0">
+              {strikingDistanceList.length} High-Yield Opportunities
+            </span>
+          </div>
 
-          {showExcluded && (
-            <div className="p-3 border-t border-[#262626] bg-[#121212] divide-y divide-[#262626]/50">
-              {harmlessRoutes.map((h, idx) => (
-                <div key={idx} className="py-2 flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="font-bold text-zinc-300 truncate">{h.label}</span>
-                    <span className="text-[11px] text-zinc-500 font-mono truncate">{h.url}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {strikingDistanceList.map((item) => (
+              <div key={item.id} className="bg-[#171717] rounded-xl border border-[#262626] p-4 space-y-3.5 flex flex-col justify-between shadow-sm hover:border-[#60a5fa]/40 transition-all">
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <span className="font-extrabold text-white text-xs bg-[#121212] px-2.5 py-1 rounded-lg border border-[#262626] font-mono">
+                      "{item.query}"
+                    </span>
+                    <div className="flex items-center gap-1.5 text-xs font-mono">
+                      <span className="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 font-bold border border-blue-500/20">
+                        Rank #{item.position}
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 font-bold">
+                        {item.impressions.toLocaleString()} Impr
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-bold">
+                        CTR {item.ctr}
+                      </span>
+                    </div>
                   </div>
-                  <span className="text-[10px] text-zinc-500 font-mono shrink-0">Harmless ✓</span>
+
+                  {/* Projected Lift */}
+                  <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between text-xs">
+                    <span className="text-zinc-400">Projected Traffic Lift:</span>
+                    <span className="font-extrabold text-emerald-400">{item.estGain}</span>
+                  </div>
+
+                  {/* AI Optimized Title */}
+                  <div className="space-y-1 text-xs">
+                    <span className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">AI High-CTR Title Tag Recommendation:</span>
+                    <div className="p-2.5 bg-[#121212] rounded-lg border border-[#262626] font-medium text-zinc-200">
+                      {item.optimizedTitle}
+                    </div>
+                  </div>
+
+                  {/* Power Words Pills */}
+                  <div className="flex items-center gap-1.5 flex-wrap text-[10px]">
+                    <span className="text-zinc-500">Power Words:</span>
+                    {item.powerWords.map((pw, i) => (
+                      <span key={i} className="px-2 py-0.5 rounded bg-[#60a5fa]/10 text-[#60a5fa] border border-[#60a5fa]/20 font-bold">
+                        {pw}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              ))}
+
+                <div className="pt-2 border-t border-[#262626] flex items-center justify-between gap-2 text-xs">
+                  <button
+                    onClick={() => handleCopyCodeSnippet(
+                      item.id,
+                      `<title>${item.optimizedTitle}</title>\n<meta name="description" content="${item.optimizedDesc}" />`,
+                      `Copied optimized title & meta tag for "${item.query}"!`
+                    )}
+                    className="px-3 py-1.5 rounded-lg bg-[#121212] hover:bg-[#60a5fa] hover:text-black text-zinc-300 font-bold transition-all border border-[#262626] flex items-center gap-1.5 cursor-pointer"
+                  >
+                    {copiedSnippetId === item.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedSnippetId === item.id ? 'Copied Tags!' : 'Copy Title & Meta Tag'}</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleOpenGscInspector(item.url)}
+                    className="text-xs text-[#60a5fa] hover:underline flex items-center gap-1 font-bold cursor-pointer"
+                  >
+                    <span>Inspect in GSC</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ─── TAB 3: KEYWORD CANNIBALIZATION ─── */}
+      {diagnosticData && !isScanning && activeGscTab === 'cannibal' && (
+        <div className="space-y-4">
+          <div className="bg-[#171717] p-4 rounded-xl border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <Split className="w-4 h-4 text-amber-400" />
+                <h3 className="text-sm font-extrabold text-white">
+                  Query Cannibalization & Split SERP Conflicts
+                </h3>
+              </div>
+              <p className="text-xs text-zinc-400">
+                Multiple URLs from your domain compete for the same query, splitting Google PageRank. Consolidate canonical signals to boost the winner into the top 3.
+              </p>
             </div>
-          )}
+            <span className="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-bold shrink-0">
+              {cannibalizationList.length} Conflicts Detected
+            </span>
+          </div>
+
+          <div className="space-y-3">
+            {cannibalizationList.map((item) => (
+              <div key={item.id} className="bg-[#171717] rounded-xl border border-[#262626] p-4 space-y-3 shadow-sm hover:border-amber-500/40 transition-all">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-2 border-b border-[#262626]">
+                  <div className="flex items-center gap-2">
+                    <span className="font-extrabold text-white text-xs bg-[#121212] px-2.5 py-1 rounded-lg border border-[#262626] font-mono">
+                      "{item.query}"
+                    </span>
+                    <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 text-[10px] font-bold border border-amber-500/20">
+                      {item.severity} SEVERITY
+                    </span>
+                  </div>
+                  <span className="text-xs text-zinc-400 font-mono">{item.splitClicks}</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                  {/* Primary Winner */}
+                  <div className="p-3 bg-[#121212] rounded-lg border border-emerald-500/30 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] text-emerald-400 font-bold uppercase">Primary Winning URL (Keep & Rank)</span>
+                      <span className="text-[10px] text-zinc-400 font-mono">{item.primaryRank}</span>
+                    </div>
+                    <span className="font-mono text-zinc-300 truncate block">{item.primaryUrl}</span>
+                  </div>
+
+                  {/* Secondary Competing */}
+                  <div className="p-3 bg-[#121212] rounded-lg border border-red-500/25 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] text-red-400 font-bold uppercase">Competing URL (Cannibalizing)</span>
+                      <span className="text-[10px] text-zinc-400 font-mono">{item.secondaryRank}</span>
+                    </div>
+                    <span className="font-mono text-zinc-300 truncate block">{item.secondaryUrl}</span>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-[#121212] rounded-lg border border-[#262626] space-y-1.5 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] text-zinc-400 font-bold uppercase">Recommended Action:</span>
+                    <button
+                      onClick={() => handleCopyCodeSnippet(
+                        item.id,
+                        item.codeSnippet,
+                        `Copied consolidation tag for "${item.query}"!`
+                      )}
+                      className="text-[#3ECF8E] hover:underline flex items-center gap-1 text-[11px] font-bold cursor-pointer"
+                    >
+                      {copiedSnippetId === item.id ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                      <span>{copiedSnippetId === item.id ? 'Copied Snippet!' : 'Copy Code Snippet'}</span>
+                    </button>
+                  </div>
+                  <p className="text-zinc-300 text-[11px]">{item.recommendation}</p>
+                  <pre className="p-2 rounded bg-black/40 text-[#3ECF8E] text-[10px] font-mono overflow-x-auto">
+                    {item.codeSnippet}
+                  </pre>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ─── TAB 4: INTERNAL LINK EQUITY MESH ─── */}
+      {diagnosticData && !isScanning && activeGscTab === 'equity' && (
+        <div className="space-y-4">
+          <div className="bg-[#171717] p-4 rounded-xl border border-purple-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <Network className="w-4 h-4 text-purple-400" />
+                <h3 className="text-sm font-extrabold text-white">
+                  Internal Link Equity Mesh (Crawl Budget & Orphan Page Fixer)
+                </h3>
+              </div>
+              <p className="text-xs text-zinc-400">
+                Pages with only 1 internal inlink suffer from low Googlebot crawl priority and delayed indexing. Cross-link high-authority donor hubs to distribute PageRank.
+              </p>
+            </div>
+            <span className="px-2.5 py-1 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/30 text-xs font-bold shrink-0">
+              {linkEquityList.length} Orphan Link Risks
+            </span>
+          </div>
+
+          <div className="space-y-3">
+            {linkEquityList.map((item) => (
+              <div key={item.id} className="bg-[#171717] rounded-xl border border-[#262626] p-4 space-y-3 shadow-sm hover:border-purple-500/40 transition-all text-xs">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-2 border-b border-[#262626]">
+                  <div className="space-y-0.5 min-w-0">
+                    <h4 className="font-bold text-white text-xs">{item.label}</h4>
+                    <span className="text-[11px] text-zinc-500 font-mono truncate block">{item.url}</span>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 font-bold border border-rose-500/20 font-mono">
+                      Inlinks: {item.inlinksCount}
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-bold border border-amber-500/20">
+                      {item.status}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-[#121212] rounded-lg border border-[#262626] space-y-2">
+                  <div className="text-[11px] text-zinc-300">
+                    <strong className="text-white block mb-0.5">Injection Strategy:</strong>
+                    Inject contextual inlink into donor article <code className="text-[#60a5fa]">{item.suggestedDonor}</code> using anchor text <strong className="text-[#3ECF8E]">"{item.recommendedAnchor}"</strong>.
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2 pt-1">
+                    <code className="text-[10px] text-zinc-400 font-mono truncate flex-1 bg-black/40 p-1.5 rounded">
+                      {item.snippet}
+                    </code>
+                    <button
+                      onClick={() => handleCopyCodeSnippet(
+                        item.id,
+                        item.snippet,
+                        `Copied anchor link for "${item.recommendedAnchor}"!`
+                      )}
+                      className="px-2.5 py-1 rounded bg-[#171717] hover:bg-[#3ECF8E] hover:text-black text-zinc-300 text-[11px] font-bold border border-[#262626] flex items-center gap-1 cursor-pointer shrink-0 transition-all"
+                    >
+                      {copiedSnippetId === item.id ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                      <span>{copiedSnippetId === item.id ? 'Copied' : 'Copy Anchor'}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ─── TAB 5: CONTENT DECAY WATCHDOG ─── */}
+      {diagnosticData && !isScanning && activeGscTab === 'decay' && (
+        <div className="space-y-4">
+          <div className="bg-[#171717] p-4 rounded-xl border border-rose-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <History className="w-4 h-4 text-rose-400" />
+                <h3 className="text-sm font-extrabold text-white">
+                  Content Decay & Rank Loss Watchdog (30-Day Velocity Comparison)
+                </h3>
+              </div>
+              <p className="text-xs text-zinc-400">
+                These articles lost organic search impressions or dropped positions due to aging content. Execute a quick 2026 freshness patch to reclaim rankings.
+              </p>
+            </div>
+            <span className="px-2.5 py-1 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/30 text-xs font-bold shrink-0">
+              {contentDecayList.length} At-Risk Articles
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {contentDecayList.map((item) => (
+              <div key={item.id} className="bg-[#171717] rounded-xl border border-[#262626] p-4 space-y-3 shadow-sm hover:border-rose-500/40 transition-all text-xs flex flex-col justify-between">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <h4 className="font-bold text-white text-xs">{item.title}</h4>
+                    <div className="flex items-center gap-1.5 font-mono">
+                      <span className="px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 font-bold border border-rose-500/20">
+                        {item.impressionLoss}
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-bold">
+                        {item.rankDrop}
+                      </span>
+                    </div>
+                  </div>
+
+                  <span className="text-[11px] text-zinc-500 font-mono truncate block">{item.url}</span>
+
+                  <div className="p-3 bg-[#121212] rounded-lg border border-[#262626] space-y-1.5">
+                    <span className="text-[10px] text-zinc-400 uppercase font-bold block">3-Step 2026 Freshness Patch:</span>
+                    <ul className="space-y-1 text-[11px] text-zinc-300 list-disc list-inside">
+                      {item.refreshPlan.map((p, i) => (
+                        <li key={i}>{p}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-[#262626] flex items-center justify-between gap-2">
+                  <button
+                    onClick={() => handleCopyCodeSnippet(
+                      item.id,
+                      `2026 Refresh Plan for ${item.title}:\n` + item.refreshPlan.map((p, i) => `${i + 1}. ${p}`).join('\n'),
+                      `Copied 2026 refresh plan for "${item.title}"!`
+                    )}
+                    className="px-3 py-1.5 rounded-lg bg-[#121212] hover:bg-[#3ECF8E] hover:text-black text-zinc-300 font-bold border border-[#262626] flex items-center gap-1.5 cursor-pointer transition-all"
+                  >
+                    {copiedSnippetId === item.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedSnippetId === item.id ? 'Copied Plan!' : 'Copy Refresh Plan'}</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleAutonomousSubmitIndexing(item.url)}
+                    className="px-3 py-1.5 rounded-lg bg-[#121212] hover:bg-[#60a5fa] hover:text-black text-zinc-300 font-bold border border-[#262626] flex items-center gap-1.5 cursor-pointer transition-all"
+                  >
+                    <RefreshCw className="w-3 h-3" />
+                    <span>Re-Ping GSC</span>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -888,5 +1275,6 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
     </div>
   );
 }
+
 
 
