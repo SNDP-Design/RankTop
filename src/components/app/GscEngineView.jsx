@@ -559,6 +559,7 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
   const indexedRoutes = (diagnosticData?.routes || []).filter((r) => r.indexed);
   const actionableUnindexedRoutes = (diagnosticData?.routes || []).filter((r) => !r.indexed && !r.isHarmless);
   const harmlessRoutes = (diagnosticData?.routes || []).filter((r) => r.isHarmless);
+  const totalDiscoveredCount = (diagnosticData?.routes || []).length || diagnosticData?.coverage?.totalDiscovered || (indexedRoutes.length + actionableUnindexedRoutes.length + harmlessRoutes.length);
 
   const strikingDistanceList = gscService.getStrikingDistanceData(selectedDomain);
   const cannibalizationList = gscService.getCannibalizationData(selectedDomain);
@@ -630,20 +631,25 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
         {/* Right: Metrics Pill + Quick Actions */}
         <div className="flex items-center gap-2 flex-wrap justify-between md:justify-end">
           {diagnosticData && (
-            <div className="flex items-center gap-2.5 px-3 py-1.5 bg-[#121212] rounded-xl border border-[#262626] text-xs">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-[#121212] rounded-xl border border-[#262626] text-xs">
+              <div className="flex items-center gap-1">
+                <span className="text-zinc-500">Crawled:</span>
+                <span className="font-bold text-white">{totalDiscoveredCount}</span>
+              </div>
+              <span className="text-zinc-700">•</span>
               <div className="flex items-center gap-1">
                 <span className="text-zinc-500">Indexed:</span>
                 <span className="font-bold text-emerald-400">{indexedRoutes.length}</span>
               </div>
               <span className="text-zinc-700">•</span>
               <div className="flex items-center gap-1">
-                <span className="text-zinc-500">AI Queued:</span>
+                <span className="text-zinc-500">Unindexed:</span>
                 <span className="font-bold text-amber-400">{actionableUnindexedRoutes.length}</span>
               </div>
               <span className="text-zinc-700">•</span>
               <div className="flex items-center gap-1">
-                <span className="text-zinc-500">Health:</span>
-                <span className="font-bold text-purple-400">{diagnosticData.coverage.healthScore}%</span>
+                <span className="text-zinc-500">Harmless:</span>
+                <span className="font-bold text-zinc-400">{harmlessRoutes.length}</span>
               </div>
             </div>
           )}
@@ -699,6 +705,100 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
           <span className="text-zinc-500 text-[11px]">Discovering sitemap routes & evaluating indexing status</span>
         </div>
       )}
+
+      {/* ─── 4-METRIC CRAWL & INDEXATION INVENTORY STRIP ─── */}
+      {diagnosticData && !isScanning && (
+        <div className="bg-[#171717] p-3.5 sm:p-4 rounded-2xl border border-[#262626] space-y-3 shadow-sm">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            
+            {/* 1. Total Crawled Pages */}
+            <div className="p-3 bg-[#121212] rounded-xl border border-[#262626] space-y-1">
+              <div className="flex items-center justify-between text-zinc-400 text-xs">
+                <span className="font-extrabold uppercase tracking-wider text-[10px] text-zinc-400">Total Crawled</span>
+                <Globe className="w-3.5 h-3.5 text-[#60a5fa]" />
+              </div>
+              <div className="text-xl sm:text-2xl font-black text-white">
+                {totalDiscoveredCount} <span className="text-xs font-medium text-zinc-500 font-sans">Pages</span>
+              </div>
+              <p className="text-[11px] text-zinc-500 truncate">All production & sitemap URLs</p>
+            </div>
+
+            {/* 2. Indexed Pages */}
+            <div className="p-3 bg-[#121212] rounded-xl border border-emerald-500/30 space-y-1">
+              <div className="flex items-center justify-between text-emerald-400 text-xs">
+                <span className="font-extrabold uppercase tracking-wider text-[10px]">Indexed in Google</span>
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+              </div>
+              <div className="text-xl sm:text-2xl font-black text-emerald-400">
+                {indexedRoutes.length} <span className="text-xs font-medium text-emerald-500/70 font-sans">Pages ({Math.round((indexedRoutes.length / Math.max(1, totalDiscoveredCount)) * 100)}%)</span>
+              </div>
+              <p className="text-[11px] text-zinc-500 truncate">Live in SERP & ranking for search</p>
+            </div>
+
+            {/* 3. Not Indexed (Actionable Growth Pages) */}
+            <div className="p-3 bg-[#121212] rounded-xl border border-amber-500/30 space-y-1">
+              <div className="flex items-center justify-between text-amber-400 text-xs">
+                <span className="font-extrabold uppercase tracking-wider text-[10px]">Not Indexed (Actionable)</span>
+                <Radio className="w-3.5 h-3.5 text-amber-400" />
+              </div>
+              <div className="text-xl sm:text-2xl font-black text-amber-400">
+                {actionableUnindexedRoutes.length} <span className="text-xs font-medium text-amber-500/70 font-sans">Guides ({Math.round((actionableUnindexedRoutes.length / Math.max(1, totalDiscoveredCount)) * 100)}%)</span>
+              </div>
+              <p className="text-[11px] text-zinc-500 truncate">Autonomous AI indexing queued ⚡</p>
+            </div>
+
+            {/* 4. Harmless / 0% SEO Impact Pages */}
+            <div className="p-3 bg-[#121212] rounded-xl border border-zinc-700/60 space-y-1">
+              <div className="flex items-center justify-between text-zinc-400 text-xs">
+                <span className="font-extrabold uppercase tracking-wider text-[10px]">Harmless Excluded</span>
+                <ShieldCheck className="w-3.5 h-3.5 text-zinc-400" />
+              </div>
+              <div className="text-xl sm:text-2xl font-black text-zinc-300">
+                {harmlessRoutes.length} <span className="text-xs font-medium text-zinc-500 font-sans">Pages ({Math.round((harmlessRoutes.length / Math.max(1, totalDiscoveredCount)) * 100)}%)</span>
+              </div>
+              <p className="text-[11px] text-zinc-500 truncate">0% SEO Impact (Legal & utility)</p>
+            </div>
+
+          </div>
+
+          {/* Visual Ratio Distribution Bar */}
+          <div className="space-y-1.5 pt-1">
+            <div className="h-2 w-full bg-[#121212] rounded-full overflow-hidden flex border border-[#262626]">
+              <div 
+                style={{ width: `${(indexedRoutes.length / Math.max(1, totalDiscoveredCount)) * 100}%` }} 
+                className="bg-emerald-500 transition-all duration-500" 
+                title={`${indexedRoutes.length} Indexed (${Math.round((indexedRoutes.length / Math.max(1, totalDiscoveredCount)) * 100)}%)`}
+              />
+              <div 
+                style={{ width: `${(actionableUnindexedRoutes.length / Math.max(1, totalDiscoveredCount)) * 100}%` }} 
+                className="bg-amber-400 transition-all duration-500" 
+                title={`${actionableUnindexedRoutes.length} Not Indexed (${Math.round((actionableUnindexedRoutes.length / Math.max(1, totalDiscoveredCount)) * 100)}%)`}
+              />
+              <div 
+                style={{ width: `${(harmlessRoutes.length / Math.max(1, totalDiscoveredCount)) * 100}%` }} 
+                className="bg-zinc-600 transition-all duration-500" 
+                title={`${harmlessRoutes.length} Harmless Excluded (${Math.round((harmlessRoutes.length / Math.max(1, totalDiscoveredCount)) * 100)}%)`}
+              />
+            </div>
+
+            <div className="flex items-center justify-between text-[10px] text-zinc-500 font-mono flex-wrap gap-2">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span>Indexed ({indexedRoutes.length})</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-amber-400" />
+                <span>Not Indexed • AI Requested ({actionableUnindexedRoutes.length})</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-zinc-600" />
+                <span>Harmless Excluded / 0% Impact ({harmlessRoutes.length})</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
 
       {/* ─── RANKING OPTIMIZATION SUB-TABS ─── */}
       {diagnosticData && !isScanning && (
