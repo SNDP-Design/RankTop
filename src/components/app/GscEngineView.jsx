@@ -5,20 +5,15 @@ import {
   ExternalLink, 
   CheckCircle2, 
   AlertCircle, 
-  Zap, 
-  FileCode, 
-  CheckCheck, 
   Globe, 
   Trash2, 
   TrendingUp, 
-  Layers,
-  ArrowUpRight,
-  Loader2,
-  Copy,
-  Check,
-  Send,
-  Eye,
-  EyeOff,
+  Loader2, 
+  Copy, 
+  Check, 
+  Send, 
+  ChevronDown, 
+  ChevronUp, 
   Radio
 } from 'lucide-react';
 import { gscService } from '../../services/gscService';
@@ -84,6 +79,14 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
   });
   const [isBatchSubmitting, setIsBatchSubmitting] = useState(false);
 
+  // UI state
+  const [showExcluded, setShowExcluded] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
+  const [copiedUnindexed, setCopiedUnindexed] = useState(false);
+  const [copiedUrl, setCopiedUrl] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [successMsg, setSuccessMsg] = useState(null);
+
   // GitHub Auth Config
   const [githubToken, setGithubToken] = useState(() => {
     try {
@@ -93,13 +96,7 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
     }
   });
   const [showToken, setShowToken] = useState(false);
-  const [copiedUnindexed, setCopiedUnindexed] = useState(false);
   const [pingedGsc, setPingedGsc] = useState(false);
-
-  // Messages
-  const [errorMsg, setErrorMsg] = useState(null);
-  const [successMsg, setSuccessMsg] = useState(null);
-  const [copiedUrl, setCopiedUrl] = useState(null);
 
   // Sync state to LocalStorage
   useEffect(() => {
@@ -574,522 +571,322 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
 
 
   return (
-    <div className="w-full space-y-6 font-sans">
+    <div className="w-full space-y-4 font-sans max-w-7xl mx-auto">
       
-      {/* ─── Hero Header ─── */}
-      <div className="bg-[#171717] p-6 sm:p-8 rounded-2xl border border-[#262626] relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#60a5fa]/5 rounded-full blur-3xl pointer-events-none" />
+      {/* ─── COMPACT TOP CONTROL & KPI BAR ─── */}
+      <div className="bg-[#171717] px-4 py-3 rounded-2xl border border-[#262626] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 shadow-md">
         
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#60a5fa]/10 text-[#60a5fa] text-xs font-bold border border-[#60a5fa]/20">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>AUTONOMOUS GOOGLE SEARCH CONSOLE ENGINE</span>
+        {/* Left: Domain input & Connection Status */}
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <div className="flex items-center gap-2 bg-[#121212] px-3 py-1.5 rounded-xl border border-[#262626]">
+            <Globe className="w-3.5 h-3.5 text-[#60a5fa] shrink-0" />
+            <input
+              type="text"
+              value={selectedDomain}
+              onChange={(e) => setSelectedDomain(e.target.value)}
+              placeholder="domain.com"
+              className="bg-transparent text-xs text-white placeholder-zinc-500 font-mono focus:outline-none w-36 sm:w-44"
+            />
+          </div>
+
+          {isGscConnected ? (
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>GSC Connected</span>
+              <button
+                onClick={handleDisconnectGsc}
+                title="Disconnect Google Search Console"
+                className="ml-1 text-zinc-500 hover:text-zinc-300 text-xs cursor-pointer"
+              >
+                ×
+              </button>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              Google Search Console Auto-Fixer & Indexing Agent
-            </h1>
-            <p className="text-sm text-zinc-400 max-w-2xl leading-relaxed">
-              Connect your Google Search Console. RankTop discovers all <strong className="text-white">non-indexed pages and crawl flaws</strong>, commits fixes directly to GitHub, and autonomously submits indexing requests to Googlebot.
-            </p>
-          </div>
+          ) : (
+            <button
+              onClick={handleConnectGsc}
+              disabled={isConnecting}
+              className="px-3 py-1.5 rounded-xl bg-[#60a5fa] hover:bg-[#93c5fd] text-black font-extrabold text-xs flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+            >
+              {isConnecting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Globe className="w-3.5 h-3.5" />}
+              <span>Connect GSC</span>
+            </button>
+          )}
 
-          <div className="flex items-center gap-3 flex-shrink-0">
-            {isGscConnected ? (
-              <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold">
-                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>GSC Connected</span>
-                <button
-                  onClick={handleDisconnectGsc}
-                  className="ml-2 text-zinc-500 hover:text-zinc-300 text-[11px] underline cursor-pointer"
-                >
-                  Disconnect
-                </button>
+          {diagnosticData && (
+            <button
+              onClick={handleResetGscState}
+              title="Reset Diagnostic"
+              className="p-1.5 rounded-xl bg-[#121212] hover:bg-red-500/10 text-zinc-400 hover:text-red-400 border border-[#262626] transition-colors cursor-pointer"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+
+        {/* Right: Metrics Pill + Quick Actions */}
+        <div className="flex items-center gap-2 flex-wrap justify-between md:justify-end">
+          {diagnosticData && (
+            <div className="flex items-center gap-2.5 px-3 py-1.5 bg-[#121212] rounded-xl border border-[#262626] text-xs">
+              <div className="flex items-center gap-1">
+                <span className="text-zinc-500">Indexed:</span>
+                <span className="font-bold text-emerald-400">{indexedRoutes.length}</span>
               </div>
-            ) : (
-              <button
-                onClick={handleConnectGsc}
-                disabled={isConnecting}
-                className="px-5 py-3 rounded-xl bg-[#60a5fa] hover:bg-[#93c5fd] text-black font-extrabold text-xs flex items-center gap-2 transition-all shadow-lg shadow-[#60a5fa]/20 cursor-pointer disabled:opacity-50"
-              >
-                {isConnecting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Globe className="w-4 h-4" />}
-                <span>Connect Google Search Console</span>
-              </button>
-            )}
+              <span className="text-zinc-700">•</span>
+              <div className="flex items-center gap-1">
+                <span className="text-zinc-500">AI Queued:</span>
+                <span className="font-bold text-amber-400">{actionableUnindexedRoutes.length}</span>
+              </div>
+              <span className="text-zinc-700">•</span>
+              <div className="flex items-center gap-1">
+                <span className="text-zinc-500">Health:</span>
+                <span className="font-bold text-purple-400">{diagnosticData.coverage.healthScore}%</span>
+              </div>
+            </div>
+          )}
 
-            {diagnosticData && (
-              <button
-                onClick={handleResetGscState}
-                title="Reset GSC Audit"
-                className="p-2.5 rounded-xl bg-[#121212] hover:bg-red-500/10 text-zinc-400 hover:text-red-400 border border-[#262626] transition-colors cursor-pointer"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            )}
-          </div>
+          <button
+            onClick={() => runGscAudit(selectedDomain)}
+            disabled={isScanning || !selectedDomain}
+            className="px-3 py-1.5 rounded-xl bg-[#121212] hover:bg-[#262626] text-zinc-300 hover:text-white font-bold text-xs border border-[#262626] flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isScanning ? 'animate-spin text-[#60a5fa]' : ''}`} />
+            <span>{isScanning ? 'Scanning...' : 'Scan GSC'}</span>
+          </button>
+
+          <button
+            onClick={handleBatchSubmitAllIndexing}
+            disabled={isBatchSubmitting || actionableUnindexedRoutes.length === 0}
+            className="px-3.5 py-1.5 rounded-xl bg-[#3ECF8E] hover:bg-[#34D399] text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-sm shadow-[#3ECF8E]/20 cursor-pointer disabled:opacity-50"
+          >
+            {isBatchSubmitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+            <span>Auto-Submit All ({actionableUnindexedRoutes.length})</span>
+          </button>
         </div>
       </div>
 
-      {/* ─── Alerts ─── */}
+      {/* ─── ALERTS ─── */}
       {errorMsg && (
-        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 flex items-start gap-3 text-sm">
-          <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-          <div className="flex-1 font-medium">{errorMsg}</div>
-          <button onClick={() => setErrorMsg(null)} className="text-red-400 hover:text-white text-xs font-bold">Dismiss</button>
+        <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{errorMsg}</span>
+          </div>
+          <button onClick={() => setErrorMsg(null)} className="text-red-400 hover:text-white text-xs font-bold cursor-pointer">×</button>
         </div>
       )}
 
       {successMsg && (
-        <div className="p-4 rounded-xl bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] flex items-start gap-3 text-sm">
-          <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
-          <div className="flex-1 font-medium">{successMsg}</div>
-          <button onClick={() => setSuccessMsg(null)} className="text-[#3ECF8E] hover:text-white text-xs font-bold">Dismiss</button>
+        <div className="p-3 rounded-xl bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 shrink-0" />
+            <span>{successMsg}</span>
+          </div>
+          <button onClick={() => setSuccessMsg(null)} className="text-[#3ECF8E] hover:text-white text-xs font-bold cursor-pointer">×</button>
         </div>
       )}
 
-      {/* ─── Domain & Property Selector Bar ─── */}
-      <div className="bg-[#171717] rounded-2xl border border-[#262626] p-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-3 flex-1">
-          <Globe className="w-4 h-4 text-[#60a5fa] flex-shrink-0" />
-          <span className="text-xs font-bold text-zinc-400 uppercase">Target Domain:</span>
-          <input
-            type="text"
-            value={selectedDomain}
-            onChange={(e) => setSelectedDomain(e.target.value)}
-            placeholder="e.g. xgrowth.uno or www.xgrowth.uno"
-            className="flex-1 max-w-sm px-3 py-1.5 bg-[#121212] border border-[#262626] rounded-lg text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-[#60a5fa] font-mono"
-          />
-        </div>
-
-        <button
-          onClick={() => runGscAudit(selectedDomain)}
-          disabled={isScanning || !selectedDomain}
-          className="px-4 py-2 rounded-xl bg-[#121212] hover:bg-[#262626] text-white font-bold text-xs border border-[#262626] flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${isScanning ? 'animate-spin text-[#60a5fa]' : ''}`} />
-          <span>{isScanning ? 'Scanning GSC...' : 'Scan GSC Flaws & Coverage'}</span>
-        </button>
-      </div>
-
-      {/* ─── STAGE 1: LIVE SCANNING ANIMATION ─── */}
+      {/* ─── SCANNING INLINE BAR ─── */}
       {isScanning && (
-        <div className="bg-[#171717] rounded-2xl border border-[#60a5fa]/30 p-8 space-y-6 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-[#60a5fa]/10 border border-[#60a5fa]/30 text-[#60a5fa] flex items-center justify-center mx-auto animate-pulse">
-            <RefreshCw className="w-8 h-8 animate-spin" />
+        <div className="p-3.5 bg-[#171717] rounded-xl border border-[#60a5fa]/30 flex items-center justify-between text-xs text-white shadow-sm">
+          <div className="flex items-center gap-2.5">
+            <RefreshCw className="w-4 h-4 text-[#60a5fa] animate-spin" />
+            <span>Scanning Google Search Console for <code className="text-[#60a5fa]">{selectedDomain}</code>...</span>
           </div>
-
-          <div className="space-y-2 max-w-lg mx-auto">
-            <h2 className="text-xl font-extrabold text-white">
-              Scanning Google Search Console for {selectedDomain}...
-            </h2>
-            <p className="text-xs text-zinc-400">
-              Evaluating Page Indexing coverage, unindexed reasons, sitemap sync, and internal link equity.
-            </p>
-          </div>
-
-          {/* Progress Steps */}
-          <div className="max-w-md mx-auto space-y-2.5 text-left text-xs">
-            <div className={`p-3 rounded-xl border flex items-center gap-2.5 ${scanStep >= 1 ? 'bg-[#121212] border-[#60a5fa]/40 text-white' : 'bg-[#121212]/50 border-[#262626] text-zinc-500'}`}>
-              {scanStep > 1 ? <CheckCircle2 className="w-4 h-4 text-[#60a5fa]" /> : <RefreshCw className="w-4 h-4 text-[#60a5fa] animate-spin" />}
-              <span>Crawling live sitemap & discovering all production URLs...</span>
-            </div>
-            <div className={`p-3 rounded-xl border flex items-center gap-2.5 ${scanStep >= 2 ? 'bg-[#121212] border-[#60a5fa]/40 text-white' : 'bg-[#121212]/50 border-[#262626] text-zinc-500'}`}>
-              {scanStep > 2 ? <CheckCircle2 className="w-4 h-4 text-[#60a5fa]" /> : scanStep === 2 ? <RefreshCw className="w-4 h-4 text-[#60a5fa] animate-spin" /> : <div className="w-4 h-4 rounded-full border border-zinc-700" />}
-              <span>Validating live canonical URLs, 308 redirects & HTTP headers...</span>
-            </div>
-            <div className={`p-3 rounded-xl border flex items-center gap-2.5 ${scanStep >= 3 ? 'bg-[#121212] border-[#60a5fa]/40 text-white' : 'bg-[#121212]/50 border-[#262626] text-zinc-500'}`}>
-              {scanStep === 3 ? <RefreshCw className="w-4 h-4 text-[#60a5fa] animate-spin" /> : <div className="w-4 h-4 rounded-full border border-zinc-700" />}
-              <span>Generating autonomous codebase repair & indexation plan...</span>
-            </div>
-          </div>
+          <span className="text-zinc-500 text-[11px]">Discovering sitemap routes & evaluating indexing status</span>
         </div>
       )}
 
-      {/* ─── STAGE 2: GSC COVERAGE & FLAW ASSESSMENT DASHBOARD ─── */}
+      {/* ─── SIDE-BY-SIDE DUAL PANEL ─── */}
       {diagnosticData && !isScanning && (
-        <div className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
           
-          {/* 4 Big Metrics Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            
-            <div className="bg-[#171717] rounded-2xl border border-emerald-500/30 p-5 space-y-2 relative overflow-hidden">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Indexed in Google</span>
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-              </div>
-              <div className="text-3xl font-black text-emerald-400">{diagnosticData.coverage.indexedPages} Pages</div>
-              <p className="text-[11px] text-zinc-500">Live in Google primary search index</p>
-            </div>
-
-            <div className="bg-[#171717] rounded-2xl border border-amber-500/30 p-5 space-y-2 relative overflow-hidden">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Growth Pages to Index</span>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold">{actionableUnindexedRoutes.length} Priority</span>
-              </div>
-              <div className="text-3xl font-black text-amber-400">{actionableUnindexedRoutes.length} Guides</div>
-              <p className="text-[11px] text-zinc-500">Auto-submitted by RankTop AI</p>
-            </div>
-
-            <div className="bg-[#171717] rounded-2xl border border-zinc-700/50 p-5 space-y-2 relative overflow-hidden">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Harmless Excluded</span>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 font-bold">0% SEO Impact</span>
-              </div>
-              <div className="text-3xl font-black text-zinc-300">{harmlessRoutes.length} Pages</div>
-              <p className="text-[11px] text-zinc-500">Utility / legal compliance</p>
-            </div>
-
-            <div className="bg-[#171717] rounded-2xl border border-purple-500/30 p-5 space-y-2 relative overflow-hidden">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Indexing Health</span>
-                <TrendingUp className="w-4 h-4 text-purple-400" />
-              </div>
-              <div className="text-3xl font-black text-purple-400">{diagnosticData.coverage.healthScore}/100</div>
-              <p className="text-[11px] text-zinc-500">Health score across live inventory</p>
-            </div>
-
-          </div>
-
-          {/* ─── ACTION BANNER: START AUTONOMOUS GSC REPAIR ─── */}
-          <div className="p-6 bg-gradient-to-r from-[#60a5fa]/20 via-[#171717] to-[#3ECF8E]/20 rounded-2xl border-2 border-[#60a5fa]/50 space-y-4 shadow-xl">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="space-y-1">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#60a5fa]/20 text-[#60a5fa] text-xs font-bold border border-[#60a5fa]/30">
-                  <Zap className="w-3.5 h-3.5 fill-[#60a5fa]" />
-                  <span>AUTONOMOUS GSC SELF-HEALING & INDEXING SUBMITTER</span>
-                </div>
-                <h3 className="text-lg sm:text-xl font-black text-white">
-                  Auto-Repair All GSC Flaws, Deploy to GitHub & Submit Indexing Requests
+          {/* ─── LEFT COLUMN: INDEXED IN GOOGLE ─── */}
+          <div className="bg-[#171717] rounded-2xl border border-[#262626] overflow-hidden shadow-sm flex flex-col">
+            <div className="px-4 py-3 bg-[#121212] border-b border-[#262626] flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <h3 className="text-xs font-extrabold text-white uppercase tracking-wider">
+                  Indexed in Google ({indexedRoutes.length})
                 </h3>
-                <p className="text-xs text-zinc-300 max-w-2xl">
-                  Synthesizes {diagnosticData.coverage.totalDiscovered}-route XML sitemap, BreadcrumbList microdata, and internal link equity mesh, commits directly to GitHub, and submits automated indexing requests to Googlebot.
-                </p>
               </div>
-
-              <button
-                onClick={handleStartAutonomousGscRepair}
-                disabled={isFixing}
-                className="px-6 py-3.5 rounded-xl font-black text-xs sm:text-sm bg-[#60a5fa] hover:bg-[#93c5fd] text-black flex items-center gap-2 shadow-xl shadow-[#60a5fa]/25 transition-all transform hover:scale-[1.02] cursor-pointer disabled:opacity-50 flex-shrink-0"
+              <a
+                href="https://search.google.com/search-console"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] text-[#60a5fa] hover:underline flex items-center gap-1 font-bold"
               >
-                {isFixing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4 fill-black" />}
-                <span>{isFixing ? 'Autonomous Repairing & Submitting...' : 'Start Autonomous GSC Repair & Auto-Deploy'}</span>
-              </button>
+                <span>Open GSC</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
             </div>
 
-            {/* GitHub PAT Inline Config */}
-            <div className="pt-2 border-t border-white/10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              <div className="relative flex-1 max-w-md">
-                <input
-                  type={showToken ? 'text' : 'password'}
-                  value={githubToken}
-                  onChange={(e) => setGithubToken(e.target.value)}
-                  placeholder="Paste GitHub Token (PAT) for 1-Click Auto-Deploy to main"
-                  className="w-full pl-4 pr-10 py-2 bg-[#121212] border border-[#262626] rounded-xl text-xs text-white placeholder-zinc-500 font-mono"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowToken(!showToken)}
-                  className="absolute right-3 top-2.5 text-zinc-500 hover:text-zinc-300 cursor-pointer"
-                >
-                  {showToken ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                </button>
-              </div>
-              <span className="text-[11px] text-zinc-400">
-                Auto-deploys to branch <code className="text-[#3ECF8E] font-bold">main</code> on GitHub without manual PR merges.
-              </span>
-            </div>
-
-            {/* Fixing Progress Steps */}
-            {isFixing && (
-              <div className="p-4 bg-[#121212] rounded-xl border border-[#60a5fa]/30 space-y-2 text-xs">
-                <div className="flex items-center gap-2 text-[#60a5fa] font-bold">
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                  <span>Executing Step {fixingStep} of 5...</span>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 text-[11px]">
-                  <div className={`p-2 rounded border ${fixingStep >= 1 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-zinc-900 border-zinc-800 text-zinc-500'}`}>1. XML Sitemap</div>
-                  <div className={`p-2 rounded border ${fixingStep >= 2 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-zinc-900 border-zinc-800 text-zinc-500'}`}>2. Breadcrumbs</div>
-                  <div className={`p-2 rounded border ${fixingStep >= 3 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-zinc-900 border-zinc-800 text-zinc-500'}`}>3. Link Mesh</div>
-                  <div className={`p-2 rounded border ${fixingStep >= 4 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-zinc-900 border-zinc-800 text-zinc-500'}`}>4. GitHub Commit</div>
-                  <div className={`p-2 rounded border ${fixingStep >= 5 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-zinc-900 border-zinc-800 text-zinc-500'}`}>5. Submit Indexing Requests</div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* ─── 2-COLUMN DUAL PANEL: INDEXED IN GOOGLE vs NOT INDEXED (AI AGENT REQUESTED) ─── */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
-            {/* ─── LEFT COLUMN: ALL INDEXED PAGES (IN GOOGLE SERP) ─── */}
-            <div className="bg-[#171717] rounded-2xl border border-emerald-500/30 p-6 space-y-5 shadow-xl flex flex-col justify-between">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between gap-3 pb-3 border-b border-[#262626]">
-                  <div className="space-y-1">
-                    <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>INDEXED IN GOOGLE SEARCH CONSOLE</span>
+            <div className="divide-y divide-[#262626] max-h-[520px] overflow-y-auto">
+              {indexedRoutes.map((item, idx) => (
+                <div key={idx} className="p-3 hover:bg-[#1f1f1f]/50 transition-colors flex items-center justify-between gap-3 text-xs">
+                  <div className="min-w-0 flex-1 space-y-0.5">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-bold text-white truncate">{item.label}</span>
+                      <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#121212] text-zinc-400 font-mono border border-[#262626]">{item.type}</span>
                     </div>
-                    <h3 className="text-lg font-black text-white">
-                      Indexed Pages ({indexedRoutes.length})
-                    </h3>
-                    <p className="text-xs text-zinc-400">
-                      Live in Google's primary index and ranking for search queries.
-                    </p>
-                  </div>
-                  <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-mono font-bold shrink-0">
-                    {indexedRoutes.length} Live
-                  </span>
-                </div>
-
-                <div className="space-y-3 max-h-[640px] overflow-y-auto pr-1">
-                  {indexedRoutes.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="p-4 bg-[#121212] rounded-xl border border-[#262626] hover:border-emerald-500/40 transition-all space-y-3 group shadow-sm"
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="space-y-1 min-w-0 flex-1">
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold text-white text-xs truncate group-hover:text-emerald-400 transition-colors">
-                              {item.label}
-                            </span>
-                            <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#1a1a1a] text-zinc-400 font-mono border border-[#262626]">
-                              {item.type}
-                            </span>
-                          </div>
-                          <span className="text-[11px] text-zinc-500 font-mono truncate block">
-                            {item.url}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          <span className="text-[9px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30">
-                            Indexed ✓
-                          </span>
-                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-mono">
-                            200 OK
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="pt-2 border-t border-[#262626] flex items-center justify-between gap-2 text-xs">
-                        <span className="text-[10px] text-zinc-500 font-mono">
-                          Canonical verified • Priority {item.priority}
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleOpenGscInspector(item.url)}
-                            className="text-xs text-[#60a5fa] hover:text-[#93c5fd] hover:underline flex items-center gap-1 font-bold cursor-pointer transition-all"
-                          >
-                            <span>{copiedUrl === item.url ? 'URL Copied & Opening...' : 'Inspect in GSC'}</span>
-                            <ExternalLink className="w-3 h-3" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="pt-3 border-t border-[#262626] text-center text-xs text-zinc-500">
-                All {indexedRoutes.length} canonical routes are indexed by Googlebot.
-              </div>
-            </div>
-
-            {/* ─── RIGHT COLUMN: NOT INDEXED • REQUESTED BY AUTONOMOUS AI AGENT ─── */}
-            <div className="bg-[#171717] rounded-2xl border-2 border-[#3ECF8E]/50 p-6 space-y-5 shadow-2xl relative overflow-hidden flex flex-col justify-between">
-              <div className="absolute top-0 right-0 w-80 h-80 bg-[#3ECF8E]/5 rounded-full blur-3xl pointer-events-none" />
-
-              <div className="space-y-4 relative z-10">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-[#262626]">
-                  <div className="space-y-1">
-                    <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-bold border border-[#3ECF8E]/20">
-                      <Radio className="w-3.5 h-3.5 text-[#3ECF8E]" />
-                      <span>AUTONOMOUS AI AGENT INDEXING QUEUE</span>
-                    </div>
-                    <h3 className="text-lg font-black text-white">
-                      Not Indexed • Requested by AI Agent ({actionableUnindexedRoutes.length})
-                    </h3>
-                    <p className="text-xs text-zinc-400">
-                      Auto-submitted to Googlebot & IndexNow protocol by RankTop.
-                    </p>
+                    <span className="text-[11px] text-zinc-500 font-mono truncate block">{item.url}</span>
                   </div>
 
                   <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">
+                      Indexed ✓
+                    </span>
                     <button
-                      onClick={handleBatchSubmitAllIndexing}
-                      disabled={isBatchSubmitting}
-                      className="px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34D399] text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-[#3ECF8E]/20 cursor-pointer disabled:opacity-50"
+                      onClick={() => handleOpenGscInspector(item.url)}
+                      title="Inspect URL in Google Search Console"
+                      className="px-2.5 py-1 rounded-lg bg-[#121212] hover:bg-[#60a5fa] hover:text-black text-zinc-300 text-[11px] font-bold border border-[#262626] flex items-center gap-1 transition-all cursor-pointer"
                     >
-                      {isBatchSubmitting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />}
-                      <span>{isBatchSubmitting ? 'Submitting...' : 'Re-Submit All'}</span>
-                    </button>
-                    <button
-                      onClick={handleCopyAllUnindexed}
-                      title="Copy all unindexed URLs"
-                      className="p-1.5 rounded-lg bg-[#121212] hover:bg-[#262626] text-white border border-[#262626] transition-all cursor-pointer"
-                    >
-                      {copiedUnindexed ? <Check className="w-3.5 h-3.5 text-[#3ECF8E]" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedUrl === item.url ? 'Copied & Opening...' : 'Inspect'}</span>
+                      <ExternalLink className="w-2.5 h-2.5" />
                     </button>
                   </div>
                 </div>
-
-                <div className="space-y-3 max-h-[640px] overflow-y-auto pr-1">
-                  {actionableUnindexedRoutes.map((item, idx) => {
-                    const submission = submittedIndexMap[item.url] || (pingedGsc ? {
-                      submittedAt: 'Today, Just Now',
-                      status: 'Indexing Request Dispatched to Googlebot & IndexNow ✓',
-                      protocol: 'Googlebot Sitemap Ping + IndexNow API'
-                    } : {
-                      submittedAt: 'Today',
-                      status: 'Indexing Request Dispatched to Googlebot & IndexNow ✓',
-                      protocol: 'Googlebot Sitemap Ping + IndexNow API'
-                    });
-
-                    return (
-                      <div
-                        key={idx}
-                        className="p-4 bg-[#121212] rounded-xl border border-[#262626] hover:border-[#3ECF8E]/40 transition-all space-y-3 group shadow-md"
-                      >
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-bold border border-amber-500/20">
-                              {item.gscReason || 'Discovered – currently not indexed'}
-                            </span>
-                            <span className="text-[10px] text-zinc-500 font-mono">
-                              Priority: {item.priority}
-                            </span>
-                          </div>
-
-                          <h4 className="text-xs font-extrabold text-white group-hover:text-[#3ECF8E] transition-colors truncate">
-                            {item.label}
-                          </h4>
-
-                          <span className="text-[11px] text-zinc-400 font-mono truncate block">
-                            {item.url}
-                          </span>
-
-                          {/* Live Autonomous Submission Badge */}
-                          <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 space-y-0.5">
-                            <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                              <span className="truncate">{submission.status}</span>
-                            </div>
-                            <p className="text-[10px] text-zinc-400">
-                              Dispatched via Autonomous Agent • {submission.submittedAt}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="pt-2 border-t border-[#262626] flex items-center justify-between gap-2">
-                          <button
-                            onClick={() => handleAutonomousSubmitIndexing(item.url)}
-                            className="px-2.5 py-1 rounded-lg bg-[#1a1a1a] hover:bg-[#3ECF8E] hover:text-black text-zinc-300 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
-                          >
-                            <RefreshCw className="w-3 h-3" />
-                            <span>Re-Submit Ping</span>
-                          </button>
-
-                          <button
-                            onClick={() => handleOpenGscInspector(item.url)}
-                            className="text-xs text-[#60a5fa] hover:text-[#93c5fd] hover:underline flex items-center gap-1 font-bold cursor-pointer transition-all"
-                          >
-                            <span>{copiedUrl === item.url ? 'URL Copied & Opening...' : 'Inspect in GSC'}</span>
-                            <ExternalLink className="w-3 h-3" />
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="pt-3 border-t border-[#262626] text-center text-xs text-zinc-400 relative z-10">
-                RankTop AI actively monitors crawl rate & re-pings Googlebot when new links are pushed.
-              </div>
+              ))}
             </div>
-
           </div>
 
-          {/* ─── HARMLESS PAGES: DISCARDED FROM INDEXING QUEUE ─── */}
-          {harmlessRoutes.length > 0 && (
-            <div className="bg-[#171717] rounded-2xl border border-zinc-800 p-6 space-y-4 shadow-md">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-zinc-400" />
-                    <span className="text-xs font-black text-zinc-400 uppercase tracking-wider">
-                      Harmless Pages (Discarded From Indexing Queue)
-                    </span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300 font-bold border border-zinc-700">
-                      doesn't need to be indexed
-                    </span>
-                  </div>
-                  <h4 className="text-sm font-extrabold text-white">
-                    Compliance & Utility Pages — Zero Negative SEO Impact
-                  </h4>
-                  <p className="text-xs text-zinc-400 max-w-3xl leading-relaxed">
-                    These utility and legal routes (Terms of Service, Privacy Policy, redirect variants) have zero commercial search intent. Leaving them unindexed is standard SEO best practice to prevent crawl budget dilution and will <strong className="text-zinc-200">not hamper your Google rankings or topical authority</strong>.
-                  </p>
-                </div>
+          {/* ─── RIGHT COLUMN: NOT INDEXED • AI AGENT REQUESTED ─── */}
+          <div className="bg-[#171717] rounded-2xl border border-[#3ECF8E]/40 overflow-hidden shadow-sm flex flex-col">
+            <div className="px-4 py-3 bg-[#121212] border-b border-[#262626] flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Radio className="w-4 h-4 text-[#3ECF8E]" />
+                <h3 className="text-xs font-extrabold text-white uppercase tracking-wider">
+                  Not Indexed • AI Requested ({actionableUnindexedRoutes.length})
+                </h3>
               </div>
+              <button
+                onClick={handleCopyAllUnindexed}
+                className="text-[11px] text-zinc-400 hover:text-white flex items-center gap-1 cursor-pointer transition-colors"
+              >
+                {copiedUnindexed ? <Check className="w-3 h-3 text-[#3ECF8E]" /> : <Copy className="w-3 h-3" />}
+                <span>{copiedUnindexed ? 'Copied URLs' : 'Copy All'}</span>
+              </button>
+            </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-                {harmlessRoutes.map((h, idx) => (
-                  <div key={idx} className="p-4 bg-[#121212] rounded-xl border border-zinc-800/80 flex items-center justify-between gap-3 text-xs">
-                    <div className="min-w-0 space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-zinc-200">{h.label}</span>
-                        <span className="px-2 py-0.5 rounded-full bg-zinc-800/90 text-zinc-400 text-[10px] font-bold border border-zinc-700">
-                          doesn't need to be indexed
+            <div className="divide-y divide-[#262626] max-h-[520px] overflow-y-auto">
+              {actionableUnindexedRoutes.map((item, idx) => {
+                const submission = submittedIndexMap[item.url];
+                return (
+                  <div key={idx} className="p-3 hover:bg-[#1f1f1f]/50 transition-colors flex items-center justify-between gap-3 text-xs">
+                    <div className="min-w-0 flex-1 space-y-0.5">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="font-bold text-white truncate">{item.label}</span>
+                        <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-400 font-bold border border-amber-500/20">
+                          {item.gscReason ? item.gscReason.split('–')[0].trim() : 'Unindexed'}
                         </span>
                       </div>
-                      <span className="text-[11px] text-zinc-500 font-mono truncate block">{h.url}</span>
+                      <span className="text-[11px] text-zinc-500 font-mono truncate block">{item.url}</span>
                     </div>
-                    <span className="text-[10px] text-zinc-500 font-mono shrink-0 bg-zinc-900 px-2 py-1 rounded border border-zinc-800">
-                      Harmless ✓
-                    </span>
+
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {submission ? (
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30">
+                          Pinged ✓
+                        </span>
+                      ) : (
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 font-bold border border-purple-500/20">
+                          Queued ⚡
+                        </span>
+                      )}
+                      <button
+                        onClick={() => handleAutonomousSubmitIndexing(item.url)}
+                        title="Re-send Googlebot sitemap ping & IndexNow broadcast"
+                        className="px-2.5 py-1 rounded-lg bg-[#121212] hover:bg-[#3ECF8E] hover:text-black text-zinc-300 text-[11px] font-bold border border-[#262626] flex items-center gap-1 transition-all cursor-pointer"
+                      >
+                        <RefreshCw className="w-2.5 h-2.5" />
+                        <span>Ping</span>
+                      </button>
+                      <button
+                        onClick={() => handleOpenGscInspector(item.url)}
+                        title="Inspect in Google Search Console"
+                        className="p-1 rounded-lg bg-[#121212] hover:bg-zinc-800 text-zinc-400 hover:text-sky-400 border border-[#262626] transition-all cursor-pointer"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                      </button>
+                    </div>
                   </div>
-                ))}
-              </div>
+                );
+              })}
             </div>
-          )}
-
-
-          {/* ─── REAL GSC PERFORMANCE SEARCH ANALYTICS ─── */}
-          {analyticsData?.overview && (
-            <div className="bg-[#171717] rounded-2xl border border-[#262626] p-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-extrabold text-white flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-[#4285F4]" />
-                  <span>Verified Google Search Console Analytics (Last 28 Days)</span>
-                </h3>
-                <span className="text-xs text-emerald-400 font-bold">Live API Data ✓</span>
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className="p-3.5 bg-[#121212] rounded-xl border border-[#262626]">
-                  <span className="text-[11px] text-zinc-500">Total Clicks</span>
-                  <div className="text-2xl font-black text-[#4285F4] mt-1">{analyticsData.overview.clicks}</div>
-                </div>
-                <div className="p-3.5 bg-[#121212] rounded-xl border border-[#262626]">
-                  <span className="text-[11px] text-zinc-500">Total Impressions</span>
-                  <div className="text-2xl font-black text-[#3ECF8E] mt-1">{analyticsData.overview.impressions}</div>
-                </div>
-                <div className="p-3.5 bg-[#121212] rounded-xl border border-[#262626]">
-                  <span className="text-[11px] text-zinc-500">Average CTR</span>
-                  <div className="text-2xl font-black text-[#f59e0b] mt-1">{analyticsData.overview.ctr}</div>
-                </div>
-                <div className="p-3.5 bg-[#121212] rounded-xl border border-[#262626]">
-                  <span className="text-[11px] text-zinc-500">Average Position</span>
-                  <div className="text-2xl font-black text-[#a78bfa] mt-1">#{analyticsData.overview.avgPosition}</div>
-                </div>
-              </div>
-            </div>
-          )}
+          </div>
 
         </div>
       )}
 
+      {/* ─── COLLAPSIBLE: EXCLUDED LEGAL & UTILITY ROUTES (0% SEO IMPACT) ─── */}
+      {harmlessRoutes.length > 0 && diagnosticData && (
+        <div className="bg-[#171717] rounded-xl border border-[#262626] overflow-hidden">
+          <button
+            onClick={() => setShowExcluded(!showExcluded)}
+            className="w-full px-4 py-2.5 flex items-center justify-between text-xs text-zinc-400 hover:text-zinc-200 transition-colors cursor-pointer"
+          >
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-3.5 h-3.5 text-zinc-500" />
+              <span>Excluded Utility & Legal Pages ({harmlessRoutes.length})</span>
+              <span className="text-[10px] text-zinc-600 font-mono hidden sm:inline">— 0% Negative SEO Impact (Intentionally excluded from indexing queue)</span>
+            </div>
+            {showExcluded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+          </button>
+
+          {showExcluded && (
+            <div className="p-3 border-t border-[#262626] bg-[#121212] divide-y divide-[#262626]/50">
+              {harmlessRoutes.map((h, idx) => (
+                <div key={idx} className="py-2 flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="font-bold text-zinc-300 truncate">{h.label}</span>
+                    <span className="text-[11px] text-zinc-500 font-mono truncate">{h.url}</span>
+                  </div>
+                  <span className="text-[10px] text-zinc-500 font-mono shrink-0">Harmless ✓</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ─── COLLAPSIBLE: GSC PERFORMANCE ANALYTICS (IF CONNECTED) ─── */}
+      {analyticsData?.overview && (
+        <div className="bg-[#171717] rounded-xl border border-[#262626] overflow-hidden">
+          <button
+            onClick={() => setShowAnalytics(!showAnalytics)}
+            className="w-full px-4 py-2.5 flex items-center justify-between text-xs text-zinc-400 hover:text-zinc-200 transition-colors cursor-pointer"
+          >
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-3.5 h-3.5 text-[#4285F4]" />
+              <span>Google Search Performance (Last 28 Days)</span>
+              <span className="text-[10px] text-emerald-400 font-bold">• Live API Data</span>
+            </div>
+            {showAnalytics ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+          </button>
+
+          {showAnalytics && (
+            <div className="p-3 border-t border-[#262626] bg-[#121212] grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="p-2.5 bg-[#171717] rounded-lg border border-[#262626]">
+                <span className="text-[10px] text-zinc-500">Clicks</span>
+                <div className="text-lg font-black text-[#4285F4]">{analyticsData.overview.clicks}</div>
+              </div>
+              <div className="p-2.5 bg-[#171717] rounded-lg border border-[#262626]">
+                <span className="text-[10px] text-zinc-500">Impressions</span>
+                <div className="text-lg font-black text-[#3ECF8E]">{analyticsData.overview.impressions}</div>
+              </div>
+              <div className="p-2.5 bg-[#171717] rounded-lg border border-[#262626]">
+                <span className="text-[10px] text-zinc-500">CTR</span>
+                <div className="text-lg font-black text-[#f59e0b]">{analyticsData.overview.ctr}</div>
+              </div>
+              <div className="p-2.5 bg-[#171717] rounded-lg border border-[#262626]">
+                <span className="text-[10px] text-zinc-500">Avg Position</span>
+                <div className="text-lg font-black text-[#a78bfa]">#{analyticsData.overview.avgPosition}</div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
+
+
