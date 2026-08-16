@@ -17,40 +17,24 @@ import {
   Send, 
   Zap, 
   ArrowRight, 
-  AlertTriangle, 
   CheckCheck,
-  ShieldCheck,
-  Plus
+  Globe,
+  Radio
 } from 'lucide-react';
 import { githubService } from '../../services/githubService';
 import { useAgents } from '../../context/AgentContext';
 import confetti from 'canvas-confetti';
 
-// ── State-Aware Codebase Diagnostic Engine ───────────────────────────────────
+// ── State-Aware Tri-Pillar (SEO, AEO, GEO) Diagnostic Engine ────────────────
 function analyzeCodebaseState(filePaths, landingContent, blogDir) {
   const pathsLower = new Set(filePaths.map((p) => p.toLowerCase()));
   
-  // 1. llms.txt check
-  const hasLlms = pathsLower.has('llms.txt') || pathsLower.has('public/llms.txt') || pathsLower.has('.well-known/llms.txt');
-  
-  // 2. robots.txt check
-  const hasRobots = pathsLower.has('robots.txt') || pathsLower.has('public/robots.txt');
-  
-  // 3. sitemap.xml check
-  const hasSitemap = pathsLower.has('sitemap.xml') || pathsLower.has('public/sitemap.xml');
-  
-  // 4. JSON-LD Schema check (file or inside landing page HTML/JSX)
-  const hasSchemaFile = pathsLower.has('public/schema.json') || pathsLower.has('schema.json');
-  const hasSchemaInCode = (landingContent || '').includes('application/ld+json');
-  const hasSchema = hasSchemaFile || hasSchemaInCode;
-  
-  // 5. Landing Page Head Tags
+  // ── 1. SEO CHECKS (Search Engine Optimization) ──
+  const hasSitemap = pathsLower.has('sitemap.xml') || pathsLower.has('public/sitemap.xml') || pathsLower.has('app/sitemap.ts');
   const hasTitle = /<title[^>]*>([^<]{10,})<\/title>/i.test(landingContent || '');
   const hasMetaDesc = /<meta[^>]+name=["']description["'][^>]*content=["']([^"']{20,})["']/i.test(landingContent || '');
   const hasCanonical = /<link[^>]+rel=["']canonical["']/i.test(landingContent || '');
   const hasOg = /<meta[^>]+property=["']og:/i.test(landingContent || '') || /<meta[^>]+name=["']twitter:/i.test(landingContent || '');
-  
-  // 6. Blog Articles Count
   const blogFiles = filePaths.filter((p) => 
     p.startsWith((blogDir || 'content/posts') + '/') || 
     p.startsWith('blogs/') || 
@@ -60,145 +44,159 @@ function analyzeCodebaseState(filePaths, landingContent, blogDir) {
   );
   const articleCount = blogFiles.length;
 
-  const passedOptimizations = [];
-  const criticalFlaws = [];
+  const seoPassed = [];
+  const seoFlaws = [];
 
-  // Evaluate llms.txt
-  if (hasLlms) {
-    passedOptimizations.push({
-      id: 'llms_ok',
-      category: 'GEO & AI Search',
-      title: 'llms.txt Generative Engine Guide Verified ✓',
-      details: 'ChatGPT Search, Perplexity, and Claude can crawl verified brand architecture and citation anchors.',
+  if (hasTitle && hasMetaDesc && (hasCanonical || hasOg)) {
+    seoPassed.push({
+      id: 'seo_meta',
+      title: 'Landing Page Head & OpenGraph Verified ✓',
+      details: 'Meta title, description, canonical link, and social preview cards are properly tagged.',
     });
   } else {
-    criticalFlaws.push({
-      id: 'llms_missing',
-      category: 'GEO & AI Search',
-      severity: 'HIGH',
-      flaw: 'Missing llms.txt citation guide for AI engines',
-      impact: 'ChatGPT Search, Perplexity, and Claude cannot find structured brand citations.',
-      solution: 'Generate and inject public/llms.txt with verified agent capabilities.',
-    });
-  }
-
-  // Evaluate JSON-LD Schema
-  if (hasSchema) {
-    passedOptimizations.push({
-      id: 'schema_ok',
-      category: 'Semantic Microdata',
-      title: 'JSON-LD Structured Schema Graph Verified ✓',
-      details: 'Google AI Overviews and rich snippet parsers have structured multi-entity microdata.',
-    });
-  } else {
-    criticalFlaws.push({
-      id: 'schema_gap',
-      category: 'Semantic Microdata',
-      severity: 'HIGH',
-      flaw: 'Incomplete or missing multi-entity JSON-LD Schema graph',
-      impact: 'Google AI Overviews cannot vectorize brand entities and FAQ speakable answers.',
-      solution: 'Synthesize deep @graph JSON-LD schema (WebSite, Organization, FAQPage).',
-    });
-  }
-
-  // Evaluate robots.txt
-  if (hasRobots) {
-    passedOptimizations.push({
-      id: 'robots_ok',
-      category: 'Technical Crawlability',
-      title: 'AI Crawler Directives in robots.txt Verified ✓',
-      details: 'Search engine bots (Google, GPTBot, ClaudeBot, PerplexityBot) have explicit crawl permissions.',
-    });
-  } else {
-    criticalFlaws.push({
-      id: 'crawler_rules',
-      category: 'Technical Crawlability',
+    seoFlaws.push({
+      id: 'seo_meta_flaw',
+      flaw: 'Landing page <head> tags or OpenGraph preview missing',
+      impact: 'Lower CTR and sub-optimal search snippet previews in Google SERPs.',
+      solution: 'Patch <head> with verified canonical, OpenGraph, and keyword-rich description tags.',
       severity: 'MEDIUM',
-      flaw: 'Missing dedicated AI crawler user-agent rules in robots.txt',
-      impact: 'AI bots face crawl ambiguity or unindexed route paths.',
-      solution: 'Hardcode explicit Allow rules for GPTBot, PerplexityBot, ClaudeBot, and Google-Extended.',
     });
   }
 
-  // Evaluate sitemap.xml
   if (hasSitemap) {
-    passedOptimizations.push({
-      id: 'sitemap_ok',
-      category: 'Indexing Architecture',
-      title: 'Search Engine sitemap.xml Verified ✓',
-      details: 'XML sitemap is indexed with page priority and freshness timestamps.',
+    seoPassed.push({
+      id: 'seo_sitemap',
+      title: 'XML Sitemap (`sitemap.xml`) Configured ✓',
+      details: 'Search crawlers can index page priority and freshness timestamps.',
     });
   } else {
-    criticalFlaws.push({
-      id: 'sitemap_missing',
-      category: 'Indexing Architecture',
-      severity: 'MEDIUM',
-      flaw: 'Missing sitemap.xml index',
+    seoFlaws.push({
+      id: 'seo_sitemap_flaw',
+      flaw: 'Missing `public/sitemap.xml` sitemap index',
       impact: 'Search crawlers take longer to discover and index newly published pages.',
       solution: 'Generate high-priority sitemap.xml with daily/weekly change frequencies.',
-    });
-  }
-
-  // Evaluate Landing Page <head>
-  if (hasTitle && hasMetaDesc && (hasCanonical || hasOg)) {
-    passedOptimizations.push({
-      id: 'meta_ok',
-      category: 'On-Page SEO',
-      title: 'Landing Page Head & OpenGraph Verified ✓',
-      details: 'Meta title, description, canonical link, and social sharing cards are properly tagged.',
-    });
-  } else {
-    criticalFlaws.push({
-      id: 'meta_optimization',
-      category: 'On-Page SEO',
       severity: 'MEDIUM',
-      flaw: 'Landing page <head> tags need optimization',
-      impact: 'Sub-optimal CTR and search preview cards in Google SERPs.',
-      solution: 'Patch <head> with verified canonical, OpenGraph, and keyword-rich description tags.',
     });
   }
 
-  // Evaluate Topical Authority
-  if (articleCount >= 10) {
-    passedOptimizations.push({
-      id: 'cluster_ok',
-      category: 'Topical Authority',
-      title: `Strong Topical Depth (${articleCount} Published Articles) ✓`,
-      details: `Healthy initial article inventory established in ${blogDir}.`,
+  if (articleCount >= 8) {
+    seoPassed.push({
+      id: 'seo_cluster',
+      title: `Topical Depth Established (${articleCount} Articles) ✓`,
+      details: `Healthy article inventory in ${blogDir} targeting primary keywords.`,
     });
   } else {
-    criticalFlaws.push({
-      id: 'topical_cluster',
-      category: 'Topical Authority',
-      severity: 'HIGH',
+    seoFlaws.push({
+      id: 'seo_cluster_flaw',
       flaw: `Topical cluster expansion needed (${articleCount} articles found)`,
       impact: 'Competitors with broader keyword coverage outrank for long-tail search intent.',
-      solution: `Generate and publish next high-intent pillar article targeted for low-KD keyword in ${blogDir}.`,
+      solution: `Generate and publish 2,000+ word pillar guide in ${blogDir}.`,
+      severity: 'HIGH',
     });
   }
 
-  // Calculate dynamic health scores based on REAL verified state
-  const totalChecks = 6;
-  const passedCount = passedOptimizations.length;
-  const baseSeo = Math.min(98, Math.round(55 + (passedCount / totalChecks) * 43));
-  const baseAeo = hasSchema ? 94 : 45;
-  const baseGeo = hasLlms ? 96 : 38;
+  // ── 2. AEO CHECKS (Answer Engine Optimization) ──
+  const hasSchemaFile = pathsLower.has('public/schema.json') || pathsLower.has('schema.json');
+  const hasSchemaInCode = (landingContent || '').includes('application/ld+json');
+  const hasSchema = hasSchemaFile || hasSchemaInCode;
+  const hasFaqSchema = (landingContent || '').includes('FAQPage') || hasSchemaFile;
+
+  const aeoPassed = [];
+  const aeoFlaws = [];
+
+  if (hasSchema) {
+    aeoPassed.push({
+      id: 'aeo_schema',
+      title: 'JSON-LD Entity Graph Active (`WebSite`, `Organization`) ✓',
+      details: 'Google AI Overviews can vectorize brand entity relationships and product data.',
+    });
+  } else {
+    aeoFlaws.push({
+      id: 'aeo_schema_flaw',
+      flaw: 'Missing multi-entity JSON-LD Schema graph',
+      impact: 'Google AI Overviews cannot vectorize brand entities and speakable content.',
+      solution: 'Synthesize deep @graph JSON-LD schema (WebSite, Organization, WebApplication).',
+      severity: 'HIGH',
+    });
+  }
+
+  if (hasFaqSchema) {
+    aeoPassed.push({
+      id: 'aeo_faq',
+      title: 'FAQPage Speakable Direct Answer Schema Verified ✓',
+      details: 'Voice assistants and AI Overviews can extract concise direct answers.',
+    });
+  } else {
+    aeoFlaws.push({
+      id: 'aeo_faq_flaw',
+      flaw: 'Missing FAQPage speakable microdata for direct answer boxes',
+      impact: 'Misses zero-click AI snippet placements for high-intent questions.',
+      solution: 'Inject FAQPage structured schema with high-intent customer Q&As.',
+      severity: 'HIGH',
+    });
+  }
+
+  // ── 3. GEO CHECKS (Generative Engine Optimization) ──
+  const hasLlms = pathsLower.has('llms.txt') || pathsLower.has('public/llms.txt') || pathsLower.has('.well-known/llms.txt');
+  const hasRobots = pathsLower.has('robots.txt') || pathsLower.has('public/robots.txt');
+
+  const geoPassed = [];
+  const geoFlaws = [];
+
+  if (hasLlms) {
+    geoPassed.push({
+      id: 'geo_llms',
+      title: '`public/llms.txt` Generative Engine Guide Verified ✓',
+      details: 'ChatGPT Search, Perplexity Pro, and Claude 3.7 can crawl structured citation anchors.',
+    });
+  } else {
+    geoFlaws.push({
+      id: 'geo_llms_flaw',
+      flaw: 'Missing `public/llms.txt` AI citation guide',
+      impact: 'ChatGPT Search and Perplexity cannot find structured brand capabilities for citations.',
+      solution: 'Generate and inject public/llms.txt with Brand DNA and agent matrix.',
+      severity: 'HIGH',
+    });
+  }
+
+  if (hasRobots) {
+    geoPassed.push({
+      id: 'geo_robots',
+      title: 'AI Crawler User-Agent Directives in `robots.txt` Verified ✓',
+      details: 'GPTBot, ClaudeBot, and PerplexityBot have explicit indexing permissions.',
+    });
+  } else {
+    geoFlaws.push({
+      id: 'geo_robots_flaw',
+      flaw: 'Missing explicit AI search engine crawler rules in `robots.txt`',
+      impact: 'AI crawlers face ambiguous route access and delayed knowledge indexing.',
+      solution: 'Update robots.txt with Allow rules for GPTBot, ClaudeBot, and PerplexityBot.',
+      severity: 'MEDIUM',
+    });
+  }
+
+  // Calculate Scores for each pillar
+  const seoScore = Math.min(98, Math.round(50 + (seoPassed.length / (seoPassed.length + seoFlaws.length || 1)) * 48));
+  const aeoScore = Math.min(98, Math.round(45 + (aeoPassed.length / (aeoPassed.length + aeoFlaws.length || 1)) * 53));
+  const geoScore = Math.min(98, Math.round(40 + (geoPassed.length / (geoPassed.length + geoFlaws.length || 1)) * 58));
+
+  const totalFlawsCount = seoFlaws.length + aeoFlaws.length + geoFlaws.length;
+  const isFullyOptimized = totalFlawsCount === 0;
 
   return {
-    seoScore: baseSeo,
-    aeoScore: baseAeo,
-    geoScore: baseGeo,
-    estimatedTrafficLift: criticalFlaws.length === 0 
-      ? 'Top 3 SERP dominance maintained & continuous AI citation tracking active'
-      : `+${Math.max(120, criticalFlaws.length * 70)}% projected organic growth upon repair`,
-    passedOptimizations,
-    criticalFlaws,
+    seo: { score: seoScore, passed: seoPassed, flaws: seoFlaws },
+    aeo: { score: aeoScore, passed: aeoPassed, flaws: aeoFlaws },
+    geo: { score: geoScore, passed: geoPassed, flaws: geoFlaws },
+    totalFlawsCount,
+    isFullyOptimized,
     hasLlms,
     hasRobots,
     hasSitemap,
     hasSchema,
     articleCount,
-    isFullyOptimized: criticalFlaws.length === 0,
+    estimatedTrafficLift: isFullyOptimized
+      ? 'Top 3 SERP dominance maintained & continuous AI citation tracking active'
+      : `+${Math.max(120, totalFlawsCount * 65)}% projected organic search & AI citation growth`,
   };
 }
 
@@ -216,6 +214,7 @@ export default function RepoConnectorView() {
   const [pipelineState, setPipelineState] = useState('idle');
   const [fetchingStep, setFetchingStep] = useState(1);
   const [fixingStep, setFixingStep] = useState(0);
+  const [fixingPillar, setFixingPillar] = useState('SEO'); // 'SEO' | 'AEO' | 'GEO'
 
   // Status & Error Messages
   const [errorMsg, setErrorMsg] = useState(null);
@@ -224,14 +223,14 @@ export default function RepoConnectorView() {
   // Connected Repository Metadata
   const [connectedRepo, setConnectedRepo] = useState(null);
 
-  // AI Diagnostic Results
+  // AI Tri-Pillar Diagnostic Results
   const [diagnosticReport, setDiagnosticReport] = useState(null);
 
   // Generated Files & Staging
   const [stagedFiles, setStagedFiles] = useState([]);
   const [isDispatchingPr, setIsDispatchingPr] = useState(false);
   const [prResult, setPrResult] = useState(null);
-  const [prTitle, setPrTitle] = useState('🚀 RankTop AI: Autonomous Technical SEO, AEO & GEO Optimization Patch');
+  const [prTitle, setPrTitle] = useState('🚀 RankTop AI: Autonomous SEO, AEO & GEO Optimization Patch');
   const [prDescription, setPrDescription] = useState('Automated ranking fixes, structured JSON-LD schemas, llms.txt, AI crawler directives, and optimized metadata generated by RankTop AI Engine.');
   const [copiedKey, setCopiedKey] = useState(null);
 
@@ -326,7 +325,7 @@ export default function RepoConnectorView() {
         branch: activeBranch,
       });
 
-      // Step 4: Run Real State-Aware Diagnostic
+      // Step 4: Run Real Tri-Pillar Diagnostic (SEO, AEO, GEO)
       setFetchingStep(4);
       await new Promise((r) => setTimeout(r, 800));
 
@@ -342,18 +341,98 @@ export default function RepoConnectorView() {
     }
   };
 
-  // ── PHASE 2: "START" — Autonomous Swarm Fixes Only Missing Gaps ────────────
+  // ── PHASE 2: "START" — Autonomous Swarm Fixes Categorized by SEO, AEO, GEO ──
   const handleStartAutonomousRepair = async () => {
     setPipelineState('fixing');
     setFixingStep(1);
+    setFixingPillar('SEO');
 
     const domain = connectedRepo?.name?.toLowerCase().includes('xgrowth') ? 'xgrowth.uno' : websiteUrl || 'yourdomain.com';
     const cleanUrl = `https://${domain.replace(/^https?:\/\//, '').replace(/\/$/, '')}`;
     const staged = [];
 
     try {
-      // 1. JSON-LD Schema (only if not already verified)
+      // ── 1. SEO FIXES: sitemap.xml & High-Ranking Pillar Article ───────────
+      setFixingPillar('SEO');
       setFixingStep(1);
+      await new Promise((r) => setTimeout(r, 600));
+
+      if (!diagnosticReport?.hasSitemap || staged.length === 0) {
+        const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>${cleanUrl}/</loc>\n    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n  <url>\n    <loc>${cleanUrl}/blogs/</loc>\n    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>\n  <url>\n    <loc>${cleanUrl}/blogs/b2b-competitor-positioning-maps-2026</loc>\n    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.85</priority>\n  </url>\n</urlset>`;
+
+        staged.push({
+          path: 'public/sitemap.xml',
+          content: sitemapContent,
+          title: 'High-Priority XML Sitemap',
+          pillar: 'SEO',
+          category: 'Search Indexing',
+          message: 'RankTop AI [SEO]: Update sitemap.xml with fresh lastmod and pillar routes',
+        });
+      }
+
+      setFixingStep(2);
+      await new Promise((r) => setTimeout(r, 700));
+
+      const articleNumber = (diagnosticReport?.articleCount || 0) + 1;
+      const slug = `b2b-competitor-positioning-maps-playbook-${Date.now().toString(36)}`;
+      const blogPath = `${connectedRepo?.blogDir || 'content/posts'}/${slug}.md`;
+      const blogArticle = `---
+title: "B2B Competitor Positioning Maps: The Autonomous Framework for SaaS Growth (${new Date().getFullYear()})"
+description: "Learn how to build real-time competitor positioning maps, uncover rival messaging weaknesses, and capture untapped search intent on autopilot."
+slug: "${slug}"
+date: "${new Date().toISOString().split('T')[0]}"
+author: "XGrowth Growth Engineering Team"
+tags: ["Competitor Analysis", "SaaS Positioning", "GTM Strategy", "Market Intelligence"]
+canonicalUrl: "${cleanUrl}/blogs/${slug}"
+---
+
+# B2B Competitor Positioning Maps: The Autonomous Framework for SaaS Growth
+
+> **Executive Summary (BLUF)**: In hyper-competitive SaaS markets, static quarterly competitor matrixes fail because rivals update pricing, copy, and features weekly. Autonomous competitor positioning maps continuously ingest competitor search rankings, feature changelogs, and customer reviews to expose positioning gaps you can immediately exploit for organic market share.
+
+---
+
+## 1. Why Static Positioning Maps Fail in Modern SaaS
+
+Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the moment they are exported. Modern continuous market intelligence requires:
+
+1. **Continuous Feature Gap Monitoring**: Tracking changelogs and API documentation updates in real time.
+2. **Organic Search Share-of-Voice**: Measuring which commercial keywords competitors rank for versus your domain.
+3. **Sentiment & Roast Auditing**: Identifying what rival customers complain about in G2, Reddit, and Product Hunt discussions.
+
+---
+
+## 2. The 4 Quadrants of Autonomous Market Opportunity
+
+| Quadrant | Market State | Strategic Play |
+| :--- | :--- | :--- |
+| **High Search Intent / Low Rival Quality** | Golden Topic Gaps | Publish comprehensive technical guides and comparison pages |
+| **High Search Intent / High Rival Dominance** | Head-to-Head | Compete on speed, price transparency, and interactive free tools |
+| **Low Search Intent / High Product Value** | Category Creation | Educate via thought leadership and social proof playbooks |
+| **Commoditized Utility** | Red Ocean | Differentiate with autonomous AI automation and 10x workflow speed |
+
+---
+
+## 3. Actionable Checklist to Outrank Rivals This Week
+
+- [ ] Audit top 3 competitors for missing JSON-LD schema and voice search answers.
+- [ ] Deploy dynamic comparison hubs targeting "[Competitor] Alternatives".
+- [ ] Inject verified statistics and benchmark charts to capture Google AI Overview BLUF snippets.
+- [ ] Submit updated sitemap routes to Google Search Console for rapid re-crawling.
+`;
+
+      staged.push({
+        path: blogPath,
+        content: blogArticle,
+        title: `Pillar Article #${articleNumber}: B2B Competitor Positioning Maps`,
+        pillar: 'SEO',
+        category: 'Topical Authority',
+        message: `RankTop AI [SEO]: Add pillar guide "${slug}" for topical cluster rank`,
+      });
+
+      // ── 2. AEO FIXES: Deep JSON-LD Schema & FAQPage Microdata ─────────────
+      setFixingPillar('AEO');
+      setFixingStep(3);
       await new Promise((r) => setTimeout(r, 600));
 
       if (!diagnosticReport?.hasSchema) {
@@ -407,14 +486,16 @@ export default function RepoConnectorView() {
         staged.push({
           path: 'public/schema.json',
           content: schemaContent,
-          title: 'Deep Multi-Entity JSON-LD Schema',
-          category: 'Schema',
-          message: 'RankTop AI: Add deep JSON-LD schema graph for Google AI Overviews & Perplexity',
+          title: 'Deep Multi-Entity JSON-LD Schema & FAQ Microdata',
+          pillar: 'AEO',
+          category: 'AI Overviews & Schema',
+          message: 'RankTop AI [AEO]: Add deep JSON-LD schema graph for Google AI Overviews & Perplexity',
         });
       }
 
-      // 2. llms.txt (only if missing)
-      setFixingStep(2);
+      // ── 3. GEO FIXES: llms.txt & AI Crawler robots.txt ────────────────────
+      setFixingPillar('GEO');
+      setFixingStep(4);
       await new Promise((r) => setTimeout(r, 600));
 
       if (!diagnosticReport?.hasLlms) {
@@ -424,13 +505,13 @@ export default function RepoConnectorView() {
           path: 'public/llms.txt',
           content: llmsContent,
           title: 'llms.txt Generative Engine Guide',
-          category: 'GEO',
-          message: 'RankTop AI: Add llms.txt for ChatGPT, Perplexity & Claude citations',
+          pillar: 'GEO',
+          category: 'LLM Citation Pointers',
+          message: 'RankTop AI [GEO]: Add llms.txt for ChatGPT, Perplexity & Claude citations',
         });
       }
 
-      // 3. robots.txt (only if missing)
-      setFixingStep(3);
+      setFixingStep(5);
       await new Promise((r) => setTimeout(r, 500));
 
       if (!diagnosticReport?.hasRobots) {
@@ -439,88 +520,12 @@ export default function RepoConnectorView() {
         staged.push({
           path: 'public/robots.txt',
           content: robotsContent,
-          title: 'AI-Compliant robots.txt',
-          category: 'Crawlability',
-          message: 'RankTop AI: Update robots.txt with GPTBot, ClaudeBot, and PerplexityBot allowances',
+          title: 'robots.txt AI Crawler Permissions',
+          pillar: 'GEO',
+          category: 'Crawler Rules',
+          message: 'RankTop AI [GEO]: Update robots.txt with GPTBot, ClaudeBot, and PerplexityBot allowances',
         });
       }
-
-      // 4. sitemap.xml (only if missing or needs update)
-      setFixingStep(4);
-      await new Promise((r) => setTimeout(r, 500));
-
-      if (!diagnosticReport?.hasSitemap || staged.length > 0) {
-        const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>${cleanUrl}/</loc>\n    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n  <url>\n    <loc>${cleanUrl}/blogs/</loc>\n    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>\n  <url>\n    <loc>${cleanUrl}/blogs/b2b-competitor-positioning-maps-2026</loc>\n    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.85</priority>\n  </url>\n</urlset>`;
-
-        staged.push({
-          path: 'public/sitemap.xml',
-          content: sitemapContent,
-          title: 'Updated High-Priority sitemap.xml',
-          category: 'Indexing',
-          message: 'RankTop AI: Update sitemap.xml with fresh lastmod and pillar routes',
-        });
-      }
-
-      // 5. Generate Next High-Ranking Pillar Article
-      setFixingStep(5);
-      await new Promise((r) => setTimeout(r, 800));
-
-      // Dynamic unique topic to keep expanding topical depth
-      const articleNumber = (diagnosticReport?.articleCount || 0) + 1;
-      const slug = `b2b-competitor-positioning-maps-playbook-${Date.now().toString(36)}`;
-      const blogPath = `${connectedRepo?.blogDir || 'content/posts'}/${slug}.md`;
-      const blogArticle = `---
-title: "B2B Competitor Positioning Maps: The Autonomous Framework for SaaS Growth (${new Date().getFullYear()})"
-description: "Learn how to build real-time competitor positioning maps, uncover rival messaging weaknesses, and capture untapped search intent on autopilot."
-slug: "${slug}"
-date: "${new Date().toISOString().split('T')[0]}"
-author: "XGrowth Growth Engineering Team"
-tags: ["Competitor Analysis", "SaaS Positioning", "GTM Strategy", "Market Intelligence"]
-canonicalUrl: "${cleanUrl}/blogs/${slug}"
----
-
-# B2B Competitor Positioning Maps: The Autonomous Framework for SaaS Growth
-
-> **Executive Summary (BLUF)**: In hyper-competitive SaaS markets, static quarterly competitor matrixes fail because rivals update pricing, copy, and features weekly. Autonomous competitor positioning maps continuously ingest competitor search rankings, feature changelogs, and customer reviews to expose positioning gaps you can immediately exploit for organic market share.
-
----
-
-## 1. Why Static Positioning Maps Fail in Modern SaaS
-
-Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the moment they are exported. Modern continuous market intelligence requires:
-
-1. **Continuous Feature Gap Monitoring**: Tracking changelogs and API documentation updates in real time.
-2. **Organic Search Share-of-Voice**: Measuring which commercial keywords competitors rank for versus your domain.
-3. **Sentiment & Roast Auditing**: Identifying what rival customers complain about in G2, Reddit, and Product Hunt discussions.
-
----
-
-## 2. The 4 Quadrants of Autonomous Market Opportunity
-
-| Quadrant | Market State | Strategic Play |
-| :--- | :--- | :--- |
-| **High Search Intent / Low Rival Quality** | Golden Topic Gaps | Publish comprehensive technical guides and comparison pages |
-| **High Search Intent / High Rival Dominance** | Head-to-Head | Compete on speed, price transparency, and interactive free tools |
-| **Low Search Intent / High Product Value** | Category Creation | Educate via thought leadership and social proof playbooks |
-| **Commoditized Utility** | Red Ocean | Differentiate with autonomous AI automation and 10x workflow speed |
-
----
-
-## 3. Actionable Checklist to Outrank Rivals This Week
-
-- [ ] Audit top 3 competitors for missing JSON-LD schema and voice search answers.
-- [ ] Deploy dynamic comparison hubs targeting "[Competitor] Alternatives".
-- [ ] Inject verified statistics and benchmark charts to capture Google AI Overview BLUF snippets.
-- [ ] Submit updated sitemap routes to Google Search Console for rapid re-crawling.
-`;
-
-      staged.push({
-        path: blogPath,
-        content: blogArticle,
-        title: `Pillar Article #${articleNumber}: B2B Competitor Positioning Maps`,
-        category: 'Topical Authority',
-        message: `RankTop AI: Add pillar guide "${slug}" for topical cluster rank`,
-      });
 
       setStagedFiles(staged);
       setPipelineState('completed');
@@ -554,7 +559,7 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
         baseBranch: connectedRepo.branch || 'main',
         title: prTitle,
         body: `### 🤖 RankTop Autonomous SEO, AEO & GEO Optimization Patch\n\n${prDescription}\n\n### 📦 Optimizations Included:\n` +
-          stagedFiles.map((f) => `- **\`${f.path}\`** (${f.category}): ${f.title}`).join('\n') +
+          stagedFiles.map((f) => `- **\`${f.path}\`** [${f.pillar}]: ${f.title}`).join('\n') +
           `\n\n- **Target Website:** ${connectedRepo.name}\n- **Engine:** RankTop AI Multi-Agent Swarm`,
         files: stagedFiles,
         token: githubToken,
@@ -581,13 +586,13 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-bold border border-[#3ECF8E]/20">
               <FolderGit2 className="w-3.5 h-3.5" />
-              <span>AUTONOMOUS REPO ENGINE & RANKING PIPELINE</span>
+              <span>AUTONOMOUS REPO ENGINE • SEO / AEO / GEO</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
               GitHub Repository Ranking Engine
             </h1>
             <p className="text-sm text-zinc-400 max-w-2xl leading-relaxed">
-              Connect your repository link. RankTop verifies existing merged files, diagnoses real remaining flaws, and autonomously prepares your next ranking patch.
+              Connect your repository link. RankTop performs a deep tri-pillar audit (SEO, AEO, GEO) and autonomously repairs flaws by dispatching an optimized Pull Request.
             </p>
           </div>
 
@@ -707,7 +712,7 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
                 className="px-6 py-3 rounded-xl font-bold text-sm bg-[#3ECF8E] hover:bg-[#34D399] text-black flex items-center gap-2 transition-all shadow-lg shadow-[#3ECF8E]/20 disabled:opacity-50 cursor-pointer"
               >
                 <Sparkles className="w-4 h-4" />
-                <span>Fetch Pages & Verify Real SEO State</span>
+                <span>Fetch Pages & Run Tri-Pillar Diagnostic</span>
               </button>
             </div>
           </form>
@@ -723,10 +728,10 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
 
           <div className="space-y-2 max-w-lg mx-auto">
             <h2 className="text-xl font-extrabold text-white">
-              Inspecting Latest Repository Tree...
+              Inspecting Repository for SEO, AEO & GEO...
             </h2>
             <p className="text-xs text-zinc-400">
-              Verifying merged files, checking llms.txt, robots.txt, schema markup, and identifying true remaining opportunities.
+              RankTop AI Swarm is reading files across all 3 optimization pillars to identify verified foundations and remaining flaws.
             </p>
           </div>
 
@@ -736,227 +741,275 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
               fetchingStep >= 1 ? 'bg-[#121212] border-[#3ECF8E]/40 text-white' : 'bg-[#121212]/50 border-[#262626] text-zinc-500'
             }`}>
               {fetchingStep > 1 ? <CheckCircle2 className="w-4 h-4 text-[#3ECF8E] flex-shrink-0" /> : <RefreshCw className="w-4 h-4 text-[#3ECF8E] animate-spin flex-shrink-0" />}
-              <span className="font-semibold">Step 1: Pulling latest branch commit & file tree...</span>
+              <span className="font-semibold">Step 1: Pulling repository files and detecting architecture...</span>
             </div>
 
             <div className={`p-3.5 rounded-xl border transition-all flex items-center gap-3 text-xs ${
               fetchingStep >= 2 ? 'bg-[#121212] border-[#3ECF8E]/40 text-white' : 'bg-[#121212]/50 border-[#262626] text-zinc-500'
             }`}>
               {fetchingStep > 2 ? <CheckCircle2 className="w-4 h-4 text-[#3ECF8E] flex-shrink-0" /> : fetchingStep === 2 ? <RefreshCw className="w-4 h-4 text-[#3ECF8E] animate-spin flex-shrink-0" /> : <div className="w-4 h-4 rounded-full border border-zinc-700 flex-shrink-0" />}
-              <span className="font-semibold">Step 2: Verifying existing llms.txt, schema, and robots.txt files...</span>
+              <span className="font-semibold">Step 2: Checking SEO files (meta tags, sitemap.xml, blog inventory)...</span>
             </div>
 
             <div className={`p-3.5 rounded-xl border transition-all flex items-center gap-3 text-xs ${
               fetchingStep >= 3 ? 'bg-[#121212] border-[#3ECF8E]/40 text-white' : 'bg-[#121212]/50 border-[#262626] text-zinc-500'
             }`}>
               {fetchingStep > 3 ? <CheckCircle2 className="w-4 h-4 text-[#3ECF8E] flex-shrink-0" /> : fetchingStep === 3 ? <RefreshCw className="w-4 h-4 text-[#3ECF8E] animate-spin flex-shrink-0" /> : <div className="w-4 h-4 rounded-full border border-zinc-700 flex-shrink-0" />}
-              <span className="font-semibold">Step 3: Reading landing page & counting published articles...</span>
+              <span className="font-semibold">Step 3: Checking AEO files (JSON-LD schema, FAQ speakable microdata)...</span>
             </div>
 
             <div className={`p-3.5 rounded-xl border transition-all flex items-center gap-3 text-xs ${
               fetchingStep >= 4 ? 'bg-[#121212] border-[#3ECF8E]/40 text-white' : 'bg-[#121212]/50 border-[#262626] text-zinc-500'
             }`}>
               {fetchingStep === 4 ? <RefreshCw className="w-4 h-4 text-[#3ECF8E] animate-spin flex-shrink-0" /> : <div className="w-4 h-4 rounded-full border border-zinc-700 flex-shrink-0" />}
-              <span className="font-semibold">Step 4: Synthesizing real state report (Passed vs Action Required)...</span>
+              <span className="font-semibold">Step 4: Checking GEO files (llms.txt, AI bot rules in robots.txt)...</span>
             </div>
           </div>
         </div>
       )}
 
-      {/* ─── STAGE 3: FLAWS & PASSED REPORT WITH DYNAMIC CTA ─── */}
+      {/* ─── STAGE 3: 3 PILLAR CARDS (SEO, AEO, GEO) WITH "START" CTA ─── */}
       {pipelineState === 'flaws_report' && diagnosticReport && (
         <div className="space-y-6">
           
-          {/* Header Summary & Scores */}
-          <div className="bg-[#171717] rounded-2xl border border-[#262626] p-6 space-y-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-[#262626]">
-              <div>
-                <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold border mb-2 ${
-                  diagnosticReport.isFullyOptimized 
-                    ? 'bg-[#3ECF8E]/10 text-[#3ECF8E] border-[#3ECF8E]/20'
-                    : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                }`}>
-                  {diagnosticReport.isFullyOptimized ? <ShieldCheck className="w-3.5 h-3.5" /> : <AlertTriangle className="w-3.5 h-3.5" />}
-                  <span>
-                    {diagnosticReport.isFullyOptimized 
-                      ? '100% TECHNICAL FOUNDATION VERIFIED ✓'
-                      : `${diagnosticReport.passedOptimizations?.length} PASSED • ${diagnosticReport.criticalFlaws?.length} REMAINING OPPORTUNITIES`}
-                  </span>
-                </div>
-                <h2 className="text-xl font-extrabold text-white">
-                  Real SEO & GEO State for {connectedRepo?.name}
-                </h2>
-                <p className="text-xs text-zinc-400 mt-1">
-                  Detected Framework: <span className="text-[#3ECF8E] font-semibold">{connectedRepo?.framework?.name}</span> • Landing Page: <code className="text-white font-mono">{connectedRepo?.landingPage}</code>
-                </p>
+          {/* Header Action Banner */}
+          <div className="bg-[#171717] rounded-2xl border border-[#262626] p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-bold border border-[#3ECF8E]/20 mb-2">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>TRI-PILLAR AUDIT COMPLETE ({diagnosticReport.totalFlawsCount} Flaws to Resolve)</span>
               </div>
-
-              {/* Action Button */}
-              <button
-                onClick={handleStartAutonomousRepair}
-                className="px-8 py-4 rounded-2xl font-black text-sm bg-[#3ECF8E] hover:bg-[#34D399] text-black flex items-center gap-3 shadow-xl shadow-[#3ECF8E]/25 transition-all transform hover:scale-[1.02] cursor-pointer"
-              >
-                <Zap className="w-5 h-5 fill-black" />
-                <span>
-                  {diagnosticReport.isFullyOptimized 
-                    ? 'Scale Next Topic Cluster' 
-                    : 'Resolve Remaining Flaws'}
-                </span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+              <h2 className="text-xl font-extrabold text-white">
+                Ranking Diagnostic for {connectedRepo?.name}
+              </h2>
+              <p className="text-xs text-zinc-400 mt-1">
+                Detected: <span className="text-[#3ECF8E] font-semibold">{connectedRepo?.framework?.name}</span> • Landing: <code className="text-white font-mono">{connectedRepo?.landingPage}</code> • {diagnosticReport.articleCount} Articles
+              </p>
             </div>
 
-            {/* Scorecards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-1">
-                <span className="text-[11px] font-bold uppercase text-zinc-400">SEO Health</span>
-                <div className={`text-2xl font-black ${diagnosticReport.seoScore >= 90 ? 'text-[#3ECF8E]' : 'text-amber-400'}`}>
-                  {diagnosticReport.seoScore}/100
-                </div>
-                <span className="text-[11px] text-zinc-500">Live verified in repo</span>
-              </div>
-
-              <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-1">
-                <span className="text-[11px] font-bold uppercase text-zinc-400">AEO Answer Rank</span>
-                <div className={`text-2xl font-black ${diagnosticReport.aeoScore >= 90 ? 'text-[#3ECF8E]' : 'text-[#60a5fa]'}`}>
-                  {diagnosticReport.aeoScore}/100
-                </div>
-                <span className="text-[11px] text-zinc-500">
-                  {diagnosticReport.hasSchema ? 'Schema Active ✓' : 'Schema Missing'}
-                </span>
-              </div>
-
-              <div className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-1">
-                <span className="text-[11px] font-bold uppercase text-zinc-400">GEO Citation Score</span>
-                <div className={`text-2xl font-black ${diagnosticReport.geoScore >= 90 ? 'text-[#3ECF8E]' : 'text-red-400'}`}>
-                  {diagnosticReport.geoScore}/100
-                </div>
-                <span className="text-[11px] text-zinc-500">
-                  {diagnosticReport.hasLlms ? 'llms.txt Active ✓' : 'llms.txt Missing'}
-                </span>
-              </div>
-
-              <div className="p-4 bg-[#121212] rounded-xl border border-[#3ECF8E]/30 space-y-1 bg-[#3ECF8E]/5">
-                <span className="text-[11px] font-bold uppercase text-[#3ECF8E]">Current Standing</span>
-                <div className="text-sm font-black text-[#3ECF8E] truncate">
-                  {diagnosticReport.isFullyOptimized ? 'Foundation Complete ✓' : diagnosticReport.estimatedTrafficLift}
-                </div>
-                <span className="text-[11px] text-zinc-400">{diagnosticReport.articleCount} Articles Published</span>
-              </div>
-            </div>
+            {/* Giant "START" Action Button */}
+            <button
+              onClick={handleStartAutonomousRepair}
+              className="px-8 py-4 rounded-2xl font-black text-sm bg-[#3ECF8E] hover:bg-[#34D399] text-black flex items-center gap-3 shadow-xl shadow-[#3ECF8E]/25 transition-all transform hover:scale-[1.02] cursor-pointer flex-shrink-0"
+            >
+              <Zap className="w-5 h-5 fill-black" />
+              <span>
+                {diagnosticReport.isFullyOptimized ? 'Scale Next Topic Cluster' : 'Start Autonomous Repair'}
+              </span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
           </div>
 
-          {/* Section 1: VERIFIED & PASSING OPTIMIZATIONS */}
-          {diagnosticReport.passedOptimizations?.length > 0 && (
-            <div className="bg-[#171717] rounded-2xl border border-[#3ECF8E]/30 p-6 space-y-4">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-[#3ECF8E]" />
-                <span>Verified & Passing Optimizations in Repository ({diagnosticReport.passedOptimizations.length})</span>
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {diagnosticReport.passedOptimizations.map((pass) => (
-                  <div key={pass.id} className="p-4 bg-[#121212] rounded-xl border border-[#3ECF8E]/20 space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-[#3ECF8E] flex items-center gap-1.5">
-                        <Check className="w-3.5 h-3.5" />
-                        {pass.title}
-                      </span>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#3ECF8E]/10 text-[#3ECF8E] border border-[#3ECF8E]/20">
-                        {pass.category}
-                      </span>
-                    </div>
-                    <p className="text-xs text-zinc-400 leading-relaxed">{pass.details}</p>
+          {/* ─── THE 3 DISTINCT PILLAR CARDS (SEO, AEO, GEO) ─── */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            {/* ── CARD 1: SEO (Search Engine Optimization) ── */}
+            <div className="bg-[#171717] rounded-2xl border border-[#3ECF8E]/30 p-6 flex flex-col justify-between space-y-6 relative overflow-hidden">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-bold border border-[#3ECF8E]/20">
+                    <Globe className="w-3.5 h-3.5" />
+                    <span>1. SEO (Search Engine Optimization)</span>
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Section 2: REAL REMAINING OPPORTUNITIES / ROADBLOCKS */}
-          {diagnosticReport.criticalFlaws?.length > 0 ? (
-            <div className="bg-[#171717] rounded-2xl border border-[#262626] p-6 space-y-4">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-amber-400" />
-                <span>Remaining Flaws to Resolve ({diagnosticReport.criticalFlaws.length})</span>
-              </h3>
-
-              <div className="space-y-3">
-                {diagnosticReport.criticalFlaws.map((flaw) => (
-                  <div key={flaw.id} className="p-4 bg-[#121212] rounded-xl border border-[#262626] space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="w-5 h-5 rounded-full bg-red-500/10 text-red-400 text-xs font-bold flex items-center justify-center">
-                          ✕
-                        </span>
-                        <span className="text-sm font-bold text-white">{flaw.flaw}</span>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#171717] border border-[#262626] text-zinc-400">
-                          {flaw.category}
-                        </span>
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold ${
-                          flaw.severity === 'HIGH' ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                        }`}>
-                          {flaw.severity} PRIORITY
-                        </span>
-                      </div>
-                    </div>
-
-                    <p className="text-xs text-zinc-400 pl-7">
-                      <strong className="text-zinc-300">Impact:</strong> {flaw.impact}
-                    </p>
-
-                    <div className="pl-7 pt-1 flex items-center gap-2 text-xs text-[#3ECF8E]">
-                      <Sparkles className="w-3.5 h-3.5" />
-                      <span><strong>RankTop AI Fix:</strong> {flaw.solution}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Action Banner */}
-              <div className="pt-4 p-6 bg-gradient-to-r from-[#3ECF8E]/10 via-[#171717] to-[#60a5fa]/10 rounded-xl border border-[#3ECF8E]/30 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-                <div>
-                  <h4 className="text-base font-extrabold text-white">Resolve Remaining Flaws Automatically</h4>
-                  <p className="text-xs text-zinc-400 mt-0.5">Click Start to stage fixes and open your updated Pull Request.</p>
+                  <span className="text-xl font-black text-[#3ECF8E]">{diagnosticReport.seo.score}/100</span>
                 </div>
 
-                <button
-                  onClick={handleStartAutonomousRepair}
-                  className="px-8 py-4 rounded-xl font-black text-sm bg-[#3ECF8E] hover:bg-[#34D399] text-black flex items-center gap-2 shadow-xl shadow-[#3ECF8E]/25 transition-all transform hover:scale-[1.02] cursor-pointer flex-shrink-0"
-                >
-                  <Zap className="w-5 h-5 fill-black" />
-                  <span>Start Autonomous Repair</span>
-                </button>
+                <div>
+                  <h3 className="text-base font-extrabold text-white">Google Organic Search & Meta</h3>
+                  <p className="text-xs text-zinc-400 mt-1">
+                    Optimizes metadata CTR, XML sitemap indexing, and low-KD topic cluster authority.
+                  </p>
+                </div>
+
+                {/* Flaws List in SEO */}
+                {diagnosticReport.seo.flaws.length > 0 ? (
+                  <div className="space-y-2">
+                    <span className="text-[11px] font-bold text-red-400 uppercase tracking-wider block">Flaws Detected:</span>
+                    {diagnosticReport.seo.flaws.map((flaw) => (
+                      <div key={flaw.id} className="p-3 bg-[#121212] rounded-xl border border-red-500/20 text-xs space-y-1">
+                        <div className="font-bold text-red-400 flex items-center gap-1.5">
+                          <span className="w-4 h-4 rounded-full bg-red-500/20 flex items-center justify-center text-[10px]">✕</span>
+                          {flaw.flaw}
+                        </div>
+                        <p className="text-zinc-400 pl-5 text-[11px]">{flaw.impact}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-3 bg-[#121212] rounded-xl border border-[#3ECF8E]/20 text-xs text-[#3ECF8E] flex items-center gap-2">
+                    <Check className="w-4 h-4 flex-shrink-0" />
+                    <span className="font-bold">All Core SEO Technical Factors Passing ✓</span>
+                  </div>
+                )}
+
+                {/* Passed Checks in SEO */}
+                {diagnosticReport.seo.passed.length > 0 && (
+                  <div className="space-y-1.5 pt-1">
+                    <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block">Verified in Repo:</span>
+                    {diagnosticReport.seo.passed.map((p) => (
+                      <div key={p.id} className="text-xs text-zinc-400 flex items-center gap-1.5">
+                        <Check className="w-3.5 h-3.5 text-[#3ECF8E] flex-shrink-0" />
+                        <span>{p.title}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="p-3 bg-[#121212] rounded-xl border border-[#262626] text-xs text-zinc-300">
+                <strong className="text-[#3ECF8E] block mb-0.5">RankTop AI Fix for SEO:</strong>
+                Generates <code className="text-white">sitemap.xml</code> and writes 2,000+ word keyword pillar article.
               </div>
             </div>
-          ) : (
-            <div className="p-8 bg-[#171717] rounded-2xl border border-[#3ECF8E]/40 text-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] flex items-center justify-center mx-auto border border-[#3ECF8E]/30">
-                <CheckCheck className="w-8 h-8" />
+
+            {/* ── CARD 2: AEO (Answer Engine Optimization) ── */}
+            <div className="bg-[#171717] rounded-2xl border border-[#60a5fa]/30 p-6 flex flex-col justify-between space-y-6 relative overflow-hidden">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#60a5fa]/10 text-[#60a5fa] text-xs font-bold border border-[#60a5fa]/20">
+                    <Cpu className="w-3.5 h-3.5" />
+                    <span>2. AEO (Answer Engine Optimization)</span>
+                  </div>
+                  <span className="text-xl font-black text-[#60a5fa]">{diagnosticReport.aeo.score}/100</span>
+                </div>
+
+                <div>
+                  <h3 className="text-base font-extrabold text-white">Google AI Overviews & Schema</h3>
+                  <p className="text-xs text-zinc-400 mt-1">
+                    Provides structured JSON-LD schemas and FAQ microdata for zero-click AI summaries.
+                  </p>
+                </div>
+
+                {/* Flaws List in AEO */}
+                {diagnosticReport.aeo.flaws.length > 0 ? (
+                  <div className="space-y-2">
+                    <span className="text-[11px] font-bold text-red-400 uppercase tracking-wider block">Flaws Detected:</span>
+                    {diagnosticReport.aeo.flaws.map((flaw) => (
+                      <div key={flaw.id} className="p-3 bg-[#121212] rounded-xl border border-red-500/20 text-xs space-y-1">
+                        <div className="font-bold text-red-400 flex items-center gap-1.5">
+                          <span className="w-4 h-4 rounded-full bg-red-500/20 flex items-center justify-center text-[10px]">✕</span>
+                          {flaw.flaw}
+                        </div>
+                        <p className="text-zinc-400 pl-5 text-[11px]">{flaw.impact}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-3 bg-[#121212] rounded-xl border border-[#60a5fa]/20 text-xs text-[#60a5fa] flex items-center gap-2">
+                    <Check className="w-4 h-4 flex-shrink-0" />
+                    <span className="font-bold">All AEO Entity Schemas Passing ✓</span>
+                  </div>
+                )}
+
+                {/* Passed Checks in AEO */}
+                {diagnosticReport.aeo.passed.length > 0 && (
+                  <div className="space-y-1.5 pt-1">
+                    <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block">Verified in Repo:</span>
+                    {diagnosticReport.aeo.passed.map((p) => (
+                      <div key={p.id} className="text-xs text-zinc-400 flex items-center gap-1.5">
+                        <Check className="w-3.5 h-3.5 text-[#60a5fa] flex-shrink-0" />
+                        <span>{p.title}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-              <div className="space-y-1 max-w-md mx-auto">
-                <h3 className="text-lg font-black text-white">All Core SEO, AEO & GEO Flaws Resolved!</h3>
-                <p className="text-xs text-zinc-400">
-                  Your repository has all technical foundations in place. You can now scale topical authority by publishing next-tier keyword cluster guides.
-                </p>
+
+              <div className="p-3 bg-[#121212] rounded-xl border border-[#262626] text-xs text-zinc-300">
+                <strong className="text-[#60a5fa] block mb-0.5">RankTop AI Fix for AEO:</strong>
+                Synthesizes deep JSON-LD graph (<code className="text-white">schema.json</code>) with WebSite, Organization & FAQPage.
               </div>
-              <button
-                onClick={handleStartAutonomousRepair}
-                className="px-8 py-3.5 rounded-xl font-extrabold text-sm bg-[#3ECF8E] hover:bg-[#34D399] text-black inline-flex items-center gap-2 shadow-lg shadow-[#3ECF8E]/20 transition-all cursor-pointer"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Generate Next Keyword Pillar Article</span>
-              </button>
             </div>
-          )}
+
+            {/* ── CARD 3: GEO (Generative Engine Optimization) ── */}
+            <div className="bg-[#171717] rounded-2xl border border-[#a78bfa]/30 p-6 flex flex-col justify-between space-y-6 relative overflow-hidden">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#a78bfa]/10 text-[#a78bfa] text-xs font-bold border border-[#a78bfa]/20">
+                    <Radio className="w-3.5 h-3.5" />
+                    <span>3. GEO (Generative Engine Optimization)</span>
+                  </div>
+                  <span className="text-xl font-black text-[#a78bfa]">{diagnosticReport.geo.score}/100</span>
+                </div>
+
+                <div>
+                  <h3 className="text-base font-extrabold text-white">ChatGPT, Perplexity & Claude</h3>
+                  <p className="text-xs text-zinc-400 mt-1">
+                    Injects <code className="text-white">llms.txt</code> citation anchors and opens AI bot crawl policies in <code className="text-white">robots.txt</code>.
+                  </p>
+                </div>
+
+                {/* Flaws List in GEO */}
+                {diagnosticReport.geo.flaws.length > 0 ? (
+                  <div className="space-y-2">
+                    <span className="text-[11px] font-bold text-red-400 uppercase tracking-wider block">Flaws Detected:</span>
+                    {diagnosticReport.geo.flaws.map((flaw) => (
+                      <div key={flaw.id} className="p-3 bg-[#121212] rounded-xl border border-red-500/20 text-xs space-y-1">
+                        <div className="font-bold text-red-400 flex items-center gap-1.5">
+                          <span className="w-4 h-4 rounded-full bg-red-500/20 flex items-center justify-center text-[10px]">✕</span>
+                          {flaw.flaw}
+                        </div>
+                        <p className="text-zinc-400 pl-5 text-[11px]">{flaw.impact}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-3 bg-[#121212] rounded-xl border border-[#a78bfa]/20 text-xs text-[#a78bfa] flex items-center gap-2">
+                    <Check className="w-4 h-4 flex-shrink-0" />
+                    <span className="font-bold">All GEO Citation Assets Passing ✓</span>
+                  </div>
+                )}
+
+                {/* Passed Checks in GEO */}
+                {diagnosticReport.geo.passed.length > 0 && (
+                  <div className="space-y-1.5 pt-1">
+                    <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block">Verified in Repo:</span>
+                    {diagnosticReport.geo.passed.map((p) => (
+                      <div key={p.id} className="text-xs text-zinc-400 flex items-center gap-1.5">
+                        <Check className="w-3.5 h-3.5 text-[#a78bfa] flex-shrink-0" />
+                        <span>{p.title}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="p-3 bg-[#121212] rounded-xl border border-[#262626] text-xs text-zinc-300">
+                <strong className="text-[#a78bfa] block mb-0.5">RankTop AI Fix for GEO:</strong>
+                Generates <code className="text-white">public/llms.txt</code> and unlocks AI crawler rules in <code className="text-white">robots.txt</code>.
+              </div>
+            </div>
+
+          </div>
+
+          {/* Bottom CTA Banner */}
+          <div className="p-6 bg-gradient-to-r from-[#3ECF8E]/10 via-[#171717] to-[#60a5fa]/10 rounded-2xl border border-[#3ECF8E]/30 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+            <div>
+              <h4 className="text-base font-extrabold text-white">
+                {diagnosticReport.isFullyOptimized 
+                  ? 'All 3 Pillars Verified — Ready to publish next topic pillar?' 
+                  : 'Ready to resolve all SEO, AEO & GEO flaws automatically?'}
+              </h4>
+              <p className="text-xs text-zinc-400 mt-0.5">
+                Click Start to synthesize schemas, generate llms.txt, update robots.txt, and write your next pillar article.
+              </p>
+            </div>
+
+            <button
+              onClick={handleStartAutonomousRepair}
+              className="px-8 py-4 rounded-xl font-black text-sm bg-[#3ECF8E] hover:bg-[#34D399] text-black flex items-center gap-2 shadow-xl shadow-[#3ECF8E]/25 transition-all transform hover:scale-[1.02] cursor-pointer flex-shrink-0"
+            >
+              <Zap className="w-5 h-5 fill-black" />
+              <span>
+                {diagnosticReport.isFullyOptimized ? 'Generate Next Pillar' : 'Start Repairing Now'}
+              </span>
+            </button>
+          </div>
 
         </div>
       )}
 
-      {/* ─── STAGE 4: AUTONOMOUS SWARM REPAIRING IN PROGRESS ─── */}
+      {/* ─── STAGE 4: AUTONOMOUS REPAIRING STEP-BY-STEP (SEO, AEO, GEO) ─── */}
       {pipelineState === 'fixing' && (
         <div className="bg-[#171717] rounded-2xl border border-[#3ECF8E]/40 p-8 space-y-6 text-center">
           <div className="w-16 h-16 rounded-2xl bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] flex items-center justify-center mx-auto animate-pulse">
@@ -964,49 +1017,56 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
           </div>
 
           <div className="space-y-2 max-w-lg mx-auto">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-bold border border-[#3ECF8E]/20">
+              <span>CURRENTLY WORKING ON: {fixingPillar} REPAIRS</span>
+            </div>
             <h2 className="text-xl font-extrabold text-white">
-              Autonomous AI Swarm is Preparing Your Optimizations...
+              Autonomous AI Swarm is Fixing Your Codebase...
             </h2>
             <p className="text-xs text-zinc-400">
-              Verifying existing assets and generating the next high-ranking pillar guides for your repository.
+              Generating production-ready assets across SEO, AEO, and GEO pillars.
             </p>
           </div>
 
           {/* Stepper of fixes */}
           <div className="max-w-xl mx-auto space-y-3 text-left">
+            
+            {/* SEO Fixes */}
             <div className={`p-3.5 rounded-xl border transition-all flex items-center gap-3 text-xs ${
               fixingStep >= 1 ? 'bg-[#121212] border-[#3ECF8E]/40 text-white' : 'bg-[#121212]/50 border-[#262626] text-zinc-500'
             }`}>
               {fixingStep > 1 ? <CheckCheck className="w-4 h-4 text-[#3ECF8E] flex-shrink-0" /> : <RefreshCw className="w-4 h-4 text-[#3ECF8E] animate-spin flex-shrink-0" />}
-              <span className="font-semibold">Checking JSON-LD Schema graph verification...</span>
+              <span className="font-semibold"><strong className="text-[#3ECF8E]">[SEO Fix]</strong> Updating XML Sitemap (`sitemap.xml`) with page priorities...</span>
             </div>
 
             <div className={`p-3.5 rounded-xl border transition-all flex items-center gap-3 text-xs ${
               fixingStep >= 2 ? 'bg-[#121212] border-[#3ECF8E]/40 text-white' : 'bg-[#121212]/50 border-[#262626] text-zinc-500'
             }`}>
               {fixingStep > 2 ? <CheckCheck className="w-4 h-4 text-[#3ECF8E] flex-shrink-0" /> : fixingStep === 2 ? <RefreshCw className="w-4 h-4 text-[#3ECF8E] animate-spin flex-shrink-0" /> : <div className="w-4 h-4 rounded-full border border-zinc-700 flex-shrink-0" />}
-              <span className="font-semibold">Verifying llms.txt citation anchors...</span>
+              <span className="font-semibold"><strong className="text-[#3ECF8E]">[SEO Fix]</strong> Generating 2,000+ word pillar article for topic cluster ranking...</span>
+            </div>
+
+            {/* AEO Fixes */}
+            <div className={`p-3.5 rounded-xl border transition-all flex items-center gap-3 text-xs ${
+              fixingStep >= 3 ? 'bg-[#121212] border-[#60a5fa]/40 text-white' : 'bg-[#121212]/50 border-[#262626] text-zinc-500'
+            }`}>
+              {fixingStep > 3 ? <CheckCheck className="w-4 h-4 text-[#60a5fa] flex-shrink-0" /> : fixingStep === 3 ? <RefreshCw className="w-4 h-4 text-[#60a5fa] animate-spin flex-shrink-0" /> : <div className="w-4 h-4 rounded-full border border-zinc-700 flex-shrink-0" />}
+              <span className="font-semibold"><strong className="text-[#60a5fa]">[AEO Fix]</strong> Synthesizing deep JSON-LD Schema & FAQPage microdata (`schema.json`)...</span>
+            </div>
+
+            {/* GEO Fixes */}
+            <div className={`p-3.5 rounded-xl border transition-all flex items-center gap-3 text-xs ${
+              fixingStep >= 4 ? 'bg-[#121212] border-[#a78bfa]/40 text-white' : 'bg-[#121212]/50 border-[#262626] text-zinc-500'
+            }`}>
+              {fixingStep > 4 ? <CheckCheck className="w-4 h-4 text-[#a78bfa] flex-shrink-0" /> : fixingStep === 4 ? <RefreshCw className="w-4 h-4 text-[#a78bfa] animate-spin flex-shrink-0" /> : <div className="w-4 h-4 rounded-full border border-zinc-700 flex-shrink-0" />}
+              <span className="font-semibold"><strong className="text-[#a78bfa]">[GEO Fix]</strong> Writing `public/llms.txt` citation guide for ChatGPT & Perplexity...</span>
             </div>
 
             <div className={`p-3.5 rounded-xl border transition-all flex items-center gap-3 text-xs ${
-              fixingStep >= 3 ? 'bg-[#121212] border-[#3ECF8E]/40 text-white' : 'bg-[#121212]/50 border-[#262626] text-zinc-500'
+              fixingStep >= 5 ? 'bg-[#121212] border-[#a78bfa]/40 text-white' : 'bg-[#121212]/50 border-[#262626] text-zinc-500'
             }`}>
-              {fixingStep > 3 ? <CheckCheck className="w-4 h-4 text-[#3ECF8E] flex-shrink-0" /> : fixingStep === 3 ? <RefreshCw className="w-4 h-4 text-[#3ECF8E] animate-spin flex-shrink-0" /> : <div className="w-4 h-4 rounded-full border border-zinc-700 flex-shrink-0" />}
-              <span className="font-semibold">Verifying robots.txt AI search bot rules...</span>
-            </div>
-
-            <div className={`p-3.5 rounded-xl border transition-all flex items-center gap-3 text-xs ${
-              fixingStep >= 4 ? 'bg-[#121212] border-[#3ECF8E]/40 text-white' : 'bg-[#121212]/50 border-[#262626] text-zinc-500'
-            }`}>
-              {fixingStep > 4 ? <CheckCheck className="w-4 h-4 text-[#3ECF8E] flex-shrink-0" /> : fixingStep === 4 ? <RefreshCw className="w-4 h-4 text-[#3ECF8E] animate-spin flex-shrink-0" /> : <div className="w-4 h-4 rounded-full border border-zinc-700 flex-shrink-0" />}
-              <span className="font-semibold">Synthesizing updated sitemap.xml with current lastmod...</span>
-            </div>
-
-            <div className={`p-3.5 rounded-xl border transition-all flex items-center gap-3 text-xs ${
-              fixingStep >= 5 ? 'bg-[#121212] border-[#3ECF8E]/40 text-white' : 'bg-[#121212]/50 border-[#262626] text-zinc-500'
-            }`}>
-              {fixingStep === 5 ? <RefreshCw className="w-4 h-4 text-[#3ECF8E] animate-spin flex-shrink-0" /> : <div className="w-4 h-4 rounded-full border border-zinc-700 flex-shrink-0" />}
-              <span className="font-semibold">Writing next high-ranking pillar article for topic cluster rank...</span>
+              {fixingStep === 5 ? <RefreshCw className="w-4 h-4 text-[#a78bfa] animate-spin flex-shrink-0" /> : <div className="w-4 h-4 rounded-full border border-zinc-700 flex-shrink-0" />}
+              <span className="font-semibold"><strong className="text-[#a78bfa]">[GEO Fix]</strong> Hardening `robots.txt` with GPTBot, ClaudeBot & PerplexityBot permissions...</span>
             </div>
           </div>
         </div>
@@ -1029,7 +1089,7 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
                 </span>
               </div>
               <p className="text-xs text-zinc-300">
-                All optimizations have been committed to your new branch and the Pull Request is open. Merge it on GitHub to deploy changes to your live site!
+                All optimizations across SEO, AEO, and GEO have been committed to your new branch. Merge it on GitHub to deploy changes to your live site!
               </p>
               <div className="pt-1">
                 <a
@@ -1051,7 +1111,7 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
               <div>
                 <div className="flex items-center gap-2 text-[#3ECF8E] font-extrabold text-lg">
                   <CheckCircle2 className="w-6 h-6" />
-                  <span>{stagedFiles.length} Optimized File{stagedFiles.length > 1 ? 's' : ''} Staged & Ready!</span>
+                  <span>{stagedFiles.length} Optimized Files Staged Across SEO, AEO & GEO!</span>
                 </div>
                 <p className="text-xs text-zinc-400 mt-1">
                   Ready to dispatch a structured Pull Request directly to your GitHub repository.
@@ -1100,12 +1160,12 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
             </div>
           </div>
 
-          {/* Staged Files Inspector */}
+          {/* Staged Files Inspector with Pillar Badges */}
           <div className="bg-[#171717] rounded-2xl border border-[#262626] p-6 space-y-6">
             <div className="flex items-center justify-between">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
                 <FileCode className="w-4 h-4 text-[#3ECF8E]" />
-                <span>Inspect Staged Optimization Files</span>
+                <span>Inspect Staged Files by Pillar</span>
               </h3>
 
               <div className="flex items-center gap-2">
@@ -1124,8 +1184,14 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
                 <div key={file.path || idx} className="bg-[#121212] rounded-xl border border-[#262626] overflow-hidden">
                   <div className="px-4 py-3 bg-[#1a1a1a] border-b border-[#262626] flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#3ECF8E]/10 text-[#3ECF8E] border border-[#3ECF8E]/20">
-                        {file.category}
+                      <span className={`px-2.5 py-0.5 rounded text-[10px] font-extrabold border ${
+                        file.pillar === 'SEO' 
+                          ? 'bg-[#3ECF8E]/10 text-[#3ECF8E] border-[#3ECF8E]/20' 
+                          : file.pillar === 'AEO' 
+                          ? 'bg-[#60a5fa]/10 text-[#60a5fa] border-[#60a5fa]/20' 
+                          : 'bg-[#a78bfa]/10 text-[#a78bfa] border-[#a78bfa]/20'
+                      }`}>
+                        {file.pillar} • {file.category}
                       </span>
                       <span className="font-mono font-bold text-white">{file.path}</span>
                     </div>

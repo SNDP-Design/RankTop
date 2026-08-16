@@ -22,6 +22,14 @@ import {
 
 const NAV_GROUPS = [
   {
+    label: 'AUTONOMOUS ENGINE',
+    badge: 'PRIMARY',
+    badgeColor: '#3ECF8E',
+    items: [
+      { id: 'repo',        text: 'GitHub Repo Engine',      Icon: FolderGit2 },
+    ],
+  },
+  {
     label: 'CORE WORKSPACE',
     badge: 'HQ',
     badgeColor: '#71717a',
@@ -38,7 +46,6 @@ const NAV_GROUPS = [
       { id: 'strategy',    text: 'Keyword Discovery',       Icon: Target },
       { id: 'competitors', text: 'Competitor Intelligence', Icon: Search },
       { id: 'studio',      text: 'AI Content & Schema Studio',Icon: FileText },
-      { id: 'repo',        text: 'GitHub Repo Engine',      Icon: FolderGit2 },
       { id: 'backlinks',   text: 'Backlink Outreach Hub',   Icon: Magnet },
       { id: 'cms',         text: 'CMS Auto-Publishing',     Icon: Wrench },
     ],
