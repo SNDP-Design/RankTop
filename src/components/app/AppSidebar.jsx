@@ -27,6 +27,7 @@ const NAV_GROUPS = [
     badgeColor: '#3ECF8E',
     items: [
       { id: 'repo',        text: 'GitHub Repo Engine',      Icon: FolderGit2 },
+      { id: 'gsc_engine',  text: 'Google Search Console',   Icon: ShieldCheck, badge: 'AUTO-FIX' },
     ],
   },
   {

@@ -17,6 +17,7 @@ import CmsIntegrations from './components/app/CmsIntegrations';
 import FreeToolsApp from './components/app/FreeToolsApp';
 import BacklinkOutreach from './components/app/BacklinkOutreach';
 import RepoConnectorView from './components/app/RepoConnectorView';
+import GscEngineView from './components/app/GscEngineView';
 
 function WorkspaceShell() {
   const [activeAppTab, setActiveAppTab] = useState(() => {
@@ -54,6 +55,7 @@ function WorkspaceShell() {
       case 'competitors':  return <CompetitorSpy onGenerateArticle={(kw) => openAppWithTab('studio', kw)} />;
       case 'studio':       return <AiBlogStudio initialKeyword={studioKeyword} />;
       case 'repo':         return <RepoConnectorView setActiveTab={openAppWithTab} />;
+      case 'gsc_engine':   return <GscEngineView setActiveTab={openAppWithTab} />;
       case 'backlinks':    return <BacklinkOutreach />;
       case 'cms':          return <CmsIntegrations />;
 
