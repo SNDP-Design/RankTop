@@ -668,7 +668,7 @@ export default function RepoConnectorView({ setActiveTab }) {
   const [isAutoDeploying, setIsAutoDeploying] = useState(false);
   const [autoDeployResult, setAutoDeployResult] = useState(initial.autoDeployResult);
   const [copiedKey, setCopiedKey] = useState(null);
-  const [submittedIndexMap, setSubmittedIndexMap] = useState({});
+  const [expandedFileIdx, setExpandedFileIdx] = useState(null);
 
   // ── Sync State Changes to LocalStorage ──────────────────────────────────────
   useEffect(() => {
@@ -687,33 +687,6 @@ export default function RepoConnectorView({ setActiveTab }) {
     navigator.clipboard.writeText(text);
     setCopiedKey(key);
     setTimeout(() => setCopiedKey(null), 2000);
-  };
-
-  const handleRequestIndexing = async (url) => {
-    try {
-      await gscService.dispatchIndexingPing(url, 'xgrowth.uno');
-      if (navigator?.clipboard?.writeText) {
-        try {
-          await navigator.clipboard.writeText(url);
-        } catch {}
-      }
-      setSubmittedIndexMap(prev => ({ ...prev, [url]: true }));
-      setSuccessMsg(`⚡ Indexing request dispatched to Googlebot & IndexNow for ${url}! (Canonical URL copied to clipboard)`);
-    } catch (err) {
-      console.warn('[Indexing Ping Failed]', err);
-    }
-  };
-
-  const handleOpenGscInspector = async (url) => {
-    try {
-      if (navigator?.clipboard?.writeText) {
-        await navigator.clipboard.writeText(url);
-      }
-      setSuccessMsg(`URL copied to clipboard! Opening Google Search Console inspector...`);
-      gscService.openGscInspector(url, 'xgrowth.uno');
-    } catch {
-      window.open('https://search.google.com/search-console', '_blank', 'noopener,noreferrer');
-    }
   };
 
 
@@ -1353,224 +1326,173 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
           </div>
 
           {/* ─── THE 3 DISTINCT PILLAR CARDS (SEO, AEO, GEO) ─── */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             
             {/* ── CARD 1: SEO (Search Engine Optimization) ── */}
             {(activeScannerFilter === 'all' || activeScannerFilter === 'seo') && (
-              <div className="bg-[#171717] rounded-2xl border border-[#3ECF8E]/30 p-6 flex flex-col justify-between space-y-6 relative overflow-hidden">
-                <div className="space-y-4">
+              <div className="bg-[#171717] rounded-2xl border border-[#3ECF8E]/30 p-4 space-y-3.5 flex flex-col justify-between shadow-sm">
+                <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-bold border border-[#3ECF8E]/20">
-                      <Globe className="w-3.5 h-3.5" />
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-[11px] font-extrabold border border-[#3ECF8E]/20">
+                      <Globe className="w-3 h-3" />
                       <span>1. SEO (Search Engine Optimization)</span>
                     </div>
-                    <span className="text-xl font-black text-[#3ECF8E]">{diagnosticReport.seo.score}/100</span>
-                  </div>
-
-                  <div>
-                    <h3 className="text-base font-extrabold text-white">Google Organic Search (6 Scanners)</h3>
-                    <p className="text-xs text-zinc-400 mt-1">
-                      Scans XML sitemaps, title tags, meta descriptions, canonical integrity, OpenGraph previews, and topic clusters.
-                    </p>
+                    <span className="text-lg font-black text-[#3ECF8E] font-mono">{diagnosticReport.seo.score}/100</span>
                   </div>
 
                   {/* Flaws in SEO */}
                   {diagnosticReport.seo.flaws.length > 0 ? (
-                    <div className="space-y-2">
-                      <span className="text-[11px] font-bold text-red-400 uppercase tracking-wider block">Flaws Detected ({diagnosticReport.seo.flaws.length}):</span>
+                    <div className="space-y-1.5">
+                      <span className="text-[10px] font-bold text-red-400 uppercase tracking-wider block">Flaws ({diagnosticReport.seo.flaws.length}):</span>
                       {diagnosticReport.seo.flaws.map((flaw) => (
-                        <div key={flaw.id} className="p-3 bg-[#121212] rounded-xl border border-red-500/20 text-xs space-y-1">
-                          <div className="font-bold text-red-400 flex items-center justify-between">
-                            <span className="flex items-center gap-1.5">
-                              <span className="w-4 h-4 rounded-full bg-red-500/20 flex items-center justify-center text-[10px]">✕</span>
-                              {flaw.flaw}
-                            </span>
-                            <span className="text-[9px] font-mono text-zinc-500 uppercase">{flaw.name}</span>
+                        <div key={flaw.id} className="p-2 bg-[#121212] rounded-lg border border-red-500/20 text-xs">
+                          <div className="font-bold text-red-400 text-[11px] flex items-center gap-1">
+                            <span>✕</span>
+                            <span>{flaw.flaw}</span>
                           </div>
-                          <p className="text-zinc-400 pl-5 text-[11px]">{flaw.impact}</p>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="p-3 bg-[#121212] rounded-xl border border-[#3ECF8E]/20 text-xs text-[#3ECF8E] flex items-center gap-2">
-                      <Check className="w-4 h-4 flex-shrink-0" />
+                    <div className="p-2 bg-[#121212] rounded-lg border border-[#3ECF8E]/20 text-xs text-[#3ECF8E] flex items-center gap-1.5">
+                      <Check className="w-3.5 h-3.5 flex-shrink-0" />
                       <span className="font-bold">All 6 SEO Scanners Passing ✓</span>
                     </div>
                   )}
 
                   {/* Passed Checks in SEO */}
                   {diagnosticReport.seo.passed.length > 0 && (
-                    <div className="space-y-1.5 pt-1">
-                      <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block">Passing Scanners ({diagnosticReport.seo.passed.length}):</span>
-                      {diagnosticReport.seo.passed.map((p) => (
-                        <div key={p.id} className="text-xs text-zinc-400 flex items-center gap-1.5">
-                          <Check className="w-3.5 h-3.5 text-[#3ECF8E] flex-shrink-0" />
-                          <span>{p.title}</span>
-                        </div>
-                      ))}
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Passing Scanners ({diagnosticReport.seo.passed.length}):</span>
+                      <div className="space-y-1 max-h-32 overflow-y-auto">
+                        {diagnosticReport.seo.passed.map((p) => (
+                          <div key={p.id} className="text-[11px] text-zinc-400 flex items-center gap-1.5">
+                            <Check className="w-3 h-3 text-[#3ECF8E] flex-shrink-0" />
+                            <span className="truncate">{p.title}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
 
-                <div className="p-3 bg-[#121212] rounded-xl border border-[#262626] text-xs text-zinc-300">
-                  <strong className="text-[#3ECF8E] block mb-0.5">RankTop AI Fix for SEO:</strong>
-                  Generates <code className="text-white">sitemap.xml</code> and writes 2,000+ word keyword pillar article.
+                <div className="p-2 bg-[#121212] rounded-lg border border-[#262626] text-[11px] text-zinc-400">
+                  <span className="text-[#3ECF8E] font-bold">Auto-Fix: </span>
+                  Generates <code className="text-white">sitemap.xml</code> and writes 2,000+ word keyword pillar post.
                 </div>
               </div>
             )}
 
             {/* ── CARD 2: AEO (Answer Engine Optimization) ── */}
             {(activeScannerFilter === 'all' || activeScannerFilter === 'aeo') && (
-              <div className="bg-[#171717] rounded-2xl border border-[#60a5fa]/30 p-6 flex flex-col justify-between space-y-6 relative overflow-hidden">
-                <div className="space-y-4">
+              <div className="bg-[#171717] rounded-2xl border border-[#60a5fa]/30 p-4 space-y-3.5 flex flex-col justify-between shadow-sm">
+                <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#60a5fa]/10 text-[#60a5fa] text-xs font-bold border border-[#60a5fa]/20">
-                      <Cpu className="w-3.5 h-3.5" />
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#60a5fa]/10 text-[#60a5fa] text-[11px] font-extrabold border border-[#60a5fa]/20">
+                      <Cpu className="w-3 h-3" />
                       <span>2. AEO (Answer Engine Optimization)</span>
                     </div>
-                    <span className="text-xl font-black text-[#60a5fa]">{diagnosticReport.aeo.score}/100</span>
-                  </div>
-
-                  <div>
-                    <h3 className="text-base font-extrabold text-white">Google AI Overviews (6 Scanners)</h3>
-                    <p className="text-xs text-zinc-400 mt-1">
-                      Scans JSON-LD entity graph, FAQPage direct answers, speakable voice microdata, software offers, and BLUF clarity.
-                    </p>
+                    <span className="text-lg font-black text-[#60a5fa] font-mono">{diagnosticReport.aeo.score}/100</span>
                   </div>
 
                   {/* Flaws in AEO */}
                   {diagnosticReport.aeo.flaws.length > 0 ? (
-                    <div className="space-y-2">
-                      <span className="text-[11px] font-bold text-red-400 uppercase tracking-wider block">Flaws Detected ({diagnosticReport.aeo.flaws.length}):</span>
+                    <div className="space-y-1.5">
+                      <span className="text-[10px] font-bold text-red-400 uppercase tracking-wider block">Flaws ({diagnosticReport.aeo.flaws.length}):</span>
                       {diagnosticReport.aeo.flaws.map((flaw) => (
-                        <div key={flaw.id} className="p-3 bg-[#121212] rounded-xl border border-red-500/20 text-xs space-y-1">
-                          <div className="font-bold text-red-400 flex items-center justify-between">
-                            <span className="flex items-center gap-1.5">
-                              <span className="w-4 h-4 rounded-full bg-red-500/20 flex items-center justify-center text-[10px]">✕</span>
-                              {flaw.flaw}
-                            </span>
-                            <span className="text-[9px] font-mono text-zinc-500 uppercase">{flaw.name}</span>
+                        <div key={flaw.id} className="p-2 bg-[#121212] rounded-lg border border-red-500/20 text-xs">
+                          <div className="font-bold text-red-400 text-[11px] flex items-center gap-1">
+                            <span>✕</span>
+                            <span>{flaw.flaw}</span>
                           </div>
-                          <p className="text-zinc-400 pl-5 text-[11px]">{flaw.impact}</p>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="p-3 bg-[#121212] rounded-xl border border-[#60a5fa]/20 text-xs text-[#60a5fa] flex items-center gap-2">
-                      <Check className="w-4 h-4 flex-shrink-0" />
+                    <div className="p-2 bg-[#121212] rounded-lg border border-[#60a5fa]/20 text-xs text-[#60a5fa] flex items-center gap-1.5">
+                      <Check className="w-3.5 h-3.5 flex-shrink-0" />
                       <span className="font-bold">All 6 AEO Scanners Passing ✓</span>
                     </div>
                   )}
 
                   {/* Passed Checks in AEO */}
                   {diagnosticReport.aeo.passed.length > 0 && (
-                    <div className="space-y-1.5 pt-1">
-                      <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block">Passing Scanners ({diagnosticReport.aeo.passed.length}):</span>
-                      {diagnosticReport.aeo.passed.map((p) => (
-                        <div key={p.id} className="text-xs text-zinc-400 flex items-center gap-1.5">
-                          <Check className="w-3.5 h-3.5 text-[#60a5fa] flex-shrink-0" />
-                          <span>{p.title}</span>
-                        </div>
-                      ))}
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Passing Scanners ({diagnosticReport.aeo.passed.length}):</span>
+                      <div className="space-y-1 max-h-32 overflow-y-auto">
+                        {diagnosticReport.aeo.passed.map((p) => (
+                          <div key={p.id} className="text-[11px] text-zinc-400 flex items-center gap-1.5">
+                            <Check className="w-3 h-3 text-[#60a5fa] flex-shrink-0" />
+                            <span className="truncate">{p.title}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
 
-                <div className="p-3 bg-[#121212] rounded-xl border border-[#262626] text-xs text-zinc-300">
-                  <strong className="text-[#60a5fa] block mb-0.5">RankTop AI Fix for AEO:</strong>
-                  Synthesizes deep JSON-LD graph (<code className="text-white">schema.json</code>) with WebSite, Organization & FAQPage.
+                <div className="p-2 bg-[#121212] rounded-lg border border-[#262626] text-[11px] text-zinc-400">
+                  <span className="text-[#60a5fa] font-bold">Auto-Fix: </span>
+                  Synthesizes deep JSON-LD graph (<code className="text-white">schema.json</code>) with WebSite, Org & FAQPage.
                 </div>
               </div>
             )}
 
             {/* ── CARD 3: GEO (Generative Engine Optimization) ── */}
             {(activeScannerFilter === 'all' || activeScannerFilter === 'geo') && (
-              <div className="bg-[#171717] rounded-2xl border border-[#a78bfa]/30 p-6 flex flex-col justify-between space-y-6 relative overflow-hidden">
-                <div className="space-y-4">
+              <div className="bg-[#171717] rounded-2xl border border-[#a78bfa]/30 p-4 space-y-3.5 flex flex-col justify-between shadow-sm">
+                <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#a78bfa]/10 text-[#a78bfa] text-xs font-bold border border-[#a78bfa]/20">
-                      <Radio className="w-3.5 h-3.5" />
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#a78bfa]/10 text-[#a78bfa] text-[11px] font-extrabold border border-[#a78bfa]/20">
+                      <Radio className="w-3 h-3" />
                       <span>3. GEO (Generative Engine Optimization)</span>
                     </div>
-                    <span className="text-xl font-black text-[#a78bfa]">{diagnosticReport.geo.score}/100</span>
-                  </div>
-
-                  <div>
-                    <h3 className="text-base font-extrabold text-white">ChatGPT, Perplexity & Claude (6 Scanners)</h3>
-                    <p className="text-xs text-zinc-400 mt-1">
-                      Scans `llms.txt`, `llms-full.txt` RAG guide, AI crawler bots (`robots.txt`), statistical benchmarks, and information gain.
-                    </p>
+                    <span className="text-lg font-black text-[#a78bfa] font-mono">{diagnosticReport.geo.score}/100</span>
                   </div>
 
                   {/* Flaws in GEO */}
                   {diagnosticReport.geo.flaws.length > 0 ? (
-                    <div className="space-y-2">
-                      <span className="text-[11px] font-bold text-red-400 uppercase tracking-wider block">Flaws Detected ({diagnosticReport.geo.flaws.length}):</span>
+                    <div className="space-y-1.5">
+                      <span className="text-[10px] font-bold text-red-400 uppercase tracking-wider block">Flaws ({diagnosticReport.geo.flaws.length}):</span>
                       {diagnosticReport.geo.flaws.map((flaw) => (
-                        <div key={flaw.id} className="p-3 bg-[#121212] rounded-xl border border-red-500/20 text-xs space-y-1">
-                          <div className="font-bold text-red-400 flex items-center justify-between">
-                            <span className="flex items-center gap-1.5">
-                              <span className="w-4 h-4 rounded-full bg-red-500/20 flex items-center justify-center text-[10px]">✕</span>
-                              {flaw.flaw}
-                            </span>
-                            <span className="text-[9px] font-mono text-zinc-500 uppercase">{flaw.name}</span>
+                        <div key={flaw.id} className="p-2 bg-[#121212] rounded-lg border border-red-500/20 text-xs">
+                          <div className="font-bold text-red-400 text-[11px] flex items-center gap-1">
+                            <span>✕</span>
+                            <span>{flaw.flaw}</span>
                           </div>
-                          <p className="text-zinc-400 pl-5 text-[11px]">{flaw.impact}</p>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="p-3 bg-[#121212] rounded-xl border border-[#a78bfa]/20 text-xs text-[#a78bfa] flex items-center gap-2">
-                      <Check className="w-4 h-4 flex-shrink-0" />
+                    <div className="p-2 bg-[#121212] rounded-lg border border-[#a78bfa]/20 text-xs text-[#a78bfa] flex items-center gap-1.5">
+                      <Check className="w-3.5 h-3.5 flex-shrink-0" />
                       <span className="font-bold">All 6 GEO Scanners Passing ✓</span>
                     </div>
                   )}
 
                   {/* Passed Checks in GEO */}
                   {diagnosticReport.geo.passed.length > 0 && (
-                    <div className="space-y-1.5 pt-1">
-                      <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block">Passing Scanners ({diagnosticReport.geo.passed.length}):</span>
-                      {diagnosticReport.geo.passed.map((p) => (
-                        <div key={p.id} className="text-xs text-zinc-400 flex items-center gap-1.5">
-                          <Check className="w-3.5 h-3.5 text-[#a78bfa] flex-shrink-0" />
-                          <span>{p.title}</span>
-                        </div>
-                      ))}
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Passing Scanners ({diagnosticReport.geo.passed.length}):</span>
+                      <div className="space-y-1 max-h-32 overflow-y-auto">
+                        {diagnosticReport.geo.passed.map((p) => (
+                          <div key={p.id} className="text-[11px] text-zinc-400 flex items-center gap-1.5">
+                            <Check className="w-3 h-3 text-[#a78bfa] flex-shrink-0" />
+                            <span className="truncate">{p.title}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
 
-                <div className="p-3 bg-[#121212] rounded-xl border border-[#262626] text-xs text-zinc-300">
-                  <strong className="text-[#a78bfa] block mb-0.5">RankTop AI Fix for GEO:</strong>
-                  Generates <code className="text-white">llms.txt</code>, <code className="text-white">llms-full.txt</code>, and configures AI crawler rules in <code className="text-white">robots.txt</code>.
+                <div className="p-2 bg-[#121212] rounded-lg border border-[#262626] text-[11px] text-zinc-400">
+                  <span className="text-[#a78bfa] font-bold">Auto-Fix: </span>
+                  Generates <code className="text-white">llms.txt</code>, <code className="text-white">llms-full.txt</code> & updates <code className="text-white">robots.txt</code>.
                 </div>
               </div>
             )}
 
-          </div>
-
-          {/* Bottom CTA Banner */}
-          <div className="p-6 bg-gradient-to-r from-[#3ECF8E]/10 via-[#171717] to-[#60a5fa]/10 rounded-2xl border border-[#3ECF8E]/30 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-            <div>
-              <h4 className="text-base font-extrabold text-white">
-                {diagnosticReport.isFullyOptimized 
-                  ? 'All 18 Scanners Passing — Ready to auto-commit next topic pillar?' 
-                  : `Ready to resolve all ${diagnosticReport.totalFlawsCount} flaws across SEO, AEO & GEO?`}
-              </h4>
-              <p className="text-xs text-zinc-400 mt-0.5">
-                RankTop will generate all 18-scanner fixes and directly update your repository branch automatically.
-              </p>
-            </div>
-
-            <button
-              onClick={handleStartAutonomousRepair}
-              className="px-8 py-4 rounded-xl font-black text-sm bg-[#3ECF8E] hover:bg-[#34D399] text-black flex items-center gap-2 shadow-xl shadow-[#3ECF8E]/25 transition-all transform hover:scale-[1.02] cursor-pointer flex-shrink-0"
-            >
-              <Zap className="w-5 h-5 fill-black" />
-              <span>
-                {diagnosticReport.isFullyOptimized ? 'Auto-Commit Next Pillar' : 'Auto-Deploy All Repairs'}
-              </span>
-            </button>
           </div>
 
         </div>
@@ -1649,70 +1571,70 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
 
       {/* ─── STAGE 5: COMPLETED AUTO-DEPLOY CONFIRMATION & FILES INSPECTOR ─── */}
       {pipelineState === 'completed' && (
-        <div className="space-y-6">
+        <div className="space-y-4">
           
           {/* Direct Auto-Commit Success Card */}
           {autoDeployResult ? (
-            <div className="p-6 rounded-2xl bg-gradient-to-r from-[#3ECF8E]/20 via-[#171717] to-[#60a5fa]/20 border-2 border-[#3ECF8E]/50 text-white space-y-3">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div className="flex items-center gap-2 text-[#3ECF8E] font-extrabold text-base">
-                  <CheckCheck className="w-6 h-6" />
-                  <span>100% Autonomous Deployment Complete — Changes Live on GitHub!</span>
+            <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#3ECF8E]/15 via-[#171717] to-[#60a5fa]/15 border border-[#3ECF8E]/40 text-white space-y-2.5 shadow-sm">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+                <div className="flex items-center gap-2 text-[#3ECF8E] font-extrabold text-sm sm:text-base">
+                  <CheckCheck className="w-5 h-5" />
+                  <span>100% Autonomous Deployment Complete — Live on GitHub!</span>
                 </div>
-                <span className="text-xs px-3 py-1 rounded-full bg-[#3ECF8E]/20 text-[#3ECF8E] font-mono font-bold border border-[#3ECF8E]/30">
+                <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#3ECF8E]/20 text-[#3ECF8E] font-mono font-bold border border-[#3ECF8E]/30">
                   Branch: {autoDeployResult.branch}
                 </span>
               </div>
               <p className="text-xs text-zinc-300">
                 All {stagedFiles.length} SEO, AEO, and GEO optimization files have been directly committed and merged into your GitHub repository with zero manual steps!
               </p>
-              <div className="pt-1 flex items-center gap-3">
+              <div className="pt-1 flex items-center gap-2.5 flex-wrap">
                 <a
                   href={autoDeployResult.repoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#3ECF8E] hover:bg-[#34D399] text-black font-extrabold text-sm transition-all shadow-lg shadow-[#3ECF8E]/20"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#34D399] text-black font-extrabold text-xs transition-all shadow-md shadow-[#3ECF8E]/20"
                 >
-                  <ExternalLink className="w-4 h-4" />
-                  <span>View Updated Files on GitHub</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>View on GitHub</span>
                 </a>
 
                 <button
                   onClick={() => handleStartIngestion(null, githubToken)}
-                  className="px-4 py-3 rounded-xl bg-[#121212] hover:bg-[#262626] text-zinc-300 font-bold text-xs border border-[#262626] transition-all flex items-center gap-2 cursor-pointer"
+                  className="px-3.5 py-2 rounded-xl bg-[#121212] hover:bg-[#262626] text-zinc-300 font-bold text-xs border border-[#262626] transition-all flex items-center gap-1.5 cursor-pointer"
                 >
-                  <RefreshCw className="w-3.5 h-3.5" />
+                  <RefreshCw className="w-3 h-3" />
                   <span>Re-Scan 18 Scanners</span>
                 </button>
               </div>
             </div>
           ) : (
-            <div className="p-6 rounded-2xl bg-[#1c1c1c] border-2 border-[#3ECF8E]/50 text-white space-y-4">
+            <div className="p-5 rounded-2xl bg-[#1c1c1c] border border-[#3ECF8E]/40 text-white space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-extrabold text-[#3ECF8E] flex items-center gap-2">
-                    <ShieldCheck className="w-5 h-5" />
+                  <h3 className="text-sm font-extrabold text-[#3ECF8E] flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4" />
                     <span>{stagedFiles.length} Optimized Files Generated Across 18 Scanners</span>
                   </h3>
-                  <p className="text-xs text-zinc-400 mt-1">
+                  <p className="text-xs text-zinc-400 mt-0.5">
                     Provide your GitHub Token to commit directly into your repository with 1 click.
                   </p>
                 </div>
               </div>
 
-              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <div className="pt-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                 <div className="relative flex-1 max-w-md">
                   <input
                     type={showToken ? 'text' : 'password'}
                     value={githubToken}
                     onChange={(e) => setGithubToken(e.target.value)}
-                    placeholder="Paste GitHub Token (PAT) for 1-Click Auto-Deploy"
-                    className="w-full pl-4 pr-10 py-2.5 bg-[#121212] border border-[#262626] rounded-xl text-xs text-white placeholder-zinc-600 font-mono"
+                    placeholder="Paste GitHub Token (PAT)"
+                    className="w-full pl-3 pr-8 py-2 bg-[#121212] border border-[#262626] rounded-xl text-xs text-white placeholder-zinc-600 font-mono"
                   />
                   <button
                     type="button"
                     onClick={() => setShowToken(!showToken)}
-                    className="absolute right-3 top-2.5 text-zinc-500 hover:text-zinc-300"
+                    className="absolute right-2.5 top-2.5 text-zinc-500 hover:text-zinc-300"
                   >
                     {showToken ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                   </button>
@@ -1735,7 +1657,6 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
                       });
                       setAutoDeployResult(res);
 
-                      // Re-scan codebase with 18 Scanners to update state
                       const freshTree = await githubService.getRepoTree(
                         connectedRepo.owner,
                         connectedRepo.repo,
@@ -1754,7 +1675,7 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
                     }
                   }}
                   disabled={isAutoDeploying}
-                  className="px-6 py-2.5 rounded-xl font-bold text-xs bg-[#3ECF8E] hover:bg-[#34D399] text-black flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 flex-shrink-0"
+                  className="px-4 py-2 rounded-xl font-bold text-xs bg-[#3ECF8E] hover:bg-[#34D399] text-black flex items-center justify-center gap-1.5 transition-all cursor-pointer disabled:opacity-50 flex-shrink-0"
                 >
                   {isAutoDeploying ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <GitCommit className="w-3.5 h-3.5" />}
                   <span>Auto-Deploy Directly to GitHub</span>
@@ -1764,110 +1685,116 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
           )}
 
           {/* ─── TRI-PILLAR CODEBASE OPTIMIZATION SUMMARY ─── */}
-          <div className="bg-[#171717] rounded-2xl border border-[#262626] p-6 space-y-4 shadow-sm">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="space-y-1">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-bold border border-[#3ECF8E]/20">
-                  <CheckCheck className="w-3.5 h-3.5" />
-                  <span>ALL 18 TRI-PILLAR SCANNERS ACTIVE ON GITHUB</span>
+          <div className="bg-[#171717] rounded-2xl border border-[#262626] p-4 sm:p-5 space-y-3 shadow-sm">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="space-y-0.5">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-[10px] font-bold border border-[#3ECF8E]/20">
+                  <CheckCheck className="w-3 h-3" />
+                  <span>18 SCANNERS VERIFIED ACTIVE</span>
                 </div>
-                <h3 className="text-lg font-extrabold text-white">
-                  Repository Codebase Fully Optimized for SEO, AEO & GEO
+                <h3 className="text-sm font-extrabold text-white">
+                  Repository Codebase Fully Optimized (SEO, AEO, GEO)
                 </h3>
-                <p className="text-xs text-zinc-400">
-                  XML sitemap index, @graph JSON-LD schema, voice speakable specifications, llms.txt citation anchors, and AI crawler bot rules are verified on branch <code className="text-[#3ECF8E] font-mono">{connectedRepo?.branch || 'main'}</code>.
-                </p>
               </div>
 
               {setActiveTab && (
                 <button
                   onClick={() => setActiveTab('gsc')}
-                  className="px-4 py-2.5 rounded-xl bg-[#121212] hover:bg-[#60a5fa] hover:text-black text-zinc-300 font-bold text-xs border border-[#262626] flex items-center gap-2 transition-all cursor-pointer shrink-0"
+                  className="px-3 py-1.5 rounded-lg bg-[#121212] hover:bg-[#60a5fa] hover:text-black text-zinc-300 font-bold text-xs border border-[#262626] flex items-center gap-1.5 transition-all cursor-pointer shrink-0"
                 >
-                  <Globe className="w-3.5 h-3.5 text-[#60a5fa]" />
-                  <span>Inspect Indexing in GSC Engine ↗</span>
+                  <Globe className="w-3 h-3 text-[#60a5fa]" />
+                  <span>Inspect in GSC Engine ↗</span>
                 </button>
               )}
             </div>
 
             {/* 3 Pillar Score Chips */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-              <div className="p-3 bg-[#121212] rounded-xl border border-[#3ECF8E]/30 space-y-1">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#3ECF8E]">1. SEO Architecture</span>
-                  <span className="text-xs font-black text-white font-mono">100/100</span>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-0.5">
+              <div className="p-2.5 bg-[#121212] rounded-xl border border-[#3ECF8E]/30 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-[#3ECF8E]">SEO Architecture</span>
+                  <span className="font-black text-white font-mono">100/100</span>
                 </div>
-                <p className="text-[11px] text-zinc-400">Sitemap, meta titles, descriptions & canonical tags active</p>
+                <span className="text-[10px] text-zinc-400">Sitemap, meta tags & canonicals active</span>
               </div>
 
-              <div className="p-3 bg-[#121212] rounded-xl border border-[#60a5fa]/30 space-y-1">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#60a5fa]">2. AEO Entity Graphs</span>
-                  <span className="text-xs font-black text-white font-mono">100/100</span>
+              <div className="p-2.5 bg-[#121212] rounded-xl border border-[#60a5fa]/30 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-[#60a5fa]">AEO Entity Graphs</span>
+                  <span className="font-black text-white font-mono">100/100</span>
                 </div>
-                <p className="text-[11px] text-zinc-400">Multi-entity JSON-LD, FAQPage & SpeakableSchema active</p>
+                <span className="text-[10px] text-zinc-400">JSON-LD @graph & FAQ microdata active</span>
               </div>
 
-              <div className="p-3 bg-[#121212] rounded-xl border border-[#a78bfa]/30 space-y-1">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#a78bfa]">3. GEO Citation Matrix</span>
-                  <span className="text-xs font-black text-white font-mono">100/100</span>
+              <div className="p-2.5 bg-[#121212] rounded-xl border border-[#a78bfa]/30 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-[#a78bfa]">GEO Citation Matrix</span>
+                  <span className="font-black text-white font-mono">100/100</span>
                 </div>
-                <p className="text-[11px] text-zinc-400">llms.txt, llms-full.txt & AI bot crawler rules active</p>
+                <span className="text-[10px] text-zinc-400">llms.txt & AI bot crawler rules active</span>
               </div>
             </div>
           </div>
 
-
           {/* Staged Files Inspector with Pillar Badges */}
-          <div className="bg-[#171717] rounded-2xl border border-[#262626] p-6 space-y-6">
+          <div className="bg-[#171717] rounded-2xl border border-[#262626] p-4 sm:p-5 space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <FileCode className="w-4 h-4 text-[#3ECF8E]" />
-                <span>Committed Optimization Files</span>
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                <FileCode className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                <span>Committed Optimization Files ({stagedFiles.length})</span>
               </h3>
 
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={handleResetRepo}
-                  className="px-3 py-1.5 rounded-lg bg-[#121212] hover:bg-[#262626] text-zinc-400 text-xs font-semibold border border-[#262626] flex items-center gap-1.5 cursor-pointer"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                  <span>Scan New Repo</span>
-                </button>
-              </div>
+              <button
+                onClick={handleResetRepo}
+                className="px-2.5 py-1 rounded-lg bg-[#121212] hover:bg-[#262626] text-zinc-400 text-xs font-semibold border border-[#262626] flex items-center gap-1 cursor-pointer"
+              >
+                <Trash2 className="w-3 h-3" />
+                <span>Scan New Repo</span>
+              </button>
             </div>
 
-            {/* Review Cards */}
-            <div className="space-y-4">
+            {/* Compact File Rows with Accordion Drawer */}
+            <div className="divide-y divide-[#262626] border border-[#262626] rounded-xl overflow-hidden bg-[#121212]">
               {stagedFiles.map((file, idx) => (
-                <div key={file.path || idx} className="bg-[#121212] rounded-xl border border-[#262626] overflow-hidden">
-                  <div className="px-4 py-3 bg-[#1a1a1a] border-b border-[#262626] flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className={`px-2.5 py-0.5 rounded text-[10px] font-extrabold border ${
+                <div key={file.path || idx} className="text-xs">
+                  <div className="p-3 hover:bg-[#1a1a1a] transition-colors flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold border shrink-0 ${
                         file.pillar === 'SEO' 
                           ? 'bg-[#3ECF8E]/10 text-[#3ECF8E] border-[#3ECF8E]/20' 
                           : file.pillar === 'AEO' 
                           ? 'bg-[#60a5fa]/10 text-[#60a5fa] border-[#60a5fa]/20' 
                           : 'bg-[#a78bfa]/10 text-[#a78bfa] border-[#a78bfa]/20'
                       }`}>
-                        {file.pillar} • {file.category}
+                        {file.pillar}
                       </span>
-                      <span className="font-mono font-bold text-white">{file.path}</span>
+                      <span className="font-mono font-bold text-white truncate">{file.path}</span>
                     </div>
 
-                    <button
-                      onClick={() => handleCopy(`file-${idx}`, file.content)}
-                      className="px-3 py-1 rounded bg-[#262626] hover:bg-zinc-700 text-zinc-300 text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
-                    >
-                      {copiedKey === `file-${idx}` ? <Check className="w-3 h-3 text-[#3ECF8E]" /> : <Copy className="w-3 h-3" />}
-                      <span>Copy Code</span>
-                    </button>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        onClick={() => setExpandedFileIdx(expandedFileIdx === idx ? null : idx)}
+                        className="px-2 py-1 rounded bg-[#171717] hover:bg-[#262626] text-zinc-400 hover:text-white text-[11px] font-medium border border-[#262626] cursor-pointer"
+                      >
+                        {expandedFileIdx === idx ? 'Hide Code' : 'View Code'}
+                      </button>
+                      <button
+                        onClick={() => handleCopy(`file-${idx}`, file.content)}
+                        className="px-2.5 py-1 rounded bg-[#171717] hover:bg-[#3ECF8E] hover:text-black text-zinc-300 text-[11px] font-bold border border-[#262626] flex items-center gap-1 cursor-pointer transition-all"
+                      >
+                        {copiedKey === `file-${idx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                        <span>{copiedKey === `file-${idx}` ? 'Copied' : 'Copy'}</span>
+                      </button>
+                    </div>
                   </div>
 
-                  <pre className="p-4 text-xs font-mono text-zinc-300 max-h-52 overflow-y-auto leading-relaxed whitespace-pre-wrap">
-                    {file.content}
-                  </pre>
+                  {expandedFileIdx === idx && (
+                    <div className="p-3 bg-black/50 border-t border-[#262626]">
+                      <pre className="text-[11px] font-mono text-zinc-300 max-h-48 overflow-y-auto leading-relaxed whitespace-pre-wrap">
+                        {file.content}
+                      </pre>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -1876,6 +1803,7 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
 
         </div>
       )}
+
 
     </div>
   );
