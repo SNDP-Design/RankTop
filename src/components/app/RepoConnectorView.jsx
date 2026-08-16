@@ -561,7 +561,7 @@ function runComprehensiveDiagnostic(filePaths = [], landingContent = '', blogDir
   };
 }
 
-export default function RepoConnectorView() {
+export default function RepoConnectorView({ setActiveTab }) {
   const { websiteUrl } = useAgents();
 
   // Load Initial Persisted State
@@ -1661,6 +1661,133 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
               </div>
             </div>
           )}
+
+          {/* ─── NEXT STRATEGIC STEPS PLAYBOOK ─── */}
+          <div className="bg-gradient-to-br from-[#171717] to-[#121212] rounded-2xl border-2 border-[#3ECF8E]/40 p-6 sm:p-8 space-y-6 shadow-2xl">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-bold border border-[#3ECF8E]/20">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>FOUNDATION VERIFIED • NEXT STRATEGIC STEPS</span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                  RankTop Dominance Playbook: What to Do Next
+                </h3>
+                <p className="text-xs sm:text-sm text-zinc-400 max-w-2xl">
+                  Now that your repository's technical SEO, AEO entity graphs, and GEO AI crawler guides are live, execute these 4 high-ROI growth plays to capture #1 rankings.
+                </p>
+              </div>
+
+              <div className="px-4 py-2 bg-[#3ECF8E]/10 rounded-xl border border-[#3ECF8E]/20 text-[#3ECF8E] font-black text-xs">
+                ESTIMATED IMPACT: +240% TRAFFIC
+              </div>
+            </div>
+
+            {/* 4 Action Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+              
+              {/* Play 1: Launch Swarm */}
+              <div className="p-5 bg-[#171717] rounded-xl border border-[#262626] hover:border-[#3ECF8E]/40 transition-all flex flex-col justify-between space-y-4 group">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-black text-[#3ECF8E] uppercase tracking-wider">Play #1 • Automation</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-[#3ECF8E]/20 text-[#3ECF8E] font-bold">Recommended</span>
+                  </div>
+                  <h4 className="text-sm font-extrabold text-white group-hover:text-[#3ECF8E] transition-colors">
+                    1. Activate 24/7 Autonomous AI Swarm Loop
+                  </h4>
+                  <p className="text-xs text-zinc-400 leading-relaxed">
+                    Deploy 8 specialized AI agents that monitor rival positioning, uncover keyword gaps, and drop weekly campaign articles on autopilot.
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => setActiveTab && setActiveTab('swarm')}
+                  className="w-full py-2.5 px-4 rounded-lg bg-[#3ECF8E] hover:bg-[#34D399] text-black font-extrabold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md shadow-[#3ECF8E]/20"
+                >
+                  <Cpu className="w-3.5 h-3.5" />
+                  <span>Launch Swarm Orchestrator</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* Play 2: Topical Authority */}
+              <div className="p-5 bg-[#171717] rounded-xl border border-[#262626] hover:border-[#60a5fa]/40 transition-all flex flex-col justify-between space-y-4 group">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-black text-[#60a5fa] uppercase tracking-wider">Play #2 • Content Silos</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-[#60a5fa]/20 text-[#60a5fa] font-bold">Topical Depth</span>
+                  </div>
+                  <h4 className="text-sm font-extrabold text-white group-hover:text-[#60a5fa] transition-colors">
+                    2. Scale Low-KD Keyword Topic Clusters
+                  </h4>
+                  <p className="text-xs text-zinc-400 leading-relaxed">
+                    Uncover low-difficulty, high-intent buyer keywords and generate 2,000+ word technical guides to establish domain authority.
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => setActiveTab && setActiveTab('strategy')}
+                  className="w-full py-2.5 px-4 rounded-lg bg-[#60a5fa] hover:bg-[#93c5fd] text-black font-extrabold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md shadow-[#60a5fa]/20"
+                >
+                  <Globe className="w-3.5 h-3.5" />
+                  <span>Explore Keyword Strategy</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* Play 3: AEO & AI Overviews */}
+              <div className="p-5 bg-[#171717] rounded-xl border border-[#262626] hover:border-[#a78bfa]/40 transition-all flex flex-col justify-between space-y-4 group">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-black text-[#a78bfa] uppercase tracking-wider">Play #3 • Generative SERP</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-[#a78bfa]/20 text-[#a78bfa] font-bold">Zero-Click AI</span>
+                  </div>
+                  <h4 className="text-sm font-extrabold text-white group-hover:text-[#a78bfa] transition-colors">
+                    3. Simulate AI Overviews & Perplexity Citations
+                  </h4>
+                  <p className="text-xs text-zinc-400 leading-relaxed">
+                    Test how Google AI Overviews and ChatGPT Search cite your domain and inject BLUF direct answer snippets.
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => setActiveTab && setActiveTab('aeo')}
+                  className="w-full py-2.5 px-4 rounded-lg bg-[#a78bfa] hover:bg-[#c4b5fd] text-black font-extrabold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md shadow-[#a78bfa]/20"
+                >
+                  <Radio className="w-3.5 h-3.5" />
+                  <span>Open AEO Simulator</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* Play 4: High-DR Backlinks */}
+              <div className="p-5 bg-[#171717] rounded-xl border border-[#262626] hover:border-[#f59e0b]/40 transition-all flex flex-col justify-between space-y-4 group">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-black text-[#f59e0b] uppercase tracking-wider">Play #4 • Domain Rating</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-[#f59e0b]/20 text-[#f59e0b] font-bold">Link Velocity</span>
+                  </div>
+                  <h4 className="text-sm font-extrabold text-white group-hover:text-[#f59e0b] transition-colors">
+                    4. Launch High-DR Backlink Outreach
+                  </h4>
+                  <p className="text-xs text-zinc-400 leading-relaxed">
+                    Prospect high-authority SaaS directories, industry blogs, and competitor backlink gaps with personalized AI pitch drafts.
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => setActiveTab && setActiveTab('backlinks')}
+                  className="w-full py-2.5 px-4 rounded-lg bg-[#f59e0b] hover:bg-[#fcd34d] text-black font-extrabold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md shadow-[#f59e0b]/20"
+                >
+                  <BarChart3 className="w-3.5 h-3.5" />
+                  <span>Launch Backlink Outreach</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+            </div>
+          </div>
 
           {/* Staged Files Inspector with Pillar Badges */}
           <div className="bg-[#171717] rounded-2xl border border-[#262626] p-6 space-y-6">

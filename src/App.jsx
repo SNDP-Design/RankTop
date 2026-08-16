@@ -53,7 +53,7 @@ function WorkspaceShell() {
       case 'strategy':     return <KeywordStrategy onGenerateArticle={(kw) => openAppWithTab('studio', kw)} />;
       case 'competitors':  return <CompetitorSpy onGenerateArticle={(kw) => openAppWithTab('studio', kw)} />;
       case 'studio':       return <AiBlogStudio initialKeyword={studioKeyword} />;
-      case 'repo':         return <RepoConnectorView />;
+      case 'repo':         return <RepoConnectorView setActiveTab={openAppWithTab} />;
       case 'backlinks':    return <BacklinkOutreach />;
       case 'cms':          return <CmsIntegrations />;
 
