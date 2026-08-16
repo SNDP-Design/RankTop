@@ -480,4 +480,61 @@ export const githubService = {
       title: prData.title,
     };
   },
+
+  // ── Auto-Merge Pull Request Directly on GitHub ────────────────────────────
+  async mergePullRequest(owner, repo, prNumber, token, mergeMethod = 'squash') {
+    if (!token) throw new Error('A GitHub Personal Access Token is required to auto-merge Pull Requests.');
+    const res = await fetch(`${GITHUB_API_BASE}/repos/${owner}/${repo}/pulls/${prNumber}/merge`, {
+      method: 'PUT',
+      headers: this.getHeaders(token),
+      body: JSON.stringify({
+        commit_title: `🚀 RankTop AI: Auto-Merge SEO, AEO & GEO Optimization Patch (#${prNumber})`,
+        commit_message: 'Autonomous repair applied and merged directly by RankTop AI Swarm.',
+        merge_method: mergeMethod,
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || `Failed to auto-merge Pull Request #${prNumber} on GitHub.`);
+    }
+
+    return res.json();
+  },
+
+  // ── Directly Commit & Push All Optimizations to Main Branch ────────────────
+  async commitDirectlyToBranch({
+    owner,
+    repo,
+    branch = 'main',
+    files = [],
+    commitMessage,
+    token,
+  }) {
+    if (!token) throw new Error('A GitHub Personal Access Token is required to commit directly.');
+    if (!files.length) throw new Error('No files provided for commit.');
+
+    const results = [];
+    for (const file of files) {
+      const res = await this.commitFile(
+        owner,
+        repo,
+        branch,
+        file.path,
+        file.content,
+        file.message || commitMessage || `RankTop AI: Autonomous SEO/AEO/GEO optimization for ${file.path}`,
+        token
+      );
+      results.push(res);
+    }
+
+    return {
+      success: true,
+      branch,
+      committedFiles: files.length,
+      repoUrl: `https://github.com/${owner}/${repo}/tree/${branch}`,
+      results,
+    };
+  },
 };
+
