@@ -555,7 +555,11 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
 
   const handleResetGscState = () => {
     localStorage.removeItem(STORAGE_KEYS.GSC_DIAGNOSTIC);
-    localStorage.removeI  // Separate Indexed Pages vs Actionable Growth Pages vs Harmless Utility Pages
+    setDiagnosticData(null);
+    setSuccessMsg('GSC diagnostic cache cleared.');
+  };
+
+  // Separate Indexed Pages vs Actionable Growth Pages vs Harmless Utility Pages
   const indexedRoutes = (diagnosticData?.routes || []).filter((r) => r.indexed);
   const actionableUnindexedRoutes = (diagnosticData?.routes || []).filter((r) => !r.indexed && !r.isHarmless);
   const harmlessRoutes = (diagnosticData?.routes || []).filter((r) => r.isHarmless);
