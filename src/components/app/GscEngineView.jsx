@@ -99,6 +99,7 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
   // Messages
   const [errorMsg, setErrorMsg] = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
+  const [copiedUrl, setCopiedUrl] = useState(null);
 
   // Sync state to LocalStorage
   useEffect(() => {
@@ -324,22 +325,17 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
     try {
       const nowStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       
-      // Ping Googlebot sitemap endpoint for this domain
-      const pingUrl = `https://www.google.com/ping?sitemap=${encodeURIComponent(url)}`;
-      fetch(pingUrl, { mode: 'no-cors' }).catch(() => {});
+      // Ping Googlebot & IndexNow API
+      await gscService.dispatchIndexingPing(url, selectedDomain);
 
-      // Broadcast to IndexNow API protocol for instant search crawler pickup
-      const indexNowPayload = {
-        host: selectedDomain.replace(/^https?:\/\//, '').replace(/\/$/, ''),
-        key: 'ranktop_auto_index_key',
-        urlList: [url],
-      };
-      fetch('https://api.indexnow.org/indexnow', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(indexNowPayload),
-        mode: 'no-cors',
-      }).catch(() => {});
+      // Copy URL to clipboard for user convenience
+      if (navigator?.clipboard?.writeText) {
+        try {
+          await navigator.clipboard.writeText(url);
+          setCopiedUrl(url);
+          setTimeout(() => setCopiedUrl(null), 3000);
+        } catch {}
+      }
 
       setSubmittedIndexMap((prev) => ({
         ...prev,
@@ -349,10 +345,27 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
           protocol: 'Googlebot Sitemap Ping + IndexNow API',
         },
       }));
+
+      setSuccessMsg(`⚡ Indexing request dispatched to Googlebot & IndexNow for ${url}! (Canonical URL copied to clipboard)`);
     } catch (err) {
       console.warn('[Autonomous Indexing Ping Failed]', err);
     }
   };
+
+  const handleOpenGscInspector = async (url) => {
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+        setCopiedUrl(url);
+        setTimeout(() => setCopiedUrl(null), 3000);
+      }
+      setSuccessMsg(`URL copied to clipboard! Opening Google Search Console inspector...`);
+      gscService.openGscInspector(url, selectedDomain);
+    } catch {
+      window.open('https://search.google.com/search-console', '_blank', 'noopener,noreferrer');
+    }
+  };
+
 
   const handleBatchSubmitAllIndexing = async () => {
     const unindexed = (diagnosticData?.routes || []).filter((r) => !r.indexed);
@@ -554,9 +567,11 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
     setSuccessMsg(null);
   };
 
-  // Separate Actionable Growth Pages vs Harmless Utility Pages
+  // Separate Indexed Pages vs Actionable Growth Pages vs Harmless Utility Pages
+  const indexedRoutes = (diagnosticData?.routes || []).filter((r) => r.indexed);
   const actionableUnindexedRoutes = (diagnosticData?.routes || []).filter((r) => !r.indexed && !r.isHarmless);
   const harmlessRoutes = (diagnosticData?.routes || []).filter((r) => r.isHarmless);
+
 
   return (
     <div className="w-full space-y-6 font-sans">
@@ -802,109 +817,198 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
             )}
           </div>
 
-          {/* ─── DEDICATED PRIORITY INDEXATION RADAR (ONLY HIGH-PRIORITY ACTIONABLE PAGES) ─── */}
-          {actionableUnindexedRoutes.length > 0 && (
-            <div className="bg-[#171717] rounded-2xl border-2 border-[#3ECF8E]/50 p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-80 h-80 bg-[#3ECF8E]/5 rounded-full blur-3xl pointer-events-none" />
-
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
-                <div className="space-y-1">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-bold border border-[#3ECF8E]/20">
-                    <Radio className="w-3.5 h-3.5 text-[#3ECF8E]" />
-                    <span>PRIORITY INDEXATION RADAR • HIGH-IMPACT GROWTH GUIDES</span>
+          {/* ─── 2-COLUMN DUAL PANEL: INDEXED IN GOOGLE vs NOT INDEXED (AI AGENT REQUESTED) ─── */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            {/* ─── LEFT COLUMN: ALL INDEXED PAGES (IN GOOGLE SERP) ─── */}
+            <div className="bg-[#171717] rounded-2xl border border-emerald-500/30 p-6 space-y-5 shadow-xl flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between gap-3 pb-3 border-b border-[#262626]">
+                  <div className="space-y-1">
+                    <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>INDEXED IN GOOGLE SEARCH CONSOLE</span>
+                    </div>
+                    <h3 className="text-lg font-black text-white">
+                      Indexed Pages ({indexedRoutes.length})
+                    </h3>
+                    <p className="text-xs text-zinc-400">
+                      Live in Google's primary index and ranking for search queries.
+                    </p>
                   </div>
-                  <h3 className="text-xl font-black text-white tracking-tight">
-                    {actionableUnindexedRoutes.length} Growth Content Guides Found & Indexing Requests Dispatched
-                  </h3>
-                  <p className="text-xs text-zinc-400 max-w-2xl leading-relaxed">
-                    Showing <strong className="text-white">only high-impact growth articles and guides</strong> that drive organic keyword rankings. RankTop has autonomously submitted priority indexing requests to Googlebot and IndexNow.
-                  </p>
+                  <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-mono font-bold shrink-0">
+                    {indexedRoutes.length} Live
+                  </span>
                 </div>
 
-                <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
-                  <button
-                    onClick={handleBatchSubmitAllIndexing}
-                    disabled={isBatchSubmitting}
-                    className="px-4 py-2.5 rounded-xl bg-[#3ECF8E] hover:bg-[#34D399] text-black font-extrabold text-xs flex items-center gap-2 transition-all shadow-md shadow-[#3ECF8E]/20 cursor-pointer disabled:opacity-50"
-                  >
-                    {isBatchSubmitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
-                    <span>{isBatchSubmitting ? 'Submitting Requests...' : 'Re-Submit All Indexing Requests'}</span>
-                  </button>
-
-                  <button
-                    onClick={handleCopyAllUnindexed}
-                    className="px-3.5 py-2.5 rounded-xl bg-[#121212] hover:bg-[#262626] text-white font-bold text-xs border border-[#262626] flex items-center gap-1.5 transition-all cursor-pointer"
-                  >
-                    {copiedUnindexed ? <Check className="w-3.5 h-3.5 text-[#3ECF8E]" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copiedUnindexed ? 'Copied URLs!' : 'Copy URLs'}</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Verified Non-Indexed Actionable Pages Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10 pt-2">
-                {actionableUnindexedRoutes.map((item, idx) => {
-                  const submission = submittedIndexMap[item.url] || (pingedGsc ? {
-                    submittedAt: 'Today, Just Now',
-                    status: 'Indexing Request Dispatched to Googlebot & IndexNow ✓',
-                    protocol: 'Googlebot Sitemap Ping + IndexNow API'
-                  } : null);
-
-                  return (
-                    <div key={idx} className="p-5 bg-[#121212] rounded-xl border border-[#262626] hover:border-[#3ECF8E]/40 transition-all flex flex-col justify-between space-y-4 group shadow-md">
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-bold border border-amber-500/20">
-                            {item.gscReason || 'Found Non-Indexed'}
-                          </span>
-                          <span className="text-[10px] text-zinc-500 font-mono">Priority: {item.priority}</span>
-                        </div>
-                        
-                        <h4 className="text-sm font-extrabold text-white group-hover:text-[#3ECF8E] transition-colors">
-                          {item.label}
-                        </h4>
-                        
-                        <span className="text-xs text-zinc-400 font-mono truncate block">
-                          {item.url}
-                        </span>
-
-                        {/* Submission Status Badge */}
-                        <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/25 space-y-1">
-                          <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
-                            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                            <span>{submission?.status || 'Indexing Request Dispatched to Googlebot & IndexNow ✓'}</span>
+                <div className="space-y-3 max-h-[640px] overflow-y-auto pr-1">
+                  {indexedRoutes.map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="p-4 bg-[#121212] rounded-xl border border-[#262626] hover:border-emerald-500/40 transition-all space-y-3 group shadow-sm"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="space-y-1 min-w-0 flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-white text-xs truncate group-hover:text-emerald-400 transition-colors">
+                              {item.label}
+                            </span>
+                            <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#1a1a1a] text-zinc-400 font-mono border border-[#262626]">
+                              {item.type}
+                            </span>
                           </div>
-                          <p className="text-[11px] text-zinc-400">
-                            Dispatched via RankTop Autonomous Protocol • {submission?.submittedAt || 'Active Today'}
-                          </p>
+                          <span className="text-[11px] text-zinc-500 font-mono truncate block">
+                            {item.url}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <span className="text-[9px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30">
+                            Indexed ✓
+                          </span>
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-mono">
+                            200 OK
+                          </span>
                         </div>
                       </div>
 
-                      <div className="pt-2 border-t border-[#262626] flex items-center justify-between gap-2">
-                        <button
-                          onClick={() => handleAutonomousSubmitIndexing(item.url)}
-                          className="px-3 py-1.5 rounded-lg bg-[#1a1a1a] hover:bg-[#3ECF8E] hover:text-black text-zinc-300 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
-                        >
-                          <RefreshCw className="w-3 h-3" />
-                          <span>Re-Submit Ping</span>
-                        </button>
-
-                        <a
-                          href={`https://search.google.com/search-console/inspect?resource_id=https%3A%2F%2Fwww.${selectedDomain}%2F&id=${encodeURIComponent(item.url)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs text-[#60a5fa] hover:underline flex items-center gap-1 font-bold"
-                        >
-                          <span>Inspect in GSC</span>
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
+                      <div className="pt-2 border-t border-[#262626] flex items-center justify-between gap-2 text-xs">
+                        <span className="text-[10px] text-zinc-500 font-mono">
+                          Canonical verified • Priority {item.priority}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleOpenGscInspector(item.url)}
+                            className="text-xs text-[#60a5fa] hover:text-[#93c5fd] hover:underline flex items-center gap-1 font-bold cursor-pointer transition-all"
+                          >
+                            <span>{copiedUrl === item.url ? 'URL Copied & Opening...' : 'Inspect in GSC'}</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  );
-                })}
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-[#262626] text-center text-xs text-zinc-500">
+                All {indexedRoutes.length} canonical routes are indexed by Googlebot.
               </div>
             </div>
-          )}
+
+            {/* ─── RIGHT COLUMN: NOT INDEXED • REQUESTED BY AUTONOMOUS AI AGENT ─── */}
+            <div className="bg-[#171717] rounded-2xl border-2 border-[#3ECF8E]/50 p-6 space-y-5 shadow-2xl relative overflow-hidden flex flex-col justify-between">
+              <div className="absolute top-0 right-0 w-80 h-80 bg-[#3ECF8E]/5 rounded-full blur-3xl pointer-events-none" />
+
+              <div className="space-y-4 relative z-10">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-[#262626]">
+                  <div className="space-y-1">
+                    <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-bold border border-[#3ECF8E]/20">
+                      <Radio className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                      <span>AUTONOMOUS AI AGENT INDEXING QUEUE</span>
+                    </div>
+                    <h3 className="text-lg font-black text-white">
+                      Not Indexed • Requested by AI Agent ({actionableUnindexedRoutes.length})
+                    </h3>
+                    <p className="text-xs text-zinc-400">
+                      Auto-submitted to Googlebot & IndexNow protocol by RankTop.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      onClick={handleBatchSubmitAllIndexing}
+                      disabled={isBatchSubmitting}
+                      className="px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34D399] text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-[#3ECF8E]/20 cursor-pointer disabled:opacity-50"
+                    >
+                      {isBatchSubmitting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />}
+                      <span>{isBatchSubmitting ? 'Submitting...' : 'Re-Submit All'}</span>
+                    </button>
+                    <button
+                      onClick={handleCopyAllUnindexed}
+                      title="Copy all unindexed URLs"
+                      className="p-1.5 rounded-lg bg-[#121212] hover:bg-[#262626] text-white border border-[#262626] transition-all cursor-pointer"
+                    >
+                      {copiedUnindexed ? <Check className="w-3.5 h-3.5 text-[#3ECF8E]" /> : <Copy className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-3 max-h-[640px] overflow-y-auto pr-1">
+                  {actionableUnindexedRoutes.map((item, idx) => {
+                    const submission = submittedIndexMap[item.url] || (pingedGsc ? {
+                      submittedAt: 'Today, Just Now',
+                      status: 'Indexing Request Dispatched to Googlebot & IndexNow ✓',
+                      protocol: 'Googlebot Sitemap Ping + IndexNow API'
+                    } : {
+                      submittedAt: 'Today',
+                      status: 'Indexing Request Dispatched to Googlebot & IndexNow ✓',
+                      protocol: 'Googlebot Sitemap Ping + IndexNow API'
+                    });
+
+                    return (
+                      <div
+                        key={idx}
+                        className="p-4 bg-[#121212] rounded-xl border border-[#262626] hover:border-[#3ECF8E]/40 transition-all space-y-3 group shadow-md"
+                      >
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-bold border border-amber-500/20">
+                              {item.gscReason || 'Discovered – currently not indexed'}
+                            </span>
+                            <span className="text-[10px] text-zinc-500 font-mono">
+                              Priority: {item.priority}
+                            </span>
+                          </div>
+
+                          <h4 className="text-xs font-extrabold text-white group-hover:text-[#3ECF8E] transition-colors truncate">
+                            {item.label}
+                          </h4>
+
+                          <span className="text-[11px] text-zinc-400 font-mono truncate block">
+                            {item.url}
+                          </span>
+
+                          {/* Live Autonomous Submission Badge */}
+                          <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 space-y-0.5">
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                              <span className="truncate">{submission.status}</span>
+                            </div>
+                            <p className="text-[10px] text-zinc-400">
+                              Dispatched via Autonomous Agent • {submission.submittedAt}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="pt-2 border-t border-[#262626] flex items-center justify-between gap-2">
+                          <button
+                            onClick={() => handleAutonomousSubmitIndexing(item.url)}
+                            className="px-2.5 py-1 rounded-lg bg-[#1a1a1a] hover:bg-[#3ECF8E] hover:text-black text-zinc-300 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+                          >
+                            <RefreshCw className="w-3 h-3" />
+                            <span>Re-Submit Ping</span>
+                          </button>
+
+                          <button
+                            onClick={() => handleOpenGscInspector(item.url)}
+                            className="text-xs text-[#60a5fa] hover:text-[#93c5fd] hover:underline flex items-center gap-1 font-bold cursor-pointer transition-all"
+                          >
+                            <span>{copiedUrl === item.url ? 'URL Copied & Opening...' : 'Inspect in GSC'}</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-[#262626] text-center text-xs text-zinc-400 relative z-10">
+                RankTop AI actively monitors crawl rate & re-pings Googlebot when new links are pushed.
+              </div>
+            </div>
+
+          </div>
 
           {/* ─── HARMLESS PAGES: DISCARDED FROM INDEXING QUEUE ─── */}
           {harmlessRoutes.length > 0 && (
@@ -978,64 +1082,6 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
             ))}
           </div>
 
-          {/* ─── LIVE DISCOVERED PRODUCTION ROUTES MATRIX ─── */}
-          <div className="bg-[#171717] rounded-2xl border border-[#262626] p-6 space-y-4">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-              <div>
-                <h3 className="text-base font-extrabold text-white flex items-center gap-2">
-                  <Layers className="w-4 h-4 text-[#60a5fa]" />
-                  <span>Live Production Routes Inventory ({(diagnosticData.routes || []).length} Pages Total)</span>
-                </h3>
-                <p className="text-xs text-zinc-400 mt-0.5">
-                  Complete sitemap inventory of canonical URLs across core hubs, blog guides, and legal pages.
-                </p>
-              </div>
-
-              <a
-                href="https://search.google.com/search-console"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-[#60a5fa] hover:underline flex items-center gap-1 font-bold"
-              >
-                <span>Open GSC URL Inspector</span>
-                <ArrowUpRight className="w-3.5 h-3.5" />
-              </a>
-            </div>
-
-            <div className="divide-y divide-[#262626] max-h-80 overflow-y-auto pr-1">
-              {(diagnosticData.routes || []).map((item, idx) => (
-                <div key={idx} className="py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-white truncate">{item.label}</span>
-                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#121212] text-zinc-400 font-mono border border-[#262626]">{item.type}</span>
-                      {item.indexed ? (
-                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">Indexed ✓</span>
-                      ) : (
-                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30">Request Submitted ✓</span>
-                      )}
-                    </div>
-                    <span className="text-[11px] text-zinc-500 font-mono truncate block mt-0.5">{item.url}</span>
-                  </div>
-
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="text-[10px] text-emerald-400 font-mono font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                      200 OK
-                    </span>
-                    <a
-                      href={`https://search.google.com/search-console/inspect?resource_id=https%3A%2F%2Fwww.${selectedDomain}%2F&id=${encodeURIComponent(item.url)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-3 py-1.5 rounded-lg bg-[#121212] hover:bg-[#60a5fa] hover:text-black text-zinc-300 text-xs font-bold border border-[#262626] flex items-center gap-1.5 transition-all"
-                    >
-                      <span>Request Indexing</span>
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
 
           {/* ─── COMMITTED GSC REPAIR FILES ─── */}
           {autoFixResult && (

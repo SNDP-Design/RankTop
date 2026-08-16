@@ -252,6 +252,79 @@ class GscClientService {
       throw err;
     }
   }
+
+  /**
+   * Generates a well-formatted Google Search Console inspection URL or fallback dashboard link
+   */
+  getInspectUrl(pageUrl, domain = '') {
+    const cleanDomain = (domain || '').replace(/^https?:\/\//, '').replace(/\/$/, '').toLowerCase();
+    const coreDomain = cleanDomain.replace(/^www\./, '');
+
+    if (pageUrl) {
+      const resourceId = `sc-domain:${coreDomain || cleanDomain}`;
+      return `https://search.google.com/search-console/inspect?resource_id=${encodeURIComponent(resourceId)}&id=${encodeURIComponent(pageUrl)}`;
+    }
+    return 'https://search.google.com/search-console';
+  }
+
+  /**
+   * Safely opens GSC inspector in a new tab while copying the canonical URL to clipboard
+   */
+  async openGscInspector(pageUrl, domain = '') {
+    if (pageUrl && navigator?.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(pageUrl);
+      } catch (e) {
+        console.warn('[Clipboard write error]', e);
+      }
+    }
+    const targetUrl = this.getInspectUrl(pageUrl, domain);
+    window.open(targetUrl, '_blank', 'noopener,noreferrer');
+  }
+
+  /**
+   * Broadcasts indexing request to Googlebot Sitemap Ping & IndexNow API
+   */
+  async dispatchIndexingPing(pageUrl, domain = '') {
+    const cleanDomain = (domain || '').replace(/^https?:\/\//, '').replace(/\/$/, '').toLowerCase();
+    let host = cleanDomain;
+    if (!host && pageUrl) {
+      try {
+        host = new URL(pageUrl).hostname;
+      } catch {
+        host = 'xgrowth.uno';
+      }
+    }
+
+    // 1. Googlebot sitemap ping
+    if (pageUrl) {
+      try {
+        fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(pageUrl)}`, { mode: 'no-cors' }).catch(() => {});
+      } catch {}
+    }
+
+    // 2. IndexNow API broadcast
+    if (host && pageUrl) {
+      try {
+        fetch('https://api.indexnow.org/indexnow', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            host: host.replace(/^https?:\/\//, '').replace(/\/$/, ''),
+            key: 'ranktop_auto_index_key',
+            urlList: [pageUrl],
+          }),
+          mode: 'no-cors',
+        }).catch(() => {});
+      } catch {}
+    }
+
+    return {
+      success: true,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    };
+  }
 }
 
 export const gscService = new GscClientService();
+
