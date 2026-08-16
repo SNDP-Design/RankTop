@@ -66,22 +66,15 @@ Generate a structured, expert output in JSON format or formatted Markdown text a
       const result = await geminiService.generateContent(prompt);
       if (result) {
         setToolOutput(result);
-        setIsProcessing(false);
-        return;
+      } else {
+        setToolOutput(`⚠️ Tool execution did not return a response. Please verify that your Gemini API Key is configured in Settings.`);
       }
     } catch (err) {
       console.warn('Tool execution failed:', err);
-    }
-
-    setTimeout(() => {
-      setToolOutput(`### ${selectedTool.name} Output for ${input}
-
-- **Target Analyzed**: ${input}
-- **Status**: Processed by RankTop Autonomous Agent
-- **Result Details**: Content structure and parameters verified against 2026 AI search engine standards.
-`);
+      setToolOutput(`⚠️ Execution error: ${err.message || 'Please check your Gemini API Key in Settings.'}`);
+    } finally {
       setIsProcessing(false);
-    }, 800);
+    }
   };
 
   const handleCopyOutput = () => {

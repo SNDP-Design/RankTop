@@ -43,38 +43,15 @@ Return clean, structured Markdown ready for compilation into /assets/design-syst
       const articleText = await geminiService.generateContent(prompt);
       if (articleText) {
         setGeneratedArticle(articleText);
-        setIsGenerating(false);
-        return;
+      } else {
+        setGeneratedArticle(`⚠️ Article generation did not return content. Please verify your Gemini API key in Settings.`);
       }
     } catch (err) {
       console.warn('Gemini API failed:', err);
-    }
-
-    setTimeout(() => {
-      setGeneratedArticle(`# ${targetKeyword.toUpperCase()}
-
-> **Key Takeaway**: Automating your search content strategy with RankTop AI accelerates organic growth for **${domain}**.
-
-## Introduction
-Search Engine Optimization in 2026 requires optimizing simultaneously for Google Search (SEO), Google AI Overviews (AEO), and LLM Answer Engines (GEO).
-
-## 1. Why Search Content Optimization Matters for ${domain}
-By structuring direct answer blocks and embedding speakable schema, your brand secures prime visibility in AI Overviews and ChatGPT search results.
-
-\`\`\`json
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "${targetKeyword}",
-  "publisher": {
-    "@type": "Organization",
-    "name": "${domain}"
-  }
-}
-\`\`\`
-`);
+      setGeneratedArticle(`⚠️ Article generation error: ${err.message || 'Please check your Gemini API key in Settings.'}`);
+    } finally {
       setIsGenerating(false);
-    }, 1000);
+    }
   };
 
   const handleCopyText = () => {
