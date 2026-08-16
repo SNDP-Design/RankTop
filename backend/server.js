@@ -11,6 +11,7 @@ const scheduleRouter = require('./routes/schedule');
 const publishRouter = require('./routes/publish');
 const gscRouter = require('./routes/gsc');
 const agentLoopRouter = require('./routes/agentLoop');
+const githubRouter = require('./routes/github');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -59,6 +60,7 @@ app.use('/api/schedule',   scheduleRouter);
 app.use('/api/publish',    publishRouter);
 app.use('/api/gsc',        gscRouter);
 app.use('/api/agent-loop', agentLoopRouter);
+app.use('/api/github',     githubRouter);
 
 // ── Global error handler ─────────────────────────────────────────────────────
 app.use((err, req, res, _next) => {

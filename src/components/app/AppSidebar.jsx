@@ -12,7 +12,8 @@ import {
   Radio,
   Zap,
   Code,
-  Sparkles
+  Sparkles,
+  FolderGit2
 } from 'lucide-react';
 
 // ─── Universal Sidebar Navigation ────────────────────────────────────────────
@@ -37,6 +38,7 @@ const NAV_GROUPS = [
       { id: 'strategy',    text: 'Keyword Discovery',       Icon: Target },
       { id: 'competitors', text: 'Competitor Intelligence', Icon: Search },
       { id: 'studio',      text: 'AI Content & Schema Studio',Icon: FileText },
+      { id: 'repo',        text: 'GitHub Repo Engine',      Icon: FolderGit2 },
       { id: 'backlinks',   text: 'Backlink Outreach Hub',   Icon: Magnet },
       { id: 'cms',         text: 'CMS Auto-Publishing',     Icon: Wrench },
     ],

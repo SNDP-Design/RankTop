@@ -16,6 +16,7 @@ import CompetitorSpy from './components/app/CompetitorSpy';
 import CmsIntegrations from './components/app/CmsIntegrations';
 import FreeToolsApp from './components/app/FreeToolsApp';
 import BacklinkOutreach from './components/app/BacklinkOutreach';
+import RepoConnectorView from './components/app/RepoConnectorView';
 
 function WorkspaceShell() {
   const [activeAppTab, setActiveAppTab] = useState('dashboard');
@@ -40,6 +41,7 @@ function WorkspaceShell() {
       case 'strategy':     return <KeywordStrategy onGenerateArticle={(kw) => openAppWithTab('studio', kw)} />;
       case 'competitors':  return <CompetitorSpy onGenerateArticle={(kw) => openAppWithTab('studio', kw)} />;
       case 'studio':       return <AiBlogStudio initialKeyword={studioKeyword} />;
+      case 'repo':         return <RepoConnectorView />;
       case 'backlinks':    return <BacklinkOutreach />;
       case 'cms':          return <CmsIntegrations />;
 
