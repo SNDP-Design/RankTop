@@ -19,13 +19,25 @@ import BacklinkOutreach from './components/app/BacklinkOutreach';
 import RepoConnectorView from './components/app/RepoConnectorView';
 
 function WorkspaceShell() {
-  const [activeAppTab, setActiveAppTab] = useState('dashboard');
+  const [activeAppTab, setActiveAppTab] = useState(() => {
+    try {
+      return localStorage.getItem('ranktop_active_tab') || 'repo';
+    } catch {
+      return 'repo';
+    }
+  });
   const [studioKeyword, setStudioKeyword] = useState('');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   const openAppWithTab = (tab, keyword = '') => {
+    const targetTab = tab || 'dashboard';
     if (keyword) setStudioKeyword(keyword);
-    setActiveAppTab(tab || 'dashboard');
+    setActiveAppTab(targetTab);
+    try {
+      localStorage.setItem('ranktop_active_tab', targetTab);
+    } catch (e) {
+      console.warn('[RankTop] Failed to save active tab', e);
+    }
     setIsMobileSidebarOpen(false);
     const mainEl = document.getElementById('main-content');
     if (mainEl) mainEl.scrollTo({ top: 0, behavior: 'smooth' });

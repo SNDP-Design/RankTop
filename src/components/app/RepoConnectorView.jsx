@@ -19,11 +19,56 @@ import {
   Globe,
   Radio,
   GitCommit,
-  ShieldCheck
+  ShieldCheck,
+  Trash2
 } from 'lucide-react';
 import { githubService } from '../../services/githubService';
 import { useAgents } from '../../context/AgentContext';
 import confetti from 'canvas-confetti';
+
+// ── Persistent Storage Keys ──────────────────────────────────────────────────
+const STORAGE_KEYS = {
+  PIPELINE_STATE: 'ranktop_repo_pipeline_state',
+  CONNECTED_REPO: 'ranktop_repo_connected_repo',
+  DIAGNOSTIC_REPORT: 'ranktop_repo_diagnostic_report',
+  STAGED_FILES: 'ranktop_repo_staged_files',
+  AUTO_DEPLOY_RESULT: 'ranktop_repo_auto_deploy_result',
+};
+
+// ── Helper to load persisted cache on page load / hard refresh ───────────────
+function loadPersistedRepoData() {
+  try {
+    const config = githubService.getConfig();
+    const pipelineState = localStorage.getItem(STORAGE_KEYS.PIPELINE_STATE) || 'idle';
+    const connectedRepo = JSON.parse(localStorage.getItem(STORAGE_KEYS.CONNECTED_REPO) || 'null');
+    const diagnosticReport = JSON.parse(localStorage.getItem(STORAGE_KEYS.DIAGNOSTIC_REPORT) || 'null');
+    const stagedFiles = JSON.parse(localStorage.getItem(STORAGE_KEYS.STAGED_FILES) || '[]');
+    const autoDeployResult = JSON.parse(localStorage.getItem(STORAGE_KEYS.AUTO_DEPLOY_RESULT) || 'null');
+
+    return {
+      repoInput: config.repo || '',
+      githubToken: config.token || '',
+      selectedBranch: config.branch || 'main',
+      pipelineState: connectedRepo && diagnosticReport ? pipelineState : 'idle',
+      connectedRepo,
+      diagnosticReport,
+      stagedFiles,
+      autoDeployResult,
+    };
+  } catch (e) {
+    console.warn('[RankTop] Failed to load persisted repo state', e);
+    return {
+      repoInput: '',
+      githubToken: '',
+      selectedBranch: 'main',
+      pipelineState: 'idle',
+      connectedRepo: null,
+      diagnosticReport: null,
+      stagedFiles: [],
+      autoDeployResult: null,
+    };
+  }
+}
 
 // ── State-Aware Tri-Pillar (SEO, AEO, GEO) Diagnostic Engine ────────────────
 function analyzeCodebaseState(filePaths, landingContent, blogDir) {
@@ -203,15 +248,18 @@ function analyzeCodebaseState(filePaths, landingContent, blogDir) {
 export default function RepoConnectorView() {
   const { websiteUrl } = useAgents();
 
+  // Load Initial Persisted State
+  const initial = loadPersistedRepoData();
+
   // GitHub Credentials
-  const [repoInput, setRepoInput] = useState('');
-  const [githubToken, setGithubToken] = useState('');
+  const [repoInput, setRepoInput] = useState(initial.repoInput);
+  const [githubToken, setGithubToken] = useState(initial.githubToken);
   const [showToken, setShowToken] = useState(false);
-  const [selectedBranch, setSelectedBranch] = useState('main');
+  const [selectedBranch, setSelectedBranch] = useState(initial.selectedBranch);
 
   // Pipeline Lifecycle State:
   // 'idle' -> 'fetching' -> 'flaws_report' -> 'fixing' -> 'completed'
-  const [pipelineState, setPipelineState] = useState('idle');
+  const [pipelineState, setPipelineState] = useState(initial.pipelineState);
   const [fetchingStep, setFetchingStep] = useState(1);
   const [fixingStep, setFixingStep] = useState(0);
   const [fixingPillar, setFixingPillar] = useState('SEO'); // 'SEO' | 'AEO' | 'GEO'
@@ -221,29 +269,51 @@ export default function RepoConnectorView() {
   const [successMsg, setSuccessMsg] = useState(null);
 
   // Connected Repository Metadata
-  const [connectedRepo, setConnectedRepo] = useState(null);
+  const [connectedRepo, setConnectedRepo] = useState(initial.connectedRepo);
 
   // AI Tri-Pillar Diagnostic Results
-  const [diagnosticReport, setDiagnosticReport] = useState(null);
+  const [diagnosticReport, setDiagnosticReport] = useState(initial.diagnosticReport);
 
   // Generated Files & Direct Auto-Commit Result
-  const [stagedFiles, setStagedFiles] = useState([]);
+  const [stagedFiles, setStagedFiles] = useState(initial.stagedFiles);
   const [isAutoDeploying, setIsAutoDeploying] = useState(false);
-  const [autoDeployResult, setAutoDeployResult] = useState(null);
+  const [autoDeployResult, setAutoDeployResult] = useState(initial.autoDeployResult);
   const [copiedKey, setCopiedKey] = useState(null);
 
-  // Load Saved Config on Mount
+  // ── Sync State Changes to LocalStorage ──────────────────────────────────────
   useEffect(() => {
-    const saved = githubService.getConfig();
-    if (saved.repo) setRepoInput(saved.repo);
-    if (saved.token) setGithubToken(saved.token);
-    if (saved.branch) setSelectedBranch(saved.branch);
-  }, []);
+    try {
+      localStorage.setItem(STORAGE_KEYS.PIPELINE_STATE, pipelineState);
+      if (connectedRepo) localStorage.setItem(STORAGE_KEYS.CONNECTED_REPO, JSON.stringify(connectedRepo));
+      if (diagnosticReport) localStorage.setItem(STORAGE_KEYS.DIAGNOSTIC_REPORT, JSON.stringify(diagnosticReport));
+      if (stagedFiles && stagedFiles.length) localStorage.setItem(STORAGE_KEYS.STAGED_FILES, JSON.stringify(stagedFiles));
+      if (autoDeployResult) localStorage.setItem(STORAGE_KEYS.AUTO_DEPLOY_RESULT, JSON.stringify(autoDeployResult));
+    } catch (e) {
+      console.warn('[RankTop] Storage write error', e);
+    }
+  }, [pipelineState, connectedRepo, diagnosticReport, stagedFiles, autoDeployResult]);
 
   const handleCopy = (key, text) => {
     navigator.clipboard.writeText(text);
     setCopiedKey(key);
     setTimeout(() => setCopiedKey(null), 2000);
+  };
+
+  // ── Reset Handler (Scan New Repo / Clear Cache) ────────────────────────────
+  const handleResetRepo = () => {
+    localStorage.removeItem(STORAGE_KEYS.PIPELINE_STATE);
+    localStorage.removeItem(STORAGE_KEYS.CONNECTED_REPO);
+    localStorage.removeItem(STORAGE_KEYS.DIAGNOSTIC_REPORT);
+    localStorage.removeItem(STORAGE_KEYS.STAGED_FILES);
+    localStorage.removeItem(STORAGE_KEYS.AUTO_DEPLOY_RESULT);
+
+    setPipelineState('idle');
+    setConnectedRepo(null);
+    setDiagnosticReport(null);
+    setStagedFiles([]);
+    setAutoDeployResult(null);
+    setErrorMsg(null);
+    setSuccessMsg(null);
   };
 
   // ── PHASE 1: Connect, Fetch All Pages & Run Real Codebase Diagnostic ───────
@@ -580,12 +650,22 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
           </div>
 
           {connectedRepo && (
-            <div className="flex items-center gap-3 bg-[#121212] px-4 py-2.5 rounded-xl border border-[#3ECF8E]/30">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#3ECF8E] animate-pulse" />
-              <div className="text-left">
-                <span className="text-[11px] text-zinc-400 block uppercase font-bold">Target Repository:</span>
-                <span className="text-xs font-bold text-white font-mono">{connectedRepo.name} ({connectedRepo.branch})</span>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 bg-[#121212] px-4 py-2.5 rounded-xl border border-[#3ECF8E]/30">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#3ECF8E] animate-pulse" />
+                <div className="text-left">
+                  <span className="text-[11px] text-zinc-400 block uppercase font-bold">Target Repository:</span>
+                  <span className="text-xs font-bold text-white font-mono">{connectedRepo.name} ({connectedRepo.branch})</span>
+                </div>
               </div>
+
+              <button
+                onClick={handleResetRepo}
+                title="Disconnect & Scan New Repo"
+                className="p-2.5 rounded-xl bg-[#121212] hover:bg-red-500/10 text-zinc-400 hover:text-red-400 border border-[#262626] hover:border-red-500/30 transition-colors"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
             </div>
           )}
         </div>
@@ -1169,10 +1249,11 @@ Traditional 2x2 quadrant charts (e.g., Price vs. Features) are outdated the mome
 
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setPipelineState('idle')}
-                  className="px-3 py-1.5 rounded-lg bg-[#121212] hover:bg-[#262626] text-zinc-400 text-xs font-semibold border border-[#262626]"
+                  onClick={handleResetRepo}
+                  className="px-3 py-1.5 rounded-lg bg-[#121212] hover:bg-[#262626] text-zinc-400 text-xs font-semibold border border-[#262626] flex items-center gap-1.5"
                 >
-                  Scan New Repo
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Scan New Repo</span>
                 </button>
               </div>
             </div>
