@@ -892,25 +892,21 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
 
               <div className="divide-y divide-[#262626] max-h-[520px] overflow-y-auto">
                 {indexedRoutes.map((item, idx) => (
-                  <div key={idx} className="p-3 hover:bg-[#1f1f1f]/50 transition-colors flex items-center justify-between gap-3 text-xs">
-                    <div className="min-w-0 flex-1 space-y-0.5">
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-white truncate">{item.label}</span>
-                        <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#121212] text-zinc-400 font-mono border border-[#262626]">{item.type}</span>
-                      </div>
-                      <span className="text-[11px] text-zinc-500 font-mono truncate block">{item.url}</span>
+                  <div key={idx} className="p-2.5 hover:bg-[#1f1f1f]/50 transition-colors flex items-center justify-between gap-3 text-xs">
+                    <div className="min-w-0 flex-1">
+                      <span className="text-xs text-zinc-200 font-mono truncate block select-all">{item.url}</span>
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
                       <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">
-                        Indexed ✓
+                        Indexed
                       </span>
                       <button
                         onClick={() => handleOpenGscInspector(item.url)}
                         title="Inspect URL in Google Search Console"
                         className="px-2.5 py-1 rounded-lg bg-[#121212] hover:bg-[#60a5fa] hover:text-black text-zinc-300 text-[11px] font-bold border border-[#262626] flex items-center gap-1 transition-all cursor-pointer"
                       >
-                        <span>{copiedUrl === item.url ? 'Copied & Opening...' : 'Inspect'}</span>
+                        <span>{copiedUrl === item.url ? 'Opening...' : 'Inspect'}</span>
                         <ExternalLink className="w-2.5 h-2.5" />
                       </button>
                     </div>
@@ -941,25 +937,22 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
                 {actionableUnindexedRoutes.map((item, idx) => {
                   const submission = submittedIndexMap[item.url];
                   return (
-                    <div key={idx} className="p-3 hover:bg-[#1f1f1f]/50 transition-colors flex items-center justify-between gap-3 text-xs">
-                      <div className="min-w-0 flex-1 space-y-0.5">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="font-bold text-white truncate">{item.label}</span>
-                          <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-400 font-bold border border-amber-500/20">
-                            {item.gscReason ? item.gscReason.split('–')[0].trim() : 'Unindexed'}
-                          </span>
-                        </div>
-                        <span className="text-[11px] text-zinc-500 font-mono truncate block">{item.url}</span>
+                    <div key={idx} className="p-2.5 hover:bg-[#1f1f1f]/50 transition-colors flex items-center justify-between gap-3 text-xs">
+                      <div className="min-w-0 flex-1">
+                        <span className="text-xs text-zinc-200 font-mono truncate block select-all">{item.url}</span>
                       </div>
 
                       <div className="flex items-center gap-1.5 shrink-0">
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-bold border border-amber-500/20">
+                          Not Indexed
+                        </span>
                         {submission ? (
                           <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30">
                             Pinged ✓
                           </span>
                         ) : (
                           <span className="text-[10px] px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 font-bold border border-purple-500/20">
-                            Queued ⚡
+                            AI Queued
                           </span>
                         )}
                         <button
@@ -1004,12 +997,9 @@ export default function GscEngineView({ setActiveTab: _setActiveTab }) {
               {showExcluded && (
                 <div className="p-3 border-t border-[#262626] bg-[#121212] divide-y divide-[#262626]/50">
                   {harmlessRoutes.map((h, idx) => (
-                    <div key={idx} className="py-2 flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <span className="font-bold text-zinc-300 truncate">{h.label}</span>
-                        <span className="text-[11px] text-zinc-500 font-mono truncate">{h.url}</span>
-                      </div>
-                      <span className="text-[10px] text-zinc-500 font-mono shrink-0">Harmless ✓</span>
+                    <div key={idx} className="py-2 px-2.5 flex items-center justify-between text-xs">
+                      <span className="text-xs text-zinc-400 font-mono truncate">{h.url}</span>
+                      <span className="text-[10px] text-zinc-500 font-mono shrink-0">Harmless Excluded</span>
                     </div>
                   ))}
                 </div>
